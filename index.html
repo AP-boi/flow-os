@@ -3487,22 +3487,21 @@
 
 <body>
 
-  <!-- 1. WALLPAPER GENERATIVE CANVAS -->
-  <div id="wallpaper-container" <canvas id="wallpaper-canvas"></canvas>
+  <!-- Wallpaper Background -->
+  <div id="wallpaper-container">
+    <canvas id="wallpaper-canvas"></canvas>
   </div>
 
-  <!-- 2. REAL SCREEN BRIGHTNESS DIMMER OVERLAY -->
+  <!-- Screen Brightness Dimmer Overlay -->
   <div id="screen-dimmer"></div>
 
-  <!-- 3. TOP MENU BAR (macOS Style) -->
+  <!-- Top Menu Bar -->
   <header id="menubar">
-    <!-- Left Section: Logo & Menus -->
     <div class="menubar-section" id="menubar-left">
       <!-- Flow OS System Logo Menu -->
       <div class="menu-item logo-btn" id="menu-logo-btn" title="Flow OS Menu"
         onclick="FlowOS.toggleMenu('system-menu-dropdown', event)">
         <img src="assets/logo-glyph.svg" class="menubar-os-logo" alt="Flow OS" style="width:16px; height:16px; display:inline-block; vertical-align:middle; filter:drop-shadow(0 1px 4px rgba(255,120,73,0.45));" />
-        <!-- Dropdown Menu -->
         <div class="dropdown-menu" id="system-menu-dropdown">
           <div class="dropdown-item" onclick="FlowOS.openApp('about')">
             <div class="dropdown-item-left"><i data-lucide="info"></i> About Flow OS</div>
@@ -3657,16 +3656,14 @@
     </div>
   </header>
 
-  <!-- 4. DESKTOP WORKSPACE & WINDOW CONTAINER -->
+  <!-- Desktop Surface -->
   <main id="desktop">
-    <!-- Snapping Translucent Preview Rectangle -->
     <div id="snap-preview"></div>
   </main>
 
-  <!-- 5. DOCK (Centered, Fisheye Magnification) -->
+  <!-- Application Dock -->
   <div id="dock-container">
     <div id="dock">
-      <!-- 1. Files -->
       <div class="dock-item" data-app="files" title="Finder">
         <div class="dock-icon-wrapper">
           <img class="dock-icon-img" src="assets/icons/files.svg" alt="Finder" />
@@ -3675,7 +3672,6 @@
         <div class="dock-tooltip">Finder</div>
       </div>
 
-      <!-- 2. Notes -->
       <div class="dock-item" data-app="notes" title="Notes">
         <div class="dock-icon-wrapper">
           <img class="dock-icon-img" src="assets/icons/notes.svg" alt="Notes" />
@@ -3684,7 +3680,6 @@
         <div class="dock-tooltip">Notes</div>
       </div>
 
-      <!-- 3. Tasks -->
       <div class="dock-item" data-app="tasks" title="Reminders">
         <div class="dock-icon-wrapper">
           <img class="dock-icon-img" src="assets/icons/tasks.svg" alt="Reminders" />
@@ -3693,7 +3688,6 @@
         <div class="dock-tooltip">Reminders</div>
       </div>
 
-      <!-- 4. Flow & Analytics (The Deep Work Core) -->
       <div class="dock-item" data-app="flow" title="Focus">
         <div class="dock-icon-wrapper">
           <img class="dock-icon-img" src="assets/icons/flow.svg" alt="Focus" />
@@ -3702,7 +3696,6 @@
         <div class="dock-tooltip">Focus</div>
       </div>
 
-      <!-- 5. Terminal -->
       <div class="dock-item" data-app="terminal" title="Terminal">
         <div class="dock-icon-wrapper">
           <img class="dock-icon-img" src="assets/icons/terminal.svg" alt="Terminal" />
@@ -3711,7 +3704,6 @@
         <div class="dock-tooltip">Terminal</div>
       </div>
 
-      <!-- 6. Calculator -->
       <div class="dock-item" data-app="calculator" title="Calculator">
         <div class="dock-icon-wrapper">
           <img class="dock-icon-img" src="assets/icons/calculator.svg" alt="Calculator" />
@@ -3720,7 +3712,6 @@
         <div class="dock-tooltip">Calculator</div>
       </div>
 
-      <!-- 7. Code Lab -->
       <div class="dock-item" data-app="codelab" title="Xcode Lab">
         <div class="dock-icon-wrapper">
           <img class="dock-icon-img" src="assets/icons/codelab.svg" alt="Xcode Lab" />
@@ -3731,7 +3722,6 @@
 
       <div class="dock-divider"></div>
 
-      <!-- 8. Cipher Vault -->
       <div class="dock-item" data-app="cypher" title="Keychain &amp; Cipher Vault">
         <div class="dock-icon-wrapper">
           <img class="dock-icon-img" src="assets/icons/cypher.svg" alt="Cipher Vault" />
@@ -3740,7 +3730,6 @@
         <div class="dock-tooltip">Cipher Vault</div>
       </div>
 
-      <!-- 9. Settings -->
       <div class="dock-item" data-app="settings" title="System Settings">
         <div class="dock-icon-wrapper">
           <img class="dock-icon-img" src="assets/icons/settings.svg" alt="System Settings" />
@@ -3749,7 +3738,6 @@
         <div class="dock-tooltip">System Settings</div>
       </div>
 
-      <!-- 10. Trash -->
       <div class="dock-item" data-app="trash" title="Trash">
         <div class="dock-icon-wrapper">
           <img class="dock-icon-img" src="assets/icons/trash.svg" alt="Trash" />
@@ -3760,7 +3748,7 @@
     </div>
   </div>
 
-  <!-- 6. SPOTLIGHT SEARCH (Ctrl/Cmd + K) -->
+  <!-- Spotlight Search (Ctrl/Cmd + K) -->
   <div id="spotlight-backdrop" onclick="FlowOS.closeSpotlight(event)">
     <div id="spotlight-modal" onclick="event.stopPropagation()">
       <div class="spotlight-header">
@@ -3769,9 +3757,7 @@
           autocomplete="off" />
         <span class="spotlight-badge">ESC to close</span>
       </div>
-      <div id="spotlight-results">
-        <!-- Injected dynamically -->
-      </div>
+      <div id="spotlight-results"></div>
       <div class="spotlight-footer">
         <div class="spotlight-keys">
           <span><kbd>↑</kbd> <kbd>↓</kbd> to navigate</span>
@@ -3782,7 +3768,7 @@
     </div>
   </div>
 
-  <!-- 7. CONTROL CENTER -->
+  <!-- Control Center -->
   <div id="control-center">
     <div class="cc-tiles-grid">
       <div class="cc-tile active" id="cc-wifi-tile" onclick="FlowOS.toggleTile('wifi')">
@@ -3823,7 +3809,7 @@
       </div>
     </div>
 
-    <!-- Live Brightness Slider (Dims Real Screen Overlay) -->
+    <!-- Brightness Slider -->
     <div class="cc-slider-group">
       <div class="cc-slider-header">
         <span>Display Brightness</span>
@@ -3836,7 +3822,7 @@
       </div>
     </div>
 
-    <!-- Live WebAudio Master Volume Slider -->
+    <!-- Audio Master Volume Slider -->
     <div class="cc-slider-group">
       <div class="cc-slider-header">
         <span>Sound Volume</span>
@@ -3849,7 +3835,7 @@
       </div>
     </div>
 
-    <!-- Synthesized WebAudio Soundscape Selector -->
+    <!-- Ambient Soundscape Selector -->
     <div class="cc-soundscape-card">
       <div class="cc-soundscape-header">
         <span>Ambient Soundscape</span>
@@ -3869,29 +3855,24 @@
     </div>
   </div>
 
-  <!-- 8. NOTIFICATION CENTER (Right Tray) -->
+  <!-- Notification Center -->
   <div id="notification-center">
-    <!-- Widgets Row -->
     <div class="nc-widgets-row">
-      <!-- Live Analog Clock -->
       <div class="nc-widget-card">
         <canvas id="analog-clock-canvas" width="90" height="90"></canvas>
         <div class="nc-clock-digital" id="nc-digital-clock">21:00:00</div>
       </div>
-      <!-- Interactive Calendar -->
       <div class="nc-widget-card">
         <div class="nc-calendar">
           <div class="nc-cal-header">
             <span id="nc-cal-month-year">August 2026</span>
           </div>
-          <div class="nc-cal-grid" id="nc-cal-grid">
-            <!-- Injected dynamically -->
-          </div>
+          <div class="nc-cal-grid" id="nc-cal-grid"></div>
         </div>
       </div>
     </div>
 
-    <!-- System Stats Widget -->
+    <!-- System Diagnostics Summary -->
     <div class="nc-stats-card">
       <div class="nc-stats-row">
         <span class="nc-stats-label"><i data-lucide="activity"></i> System Uptime</span>
@@ -3907,29 +3888,26 @@
       </div>
     </div>
 
-    <!-- Notifications Section -->
+    <!-- Notifications Stream -->
     <div class="nc-notifs-section">
       <div class="nc-notifs-header">
         <span>Notifications</span>
         <span class="nc-clear-btn" onclick="FlowOS.clearAllNotifications()">Clear All</span>
       </div>
 
-      <!-- Flow Shield Queue Banner -->
       <div class="nc-held-banner" id="nc-held-banner">
         <i data-lucide="shield"></i>
         <span id="nc-held-count">Flow Shield active: 0 notifications held</span>
       </div>
 
-      <div id="nc-notifs-list" style="display: flex; flex-direction: column; gap: 8px;">
-        <!-- Injected dynamically -->
-      </div>
+      <div id="nc-notifs-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
     </div>
   </div>
 
-  <!-- 9. TOASTS STACK -->
+  <!-- Toast Notification Stack -->
   <div id="toast-container"></div>
 
-  <!-- 10. SYSTEM MODAL / CONFIRMATION / PROMPT -->
+  <!-- Modal Dialog -->
   <div id="system-dialog-backdrop">
     <div id="system-dialog">
       <div class="dialog-header">
@@ -3945,45 +3923,45 @@
     </div>
   </div>
 
-  <!-- 11. DISTRACTION SHIELD INTERCEPTION MODAL -->
+  <!-- Focus Interception Overlay -->
   <div id="distraction-shield-backdrop">
     <div id="distraction-shield-modal">
       <div class="shield-badge"><i data-lucide="shield-alert"></i> Distraction Shield Active</div>
-      <div class="shield-title">Protect Your Focus State</div>
+      <div class="shield-title">Focus Mode Engaged</div>
       <div class="shield-intention-card">
-        <span class="shield-intention-label">Current Deep Work Intention</span>
+        <span class="shield-intention-label">Active Focus Goal</span>
         <span class="shield-intention-val" id="shield-task-name">Writing system architecture</span>
         <span class="shield-time-val" id="shield-remaining-time">28 minutes remaining in session</span>
       </div>
       <div class="shield-actions">
         <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="FlowOS.dismissDistractionShield(true)">
-          <i data-lucide="arrow-left"></i> Return to Flow Session
+          <i data-lucide="arrow-left"></i> Return to Focus Session
         </button>
         <button class="btn-secondary" style="width: 100%;" onclick="FlowOS.dismissDistractionShield(false)">
-          Open App Anyway (Record Interruption)
+          Open App (Log Interruption)
         </button>
       </div>
     </div>
   </div>
 
-  <!-- 12. DAILY INTENTION RITUAL MODAL -->
+  <!-- Morning Intention Prompt -->
   <div id="ritual-modal-backdrop">
     <div id="ritual-modal">
-      <div class="shield-badge"><i data-lucide="sun"></i> Daily Intention Ritual</div>
-      <div style="font-size: 20px; font-weight: 700;">What is your single focus today?</div>
+      <div class="shield-badge"><i data-lucide="sun"></i> Daily Focus Target</div>
+      <div style="font-size: 20px; font-weight: 700;">What is your core priority today?</div>
       <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
-        Calm environments produce clear thoughts. Choose the core outcome that makes today a success.
+        Set a single milestone for your uninterrupted deep work blocks.
       </div>
       <input type="text" class="dialog-input" id="ritual-input"
         placeholder="e.g. Complete kernel window manager refactor" />
       <div style="display: flex; justify-content: flex-end; gap: 10px;">
         <button class="btn-secondary" onclick="FlowOS.skipDailyRitual()">Skip</button>
-        <button class="btn-primary" onclick="FlowOS.commitDailyRitual()">Commit Intention</button>
+        <button class="btn-primary" onclick="FlowOS.commitDailyRitual()">Save Target</button>
       </div>
     </div>
   </div>
 
-  <!-- 13. BOOT SCREEN THEATER -->
+  <!-- Boot Splash Screen -->
   <div id="boot-screen">
     <div class="boot-logo-wrap">
       <div class="boot-ring"></div>
@@ -3994,10 +3972,10 @@
     <div class="boot-progress-bar">
       <div class="boot-progress-fill" id="boot-progress-fill"></div>
     </div>
-    <div class="boot-caption" id="boot-caption">Calibrating deep work environment...</div>
+    <div class="boot-caption" id="boot-caption">Loading workspace...</div>
   </div>
 
-  <!-- 14. LOCK SCREEN -->
+  <!-- Lock Screen -->
   <div id="lock-screen">
     <div class="lock-time mono" id="lock-time">21:00</div>
     <div class="lock-date" id="lock-date">Monday, August 29</div>
@@ -4012,7 +3990,7 @@
     </div>
   </div>
 
-  <!-- 15. DESKTOP CONTEXT MENU -->
+  <!-- Desktop Context Menu -->
   <div id="desktop-context-menu">
     <div class="dropdown-item" onclick="FlowOS.openApp('flow')">
       <div class="dropdown-item-left"><i data-lucide="flame"></i> Start Flow Session</div>
