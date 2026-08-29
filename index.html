@@ -5410,6 +5410,17 @@
               print('Usage: flow <start|stop>');
             }
             break;
+          case 'soundscape':
+            if (['rain', 'brown', 'cafe', 'wind', 'none'].includes(arg)) {
+              FlowOS.setSoundscape(arg);
+              print(`Soundscape set to ${arg}`);
+            } else {
+              print('Usage: soundscape <rain|brown|cafe|wind|none>');
+            }
+            break;
+          case 'ls':
+            print('Documents/  Projects/  Downloads/  Pictures/  kernel.js  manifest.json  Deep\\ Work.md  FlowDiagram.svg');
+            break;
           case 'clear':
             document.getElementById('term-history').innerHTML = '';
             break;
@@ -5634,6 +5645,12 @@
         }
       }
     };
+
+    // Expose methods defined inside FlowOS.apps so they can be called as FlowOS.xxx()
+    FlowOS.drawAnalyticsChart = FlowOS.apps.drawAnalyticsChart;
+    FlowOS.executeTermCmd = FlowOS.apps.executeTermCmd;
+    FlowOS.setWallpaperPreset = FlowOS.apps.setWallpaperPreset;
+    FlowOS.wipeAllData = FlowOS.apps.wipeAllData;
 
     // Initialize OS on window load
     window.addEventListener('DOMContentLoaded', () => {
