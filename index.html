@@ -32,11 +32,16 @@
       --radius-xl: 22px;
       --radius-pill: 9999px;
 
-      /* Motion */
+      /* Motion & Springs */
       --ease-flow: cubic-bezier(0.2, 0.9, 0.3, 1);
+      --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --ease-spring-soft: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-genie: cubic-bezier(0.22, 0.88, 0.28, 1);
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
       --transition-fast: 150ms var(--ease-flow);
       --transition-normal: 240ms var(--ease-flow);
       --transition-slow: 380ms var(--ease-flow);
+      --transition-spring: 420ms var(--ease-spring-soft);
 
       /* Accent Color (Default Warm Coral) */
       --accent: #ff7849;
@@ -664,28 +669,102 @@
     .window.maximized {
       border-radius: 0 !important;
       border: none !important;
+      transition: all var(--transition-spring) !important;
     }
 
-    /* Genie Minimize Animation State */
+    .window.dragging {
+      cursor: grabbing !important;
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.55), 0 10px 24px rgba(0, 0, 0, 0.35) !important;
+      transition: box-shadow 0.15s ease, filter 0.15s ease !important;
+    }
+
+    /* Genie Window Minimization & Spring Restore Effects */
+    .window.minimizing {
+      pointer-events: none !important;
+      transform-origin: center center;
+      transition: transform 380ms var(--ease-genie), opacity 320ms ease-in, filter 380ms ease !important;
+      transform: translate(var(--genie-tx, 0px), var(--genie-ty, 220px)) scale(var(--genie-scale-x, 0.08), var(--genie-scale-y, 0.08)) !important;
+      opacity: 0 !important;
+      filter: blur(10px) brightness(1.25);
+    }
+
     .window.minimized {
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.2) translateY(200px);
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: scale(0.1) translateY(200px);
+    }
+
+    .window.restoring {
+      pointer-events: none !important;
+      animation: windowGenieRestore 440ms var(--ease-spring-soft) forwards;
+    }
+
+    @keyframes windowGenieRestore {
+      0% {
+        opacity: 0;
+        filter: blur(12px) brightness(1.3);
+        transform: translate(var(--genie-tx, 0px), var(--genie-ty, 220px)) scale(var(--genie-scale-x, 0.08), var(--genie-scale-y, 0.08));
+      }
+
+      60% {
+        opacity: 0.95;
+        filter: blur(1px) brightness(1.05);
+      }
+
+      100% {
+        opacity: 1;
+        filter: blur(0px) brightness(1);
+        transform: translate(0, 0) scale(1);
+      }
     }
 
     .window.opening {
-      animation: windowOpen var(--transition-normal) forwards;
+      animation: windowSpringOpen 360ms var(--ease-spring-soft) forwards;
     }
 
-    @keyframes windowOpen {
-      from {
+    @keyframes windowSpringOpen {
+      0% {
         opacity: 0;
-        transform: scale(0.92) translateY(12px);
+        transform: scale(0.9) translateY(18px);
+        filter: blur(4px);
       }
 
-      to {
+      70% {
+        opacity: 1;
+        transform: scale(1.015) translateY(-2px);
+        filter: blur(0px);
+      }
+
+      100% {
         opacity: 1;
         transform: scale(1) translateY(0);
+        filter: blur(0px);
+      }
+    }
+
+    /* Dock Item Launch & Restore Bounce */
+    .dock-item.dock-bouncing {
+      animation: dockItemBounce 540ms var(--ease-bounce) forwards;
+    }
+
+    @keyframes dockItemBounce {
+
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+      }
+
+      35% {
+        transform: translateY(-20px) scale(1.22);
+      }
+
+      65% {
+        transform: translateY(-6px) scale(0.96);
+      }
+
+      85% {
+        transform: translateY(-2px) scale(1.03);
       }
     }
 
@@ -1014,18 +1093,26 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      animation: modalSlideDown var(--transition-normal);
+      animation: spotlightModalSpring 380ms var(--ease-spring-soft) forwards;
     }
 
-    @keyframes modalSlideDown {
-      from {
+    @keyframes spotlightModalSpring {
+      0% {
         opacity: 0;
-        transform: translateY(-16px) scale(0.97);
+        transform: translateY(-24px) scale(0.94);
+        filter: blur(8px);
       }
 
-      to {
+      70% {
+        opacity: 1;
+        transform: translateY(2px) scale(1.01);
+        filter: blur(0px);
+      }
+
+      100% {
         opacity: 1;
         transform: translateY(0) scale(1);
+        filter: blur(0px);
       }
     }
 
@@ -1090,13 +1177,28 @@
       padding: 10px 14px;
       border-radius: var(--radius-md);
       cursor: pointer;
-      transition: background var(--transition-fast);
+      transition: background var(--transition-fast), transform var(--transition-fast);
+      animation: spotlightItemIn 280ms var(--ease-spring-soft) backwards;
+      animation-delay: calc(var(--item-idx, 0) * 35ms);
+    }
+
+    @keyframes spotlightItemIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .spotlight-result-item:hover,
     .spotlight-result-item.selected {
       background: var(--accent);
       color: #fff;
+      transform: translateX(3px);
     }
 
     .spotlight-result-item:hover .spotlight-item-desc,
@@ -2847,6 +2949,7 @@
         animation: none !important;
       }
     }
+
     /* ==========================================================================
        10.8 CIPHER VAULT APP (Cypher Mode)
        ========================================================================== */
@@ -3122,8 +3225,15 @@
     }
 
     @keyframes cypherPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(60, 224, 143, 0.28); }
-      50% { box-shadow: 0 0 12px 2px rgba(60, 224, 143, 0.22); }
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(60, 224, 143, 0.28);
+      }
+
+      50% {
+        box-shadow: 0 0 12px 2px rgba(60, 224, 143, 0.22);
+      }
     }
 
     /* Cypher Mode ambient scanline overlay */
@@ -3133,13 +3243,11 @@
       inset: 0;
       pointer-events: none;
       z-index: 1950;
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(60, 224, 143, 0.03) 0px,
-        rgba(60, 224, 143, 0.03) 1px,
-        transparent 1px,
-        transparent 3px
-      );
+      background: repeating-linear-gradient(0deg,
+          rgba(60, 224, 143, 0.03) 0px,
+          rgba(60, 224, 143, 0.03) 1px,
+          transparent 1px,
+          transparent 3px);
       mix-blend-mode: screen;
     }
 
@@ -3177,6 +3285,7 @@
       background: rgba(255, 107, 107, 0.15);
       color: #ff6b6b;
     }
+
     /* ==========================================================================
        10.7 CODE LAB APP
        ========================================================================== */
@@ -3330,9 +3439,17 @@
       color: var(--text-secondary);
     }
 
-    .codelab-log-warn { color: #e5983b; }
-    .codelab-log-error { color: #ff6b6b; }
-    .codelab-log-info { color: var(--accent); }
+    .codelab-log-warn {
+      color: #e5983b;
+    }
+
+    .codelab-log-error {
+      color: #ff6b6b;
+    }
+
+    .codelab-log-info {
+      color: var(--accent);
+    }
 
     .codelab-preview {
       display: none;
@@ -3343,18 +3460,28 @@
       background: #ffffff;
     }
 
-    .codelab-output-wrap.mode-html .codelab-output { display: none; }
-    .codelab-output-wrap.mode-html .codelab-preview { display: block; }
-    .codelab-output-wrap.mode-react .codelab-output { flex: 0 0 44%; }
-    .codelab-output-wrap.mode-react .codelab-preview { display: block; }
+    .codelab-output-wrap.mode-html .codelab-output {
+      display: none;
+    }
+
+    .codelab-output-wrap.mode-html .codelab-preview {
+      display: block;
+    }
+
+    .codelab-output-wrap.mode-react .codelab-output {
+      flex: 0 0 44%;
+    }
+
+    .codelab-output-wrap.mode-react .codelab-preview {
+      display: block;
+    }
   </style>
 </head>
 
 <body>
 
   <!-- 1. WALLPAPER GENERATIVE CANVAS -->
-  <div id="wallpaper-container">
-    <canvas id="wallpaper-canvas"></canvas>
+  <div id="wallpaper-container" <canvas id="wallpaper-canvas"></canvas>
   </div>
 
   <!-- 2. REAL SCREEN BRIGHTNESS DIMMER OVERLAY -->
@@ -3988,37 +4115,112 @@ function summary(items: Task[]): string {
 
 console.log(summary(tasks));
 console.log('Open tasks:', tasks.filter(t => !t.done).length);`,
-            react: `// Flow OS Code Lab - React 18 with TSX
-// Define a component named "App" and it auto-mounts in the preview pane.
-
-const btn = {
-  padding: '8px 16px',
-  marginRight: '8px',
-  borderRadius: '10px',
-  border: 'none',
-  background: '#14161a',
-  color: '#fff',
-  cursor: 'pointer'
-};
+            react: `// Flow OS Code Lab - React 18 Animation Suite
+// Component auto-mounts into the live preview pane. Press Ctrl/Cmd + Enter to run!
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    console.log('count changed ->', count);
-  }, [count]);
+  const [active, setActive] = useState(true);
+  const [pulse, setPulse] = useState(0);
+  const [accentHue, setAccentHue] = useState(24);
 
   return (
-    <div style={{ fontFamily: 'system-ui' }}>
-      <h2 style={{ margin: '0 0 8px' }}>Counter</h2>
-      <p style={{ color: '#555', margin: '0 0 12px' }}>{count} clicks</p>
-      <button style={btn} onClick={() => setCount(c => c + 1)}>Increment</button>
-      <button style={{ ...btn, background: '#eee', color: '#111' }} onClick={() => setCount(0)}>
-        Reset
-      </button>
+    <div style={{
+      fontFamily: "'Sora', system-ui, sans-serif",
+      background: 'linear-gradient(135deg, #0e1017, #181b24)',
+      color: '#e8e5de',
+      minHeight: '100vh',
+      padding: '24px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '20px'
+    }}>
+      {/* Animated Spring Card */}
+      <div style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.12)',
+        borderRadius: '20px',
+        padding: '28px',
+        width: '320px',
+        boxShadow: \`0 20px 50px hsl(\${accentHue}, 80%, 15%)\`,
+        transform: active ? 'scale(1) translateY(0)' : 'scale(0.96) translateY(6px)',
+        transition: 'all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        textAlign: 'center'
+      }}>
+        <div style={{
+          width: '64px',
+          height: '64px',
+          margin: '0 auto 16px',
+          borderRadius: '50%',
+          background: \`hsl(\${accentHue}, 90%, 60%)\`,
+          boxShadow: \`0 0 30px hsl(\${accentHue}, 90%, 60%)\`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '28px',
+          transform: \`scale(\${1 + (pulse % 3) * 0.12}) rotate(\${pulse * 25}deg)\`,
+          transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+        }}>
+          ✨
+        </div>
+
+        <h2 style={{ margin: '0 0 6px', fontSize: '20px', fontWeight: 600 }}>Interactive React</h2>
+        <p style={{ color: 'rgba(232, 229, 222, 0.6)', fontSize: '12.5px', margin: '0 0 20px' }}>
+          Smooth hardware-accelerated animations
+        </p>
+
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '16px' }}>
+          <button
+            onClick={() => { setPulse(p => p + 1); console.log('Pulse!', pulse + 1); }}
+            style={{
+              padding: '10px 18px',
+              borderRadius: '12px',
+              border: 'none',
+              background: \`hsl(\${accentHue}, 85%, 58%)\`,
+              color: '#fff',
+              fontWeight: 600,
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
+              transform: 'scale(1)',
+              transition: 'transform 0.15s ease'
+            }}
+          >
+            Pulse ({pulse})
+          </button>
+
+          <button
+            onClick={() => setActive(a => !a)}
+            style={{
+              padding: '10px 18px',
+              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              background: 'rgba(255, 255, 255, 0.08)',
+              color: '#e8e5de',
+              fontWeight: 500,
+              cursor: 'pointer'
+            }}
+          >
+            {active ? 'Float' : 'Rest'}
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left' }}>
+          <label style={{ fontSize: '11px', color: 'rgba(232, 229, 222, 0.5)' }}>Accent Hue Slider</label>
+          <input
+            type="range"
+            min="0"
+            max="360"
+            value={accentHue}
+            onChange={e => setAccentHue(Number(e.target.value))}
+            style={{ width: '100%', accentColor: \`hsl(\${accentHue}, 90%, 60%)\` }}
+          />
+        </div>
+      </div>
     </div>
   );
-}`,
+}`,StartLine:4118,TargetContent:
             html: `<!-- Flow OS Code Lab - live HTML / CSS / JS preview -->
 <div class="card">
   <h1>Hello, builder</h1>
@@ -4584,9 +4786,10 @@ function App() {
       closeWindow(id) {
         const el = document.getElementById(id);
         if (el) {
-          el.style.transform = 'scale(0.92)';
+          el.style.transition = 'transform 240ms var(--ease-spring-soft), opacity 180ms ease';
+          el.style.transform = 'scale(0.88) translateY(12px)';
           el.style.opacity = '0';
-          setTimeout(() => el.remove(), 160);
+          setTimeout(() => el.remove(), 240);
         }
         delete this.windows[id];
         SoundEngine.playWindowClose();
@@ -4597,11 +4800,33 @@ function App() {
 
       minimizeWindow(id) {
         const win = this.windows[id];
-        if (!win) return;
+        if (!win || win.isMinimized) return;
         win.isMinimized = true;
         const el = document.getElementById(id);
         if (el) {
-          el.classList.add('minimized');
+          const dockItem = document.querySelector(`.dock-item[data-app="${win.appKey}"]`);
+          if (dockItem) {
+            const dockRect = dockItem.getBoundingClientRect();
+            const winRect = el.getBoundingClientRect();
+            const tx = (dockRect.left + dockRect.width / 2) - (winRect.left + winRect.width / 2);
+            const ty = (dockRect.top + dockRect.height / 2) - (winRect.top + winRect.height / 2);
+            const scaleX = Math.max(0.04, dockRect.width / winRect.width);
+            const scaleY = Math.max(0.04, dockRect.height / winRect.height);
+
+            el.style.setProperty('--genie-tx', `${tx}px`);
+            el.style.setProperty('--genie-ty', `${ty}px`);
+            el.style.setProperty('--genie-scale-x', scaleX);
+            el.style.setProperty('--genie-scale-y', scaleY);
+          }
+          el.classList.remove('opening', 'restoring');
+          el.classList.add('minimizing');
+
+          setTimeout(() => {
+            if (win.isMinimized) {
+              el.classList.add('minimized');
+              el.classList.remove('minimizing');
+            }
+          }, 360);
         }
         SoundEngine.playClick();
         FlowOS.updateDockState();
@@ -4614,7 +4839,35 @@ function App() {
         win.isMinimized = false;
         const el = document.getElementById(id);
         if (el) {
-          el.classList.remove('minimized');
+          const dockItem = document.querySelector(`.dock-item[data-app="${win.appKey}"]`);
+          if (dockItem) {
+            dockItem.classList.remove('dock-bouncing');
+            void dockItem.offsetWidth;
+            dockItem.classList.add('dock-bouncing');
+            setTimeout(() => dockItem.classList.remove('dock-bouncing'), 600);
+
+            const dockRect = dockItem.getBoundingClientRect();
+            const winRect = { left: win.x, top: win.y, width: win.width, height: win.height };
+            const tx = (dockRect.left + dockRect.width / 2) - (winRect.left + winRect.width / 2);
+            const ty = (dockRect.top + dockRect.height / 2) - (winRect.top + winRect.height / 2);
+            const scaleX = Math.max(0.04, dockRect.width / winRect.width);
+            const scaleY = Math.max(0.04, dockRect.height / winRect.height);
+
+            el.style.setProperty('--genie-tx', `${tx}px`);
+            el.style.setProperty('--genie-ty', `${ty}px`);
+            el.style.setProperty('--genie-scale-x', scaleX);
+            el.style.setProperty('--genie-scale-y', scaleY);
+          }
+          el.classList.remove('minimized', 'minimizing');
+          el.classList.add('restoring');
+
+          setTimeout(() => {
+            el.classList.remove('restoring');
+            el.style.removeProperty('--genie-tx');
+            el.style.removeProperty('--genie-ty');
+            el.style.removeProperty('--genie-scale-x');
+            el.style.removeProperty('--genie-scale-y');
+          }, 440);
         }
         this.focusWindow(id);
         SoundEngine.playWindowOpen();
@@ -4711,7 +4964,7 @@ function App() {
         if (flyout) flyout.classList.remove('active');
       },
 
-      /* Unified Pointer Dragging for Windows */
+      /* Unified Pointer Dragging for Windows with Momentum Inertia Tilt */
       onTitlebarPointerDown(e, id) {
         if (e.target.closest('.window-controls') || e.target.closest('.window-actions')) return;
         const win = this.windows[id];
@@ -4719,9 +4972,12 @@ function App() {
 
         const el = document.getElementById(id);
         el.setPointerCapture(e.pointerId);
+        el.classList.add('dragging');
 
         const startX = e.clientX;
         const startY = e.clientY;
+        let lastX = e.clientX;
+        let lastTime = performance.now();
         const initialWinX = win.x;
         const initialWinY = win.y;
         const preview = document.getElementById('snap-preview');
@@ -4732,6 +4988,15 @@ function App() {
           win.x = initialWinX + dx;
           win.y = Math.max(0, initialWinY + dy);
 
+          // Calculate dragging velocity for dynamic physical tilt
+          const now = performance.now();
+          const dt = Math.max(1, now - lastTime);
+          const vx = (moveEvt.clientX - lastX) / dt;
+          lastX = moveEvt.clientX;
+          lastTime = now;
+
+          const tilt = Math.max(-2.6, Math.min(2.6, vx * 4.8));
+          el.style.transform = `rotate(${tilt.toFixed(2)}deg)`;
           el.style.left = `${win.x}px`;
           el.style.top = `${win.y}px`;
 
@@ -4769,6 +5034,8 @@ function App() {
 
         const onPointerUp = (upEvt) => {
           el.releasePointerCapture(e.pointerId);
+          el.classList.remove('dragging');
+          el.style.transform = '';
           window.removeEventListener('pointermove', onPointerMove);
           window.removeEventListener('pointerup', onPointerUp);
 
@@ -5126,37 +5393,84 @@ function App() {
         }
       },
 
-      /* Dock Fisheye Physics */
+      /* Fluid Dock Fisheye Physics with Spring Damping */
       initDockMagnification() {
         const dock = document.getElementById('dock');
-        const items = document.querySelectorAll('.dock-item');
+        const items = Array.from(document.querySelectorAll('.dock-item'));
+        if (!dock || !items.length) return;
+
+        let mouseX = -9999;
+        let isHovering = false;
+        const scales = new Array(items.length).fill(1);
+        let rafId = null;
+
+        const updatePhysics = () => {
+          let needsUpdate = false;
+          const maxDist = 110;
+          const maxScale = 1.44;
+
+          items.forEach((item, idx) => {
+            let targetScale = 1;
+            if (isHovering && mouseX > -1000) {
+              const rect = item.getBoundingClientRect();
+              const itemCenter = rect.left + rect.width / 2;
+              const dist = Math.abs(mouseX - itemCenter);
+              if (dist < maxDist) {
+                const norm = dist / maxDist;
+                const factor = Math.cos(norm * Math.PI * 0.5);
+                targetScale = 1 + (maxScale - 1) * Math.pow(factor, 1.7);
+              }
+            }
+
+            const diff = targetScale - scales[idx];
+            scales[idx] += diff * 0.32; // responsive spring lerp
+
+            if (Math.abs(diff) > 0.001) {
+              needsUpdate = true;
+            } else {
+              scales[idx] = targetScale;
+            }
+
+            const current = scales[idx];
+            const translateY = -(current - 1) * 16;
+            item.style.transform = `scale(${current.toFixed(4)}) translateY(${translateY.toFixed(2)}px)`;
+          });
+
+          if (needsUpdate || isHovering) {
+            rafId = requestAnimationFrame(updatePhysics);
+          } else {
+            rafId = null;
+          }
+        };
+
+        const startLoop = () => {
+          if (!rafId) rafId = requestAnimationFrame(updatePhysics);
+        };
 
         dock.addEventListener('pointermove', (e) => {
-          const mouseX = e.clientX;
-          items.forEach(item => {
-            const rect = item.getBoundingClientRect();
-            const itemCenter = rect.left + rect.width / 2;
-            const dist = Math.abs(mouseX - itemCenter);
-            const maxDist = 90;
+          mouseX = e.clientX;
+          isHovering = true;
+          startLoop();
+        });
 
-            if (dist < maxDist) {
-              const scale = 1 + (0.38 * (1 - dist / maxDist));
-              item.style.transform = `scale(${scale}) translateY(${- (scale - 1) * 14}px)`;
-            } else {
-              item.style.transform = 'scale(1) translateY(0)';
-            }
-          });
+        dock.addEventListener('pointerenter', () => {
+          isHovering = true;
+          startLoop();
         });
 
         dock.addEventListener('pointerleave', () => {
-          items.forEach(item => {
-            item.style.transform = 'scale(1) translateY(0)';
-          });
+          isHovering = false;
+          mouseX = -9999;
+          startLoop();
         });
 
         items.forEach(item => {
           item.addEventListener('click', () => {
             const app = item.dataset.app;
+            item.classList.remove('dock-bouncing');
+            void item.offsetWidth;
+            item.classList.add('dock-bouncing');
+            setTimeout(() => item.classList.remove('dock-bouncing'), 600);
             this.handleDockClick(app);
           });
         });
@@ -5574,6 +5888,7 @@ function App() {
         filtered.slice(0, 7).forEach((item, idx) => {
           const row = document.createElement('div');
           row.className = 'spotlight-result-item' + (idx === 0 ? ' selected' : '');
+          row.style.setProperty('--item-idx', idx);
           row.innerHTML = `
             <div class="spotlight-item-left">
               <div class="spotlight-item-icon"><i data-lucide="${item.icon}"></i></div>
@@ -5852,8 +6167,8 @@ ${mount}
           const iconFor = (n) => n.type === 'folder'
             ? 'folder'
             : /\.(png|jpe?g|gif|svg|webp)$/i.test(n.name) ? 'image'
-            : /\.(js|ts|tsx|jsx|json|html|css|md|txt|sh)$/i.test(n.name) ? 'file-code'
-            : 'file';
+              : /\.(js|ts|tsx|jsx|json|html|css|md|txt|sh)$/i.test(n.name) ? 'file-code'
+                : 'file';
 
           let path = [];
 
@@ -6784,7 +7099,7 @@ ${mount}
               ta.value = text;
               document.body.appendChild(ta);
               ta.select();
-              try { document.execCommand('copy'); done(); } catch (err) {}
+              try { document.execCommand('copy'); done(); } catch (err) { }
               ta.remove();
             };
             if (navigator.clipboard && navigator.clipboard.writeText) {
