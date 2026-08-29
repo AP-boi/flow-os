@@ -4200,9 +4200,9 @@ function App() {
     document.getElementById('out').innerText = 'Clicked at ' + new Date().toLocaleTimeString();
   };
 <\/script>`
-        }
+          }
+        },
       },
-    },
 
       load(key) {
         try {
@@ -4219,13 +4219,13 @@ function App() {
         }
       },
 
-        save(key, data) {
-      try {
-        localStorage.setItem(`flow.${key}`, JSON.stringify(data));
-      } catch (e) {
-        console.error(`Storage save failed for flow.${key}`, e);
+      save(key, data) {
+        try {
+          localStorage.setItem(`flow.${key}`, JSON.stringify(data));
+        } catch (e) {
+          console.error(`Storage save failed for flow.${key}`, e);
+        }
       }
-    }
     };
 
     // WebAudio sound synthesis (ambient sounds + UI feedback)
@@ -5101,12 +5101,13 @@ function App() {
       },
 
       init() {
-        try { if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons(); } catch (e) {}
+        try { if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons(); } catch (e) { }
         try { this.applyTheme((this.state.settings && this.state.settings.theme) || 'dark'); } catch (e) { console.warn(e); }
         try { this.applyAccent((this.state.settings && this.state.settings.accent) || '#ff7849'); } catch (e) { console.warn(e); }
         try { this.initCypherState(); } catch (e) { console.warn(e); }
         try { this.initCodelabBridge(); } catch (e) { console.warn(e); }
         try { WallpaperEngine.init(); } catch (e) { console.warn(e); }
+        try { if (this.state.settings && this.state.settings.customWallpaper) this.setCustomWallpaper(this.state.settings.customWallpaper); } catch (e) { console.warn(e); }
         try { this.initDockMagnification(); } catch (e) { console.warn(e); }
         try { this.initClock(); } catch (e) { console.warn(e); }
         try { this.initKeyboardShortcuts(); } catch (e) { console.warn(e); }
@@ -5150,7 +5151,7 @@ function App() {
             clearInterval(interval);
             setTimeout(() => {
               if (screen) screen.classList.add('hidden');
-              try { SoundEngine.playNotification(); } catch (e) {}
+              try { SoundEngine.playNotification(); } catch (e) { }
               this.showToast('Flow OS Ready', 'Press ⌘K or Ctrl+K anytime for Spotlight search.', 'sparkles');
               this.checkDailyRitual();
             }, 250);
@@ -5223,13 +5224,34 @@ function App() {
       },
 
       cycleWallpaper() {
-        const presets = ['dawn', 'water', 'ember'];
+        const presets = ['dawn', 'water', 'ember', 'matrix'];
         const curr = this.state.settings.wallpaperPreset || 'dawn';
         const next = presets[(presets.indexOf(curr) + 1) % presets.length];
-        this.state.settings.wallpaperPreset = next;
+        this.setWallpaperPreset(next);
+      },
+
+      setCustomWallpaper(url) {
+        let customEl = document.getElementById('custom-wallpaper-bg');
+        if (!customEl) {
+          customEl = document.createElement('div');
+          customEl.id = 'custom-wallpaper-bg';
+          customEl.style.cssText = 'position: fixed; inset: 0; z-index: 0; background-size: cover; background-position: center; transition: opacity 0.4s ease; opacity: 0; pointer-events: none;';
+          const container = document.getElementById('wallpaper-container');
+          if (container) container.appendChild(customEl);
+          else document.body.prepend(customEl);
+        }
+        if (url) {
+          customEl.style.backgroundImage = `url('${url}')`;
+          customEl.style.opacity = '1';
+          const canvas = document.getElementById('wallpaper-canvas');
+          if (canvas) canvas.style.opacity = '0.12';
+        } else {
+          customEl.style.opacity = '0';
+          const canvas = document.getElementById('wallpaper-canvas');
+          if (canvas) canvas.style.opacity = '1';
+        }
+        this.state.settings.customWallpaper = url || null;
         Store.save('settings', this.state.settings);
-        WallpaperEngine.createBlobs();
-        this.showToast('Wallpaper Updated', `Switched to ${next.toUpperCase()} preset`, 'image');
       },
 
       /* Brightness & Sound Controls */
@@ -6220,7 +6242,28 @@ ${mount}
 
           const openPreview = (n) => {
             container.querySelector('#files-preview-title').textContent = n.name;
-            container.querySelector('#files-preview-body').textContent = n.content || '(empty file)';
+            const bodyEl = container.querySelector('#files-preview-body');
+            if (n.src || /\.(png|jpe?g|gif|svg|webp)$/i.test(n.name)) {
+              const src = n.src || (n.content && n.content.startsWith('data:') ? n.content : 'assets/wallpapers/' + n.name);
+              bodyEl.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; height: 100%; padding: 20px; box-sizing: border-box;">
+                  <img src="${src}" alt="${esc(n.name)}" style="max-width: 100%; max-height: 270px; border-radius: 12px; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.35);" />
+                  <button class="btn-primary" id="files-set-wp-btn" style="padding: 7px 16px; font-size: 11.5px; display: inline-flex; align-items: center; gap: 6px;">
+                    <i data-lucide="image"></i> Set as Desktop Wallpaper
+                  </button>
+                </div>
+              `;
+              const wpBtn = bodyEl.querySelector('#files-set-wp-btn');
+              if (wpBtn) {
+                wpBtn.onclick = () => {
+                  FlowOS.setCustomWallpaper(src);
+                  FlowOS.showToast('Wallpaper Applied', n.name, 'image');
+                };
+              }
+              if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
+            } else {
+              bodyEl.textContent = n.content || '(empty file)';
+            }
             preview.style.display = 'flex';
           };
           container.querySelector('#files-preview-close').onclick = () => { preview.style.display = 'none'; };
@@ -7512,6 +7555,9 @@ ${mount}
 
       setWallpaperPreset(preset) {
         FlowOS.state.settings.wallpaperPreset = preset;
+        if (FlowOS.state.settings.customWallpaper) {
+          FlowOS.setCustomWallpaper(null);
+        }
         Store.save('settings', FlowOS.state.settings);
         WallpaperEngine.createBlobs();
         FlowOS.showToast('Wallpaper Saved', `Active preset: ${preset.toUpperCase()}`, 'image');
@@ -7521,6 +7567,46 @@ ${mount}
         if (confirm("Reset Flow OS? All notes, tasks, and analytics will be wiped.")) {
           localStorage.clear();
           location.reload();
+        }
+      },
+
+      // Trash manager
+      trash: {
+        title: 'Trash',
+        icon: 'trash-2',
+        width: 540,
+        height: 380,
+        render(container) {
+          container.innerHTML = `
+            <div style="padding: 24px; display: flex; flex-direction: column; gap: 18px; height: 100%; box-sizing: border-box;">
+              <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-hairline); padding-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div style="width: 34px; height: 34px; border-radius: 10px; background: var(--surface-secondary); display: flex; align-items: center; justify-content: center; color: var(--accent);">
+                    <i data-lucide="trash-2"></i>
+                  </div>
+                  <div>
+                    <h3 style="margin: 0; font-size: 13.5px; font-weight: 600;">Trash & Cache</h3>
+                    <span style="font-size: 11px; color: var(--text-tertiary);">Deleted files and workspace cache</span>
+                  </div>
+                </div>
+                <button class="btn-primary" id="trash-empty-btn" style="padding: 6px 14px; font-size: 11.5px;">
+                  <i data-lucide="trash"></i> Empty Trash
+                </button>
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--text-tertiary); text-align: center;">
+                <i data-lucide="check-circle-2" style="width: 34px; height: 34px; color: #2ecc71;"></i>
+                <div style="font-size: 13px; font-weight: 500; color: var(--text-primary);">Trash is Empty</div>
+                <div style="font-size: 11.5px; max-width: 300px; line-height: 1.5;">Items deleted from Files or Tasks are safely purged.</div>
+              </div>
+            </div>
+          `;
+          const emptyBtn = container.querySelector('#trash-empty-btn');
+          if (emptyBtn) {
+            emptyBtn.onclick = () => {
+              FlowOS.showToast('Trash Cleared', 'Workspace cache is clean.', 'trash-2');
+            };
+          }
+          if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
         }
       },
 
