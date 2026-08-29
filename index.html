@@ -13,6 +13,10 @@
     href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Sora:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  <link rel="apple-touch-icon" href="assets/logo.svg" />
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -3497,7 +3501,7 @@
       <!-- Flow OS System Logo Menu -->
       <div class="menu-item logo-btn" id="menu-logo-btn" title="Flow OS Menu"
         onclick="FlowOS.toggleMenu('system-menu-dropdown', event)">
-        <i data-lucide="sparkles"></i>
+        <img src="assets/logo-glyph.svg" class="menubar-os-logo" alt="Flow OS" style="width:16px; height:16px; display:inline-block; vertical-align:middle; filter:drop-shadow(0 1px 4px rgba(255,120,73,0.45));" />
         <!-- Dropdown Menu -->
         <div class="dropdown-menu" id="system-menu-dropdown">
           <div class="dropdown-item" onclick="FlowOS.openApp('about')">
@@ -3983,7 +3987,9 @@
   <div id="boot-screen">
     <div class="boot-logo-wrap">
       <div class="boot-ring"></div>
-      <div class="boot-icon"><i data-lucide="sparkles"></i></div>
+      <div class="boot-icon" style="background:transparent; border:none; box-shadow:none;">
+        <img src="assets/logo.svg" style="width:58px; height:58px; border-radius:14px; box-shadow:0 10px 32px rgba(255,120,73,0.45);" alt="Flow OS Logo" />
+      </div>
     </div>
     <div class="boot-progress-bar">
       <div class="boot-progress-fill" id="boot-progress-fill"></div>
@@ -3995,7 +4001,9 @@
   <div id="lock-screen">
     <div class="lock-time mono" id="lock-time">21:00</div>
     <div class="lock-date" id="lock-date">Monday, August 29</div>
-    <div class="lock-avatar"><i data-lucide="user"></i></div>
+    <div class="lock-avatar" style="background:transparent; border:none; box-shadow:none; width:auto; height:auto; margin-bottom:12px;">
+      <img src="assets/logo.svg" style="width:64px; height:64px; border-radius:16px; box-shadow:0 8px 28px rgba(255,120,73,0.35);" alt="Flow OS" />
+    </div>
     <div style="font-weight: 600; font-size: 15px;">Flow User</div>
     <div class="lock-input-wrap">
       <input type="password" id="lock-pass-input" placeholder="Press Enter to Unlock"
@@ -7642,6 +7650,38 @@ ${mount}
           });
 
           showTool('aes');
+        }
+      },
+
+      // About Flow OS Modal
+      about: {
+        title: 'About Flow OS',
+        icon: 'info',
+        width: 460,
+        height: 360,
+        render(container) {
+          container.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 26px 20px; text-align:center; height:100%;">
+              <img src="assets/logo.svg" alt="Flow OS Logo" style="width: 80px; height: 80px; border-radius: 18px; box-shadow: 0 10px 32px rgba(255, 120, 73, 0.4); margin-bottom: 14px;" />
+              <div style="font-size: 21px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.4px;">Flow OS</div>
+              <div class="mono" style="font-size: 11.5px; color: var(--accent); margin-top: 3px;">Version 2.4.0 (Deep Work Edition)</div>
+              <div style="font-size: 12px; color: var(--text-secondary); max-width: 320px; margin-top: 10px; line-height: 1.5;">
+                Client-side browser operating system built for protected creative focus and fluid productivity.
+              </div>
+              <div style="width: 100%; border-top: 1px solid var(--border-hairline); margin: 16px 0 12px;"></div>
+              <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; text-align: left; font-size: 11px;">
+                <div style="background: var(--card-bg); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-hairline);">
+                  <div style="color:var(--text-secondary);">Kernel Engine</div>
+                  <div class="mono" style="font-weight:600; color:var(--text-primary); margin-top:2px;">WebAudio + Canvas</div>
+                </div>
+                <div style="background: var(--card-bg); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-hairline);">
+                  <div style="color:var(--text-secondary);">Security & Crypto</div>
+                  <div class="mono" style="font-weight:600; color:var(--text-primary); margin-top:2px;">Offline WebCrypto GCM</div>
+                </div>
+              </div>
+            </div>
+          `;
+          if (window.lucide) window.lucide.createIcons({ root: container });
         }
       },
 

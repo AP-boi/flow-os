@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Squircle Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1d22" />
+      <stop offset="50%" stop-color="#121316" />
+      <stop offset="100%" stop-color="#0a0a0d" />
+    </linearGradient>
+
+    <!-- Main Fluid Wave Gradient -->
+    <linearGradient id="flowGrad1" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff5e36" />
+      <stop offset="45%" stop-color="#ff7849" />
+      <stop offset="80%" stop-color="#ffaa40" />
+      <stop offset="100%" stop-color="#ffd066" />
+    </linearGradient>
+
+    <!-- Secondary Harmonic Ribbon Gradient -->
+    <linearGradient id="flowGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd56b" stop-opacity="0.9" />
+      <stop offset="30%" stop-color="#ff7849" stop-opacity="0.8" />
+      <stop offset="70%" stop-color="#e04836" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#b82e2e" stop-opacity="0.9" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Soft Ambient Glow -->
+    <radialGradient id="ambientGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff7849" stop-opacity="0.25" />
+      <stop offset="60%" stop-color="#ff5e36" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Glass Specular Highlight -->
+    <linearGradient id="specular" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22" />
+      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.03" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Base Squircle Container -->
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="url(#bgGrad)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="3" />
+  
+  <!-- Subtle Internal Glow -->
+  <circle cx="256" cy="256" r="220" fill="url(#ambientGlow)" />
+
+  <!-- Specular Reflection Arc -->
+  <path d="M 32 120 C 32 60, 60 32, 120 32 L 392 32 C 452 32, 480 60, 480 120 C 480 180, 420 220, 256 220 C 92 220, 32 180, 32 120 Z" fill="url(#specular)" />
+
+  <!-- Dynamic Infinite Flow Wave Glyph -->
+  <g filter="url(#glow)">
+    <!-- Back Loop -->
+    <path d="M 140 280 C 100 230, 110 160, 175 140 C 235 120, 275 180, 320 230 C 365 280, 405 315, 435 270 C 460 230, 430 180, 375 170" 
+          fill="none" 
+          stroke="url(#flowGrad2)" 
+          stroke-width="44" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+
+    <!-- Front Main Ribbon -->
+    <path d="M 90 230 C 70 300, 130 375, 210 365 C 290 355, 310 270, 355 210 C 395 155, 445 155, 440 220 C 435 295, 345 375, 256 375 C 160 375, 95 320, 90 230 Z" 
+          fill="url(#flowGrad1)" 
+          opacity="0.95" />
+
+    <!-- Inner Core Flow Light Pulse -->
+    <path d="M 130 250 C 150 330, 240 350, 295 290 C 350 230, 380 180, 420 185" 
+          fill="none" 
+          stroke="#ffffff" 
+          stroke-width="12" 
+          stroke-linecap="round" 
+          opacity="0.65" />
+  </g>
+
+  <!-- Flow Center Point Accent -->
+  <circle cx="256" cy="256" r="14" fill="#ffffff" filter="url(#glow)" opacity="0.9" />
+</svg>

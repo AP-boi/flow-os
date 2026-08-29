@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="glyphGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff5e36" />
+      <stop offset="50%" stop-color="#ff7849" />
+      <stop offset="100%" stop-color="#ffb347" />
+    </linearGradient>
+    <linearGradient id="glyphBack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffc857" />
+      <stop offset="100%" stop-color="#e04836" />
+    </linearGradient>
+  </defs>
+  <!-- Back ribbon loop -->
+  <path d="M 28 56 C 20 44, 22 30, 35 26 C 47 22, 55 34, 64 44 C 73 54, 81 61, 87 52 C 92 44, 86 34, 75 32" 
+        fill="none" 
+        stroke="url(#glyphBack)" 
+        stroke-width="10" 
+        stroke-linecap="round" 
+        opacity="0.8" />
+  <!-- Main flowing loop -->
+  <path d="M 18 46 C 14 60, 26 75, 42 73 C 58 71, 62 54, 71 42 C 79 31, 89 31, 88 44 C 87 59, 69 75, 51 75 C 32 75, 19 64, 18 46 Z" 
+        fill="url(#glyphGrad)" />
+  <!-- Core highlight dot -->
+  <circle cx="51" cy="51" r="3.5" fill="#ffffff" opacity="0.95" />
+</svg>
