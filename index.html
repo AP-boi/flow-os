@@ -543,6 +543,20 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     }
 
+    .dock-icon-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      display: block;
+      pointer-events: none;
+      transition: transform var(--transition-fast), filter var(--transition-fast);
+    }
+
+    .dock-item:hover .dock-icon-img {
+      transform: scale(1.06);
+    }
+
     .dock-item svg {
       width: 22px;
       height: 22px;
@@ -3632,49 +3646,49 @@
     <div id="dock">
       <!-- 1. Files -->
       <div class="dock-item" data-app="files" title="Files (Finder)">
-        <div class="dock-icon-wrapper"><i data-lucide="folder"></i></div>
+        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/files.jpg" alt="Files" /></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Files</div>
       </div>
 
       <!-- 2. Notes -->
       <div class="dock-item" data-app="notes" title="Notes">
-        <div class="dock-icon-wrapper"><i data-lucide="file-text"></i></div>
+        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/notes.jpg" alt="Notes" /></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Notes</div>
       </div>
 
       <!-- 3. Tasks -->
       <div class="dock-item" data-app="tasks" title="Tasks">
-        <div class="dock-icon-wrapper"><i data-lucide="check-square"></i></div>
+        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/tasks.jpg" alt="Tasks" /></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Tasks</div>
       </div>
 
       <!-- 4. Flow & Analytics (The Deep Work Core) -->
       <div class="dock-item" data-app="flow" title="Flow Engine">
-        <div class="dock-icon-wrapper"><i data-lucide="flame"></i></div>
+        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/flow.jpg" alt="Flow" /></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Flow & Analytics</div>
       </div>
 
       <!-- 5. Terminal -->
       <div class="dock-item" data-app="terminal" title="Terminal">
-        <div class="dock-icon-wrapper"><i data-lucide="terminal"></i></div>
+        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/terminal.jpg" alt="Terminal" /></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Terminal</div>
       </div>
 
       <!-- 6. Calculator -->
       <div class="dock-item" data-app="calculator" title="Calculator">
-        <div class="dock-icon-wrapper"><i data-lucide="calculator"></i></div>
+        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/calculator.jpg" alt="Calculator" /></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Calculator</div>
       </div>
 
       <!-- 7. Code Lab -->
       <div class="dock-item" data-app="codelab" title="Code Lab - JS / TypeScript / React / HTML">
-        <div class="dock-icon-wrapper"><i data-lucide="code"></i></div>
+        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/codelab.jpg" alt="Code Lab" /></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Code Lab</div>
       </div>
@@ -3683,19 +3697,19 @@
 
       <!-- 8. Cipher Vault -->
       <div class="dock-item" data-app="cypher" title="Cipher Vault - encryption &amp; hashing tools">
-        <div class="dock-icon-wrapper"><i data-lucide="lock"></i></div>
+        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/cypher.jpg" alt="Cipher Vault" /></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Cipher Vault</div>
       </div>
 
-      <!-- 7. Settings -->
+      <!-- 9. Settings -->
       <div class="dock-item" data-app="settings" title="System Settings">
-        <div class="dock-icon-wrapper"><i data-lucide="settings"></i></div>
+        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/settings.jpg" alt="Settings" /></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Settings</div>
       </div>
 
-      <!-- 8. Trash -->
+      <!-- 10. Trash -->
       <div class="dock-item" data-app="trash" title="Trash">
         <div class="dock-icon-wrapper"><i data-lucide="trash-2"></i></div>
         <div class="dock-dot"></div>
@@ -3994,6 +4008,7 @@
           theme: 'dark',
           accent: '#ff7849',
           wallpaperPreset: 'dawn', // dawn, water, ember
+          customWallpaper: 'assets/wallpapers/dawn.jpg',
           volume: 80,
           soundscape: 'none',
           brightness: 100,
