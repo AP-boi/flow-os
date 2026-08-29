@@ -17,9 +17,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* ==========================================================================
-       0. DESIGN SYSTEM TOKENS & CSS RESET
-       ========================================================================== */
+    /* Design tokens and base styles */
     :root {
       /* Typography */
       --font-sans: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -4011,20 +4009,12 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       JAVASCRIPT ENGINE: KERNEL, SHELL, APPS & DEEP WORK SOUL
-       ========================================================================== -->
+  <!-- Flow OS Client Scripts -->
   <script>
-    /**
-     * FLOW OS — MASTER CLIENT KERNEL
-     * Self-contained, Hardware-grade, WebAudio synthesized, Canvas rendered OS
-     */
     const OS_NAME = "Flow OS";
-    const OS_VERSION = "2.4.0 (Deep Work Edition)";
+    const OS_VERSION = "2.4.0";
 
-    /* --------------------------------------------------------------------------
-       1. STATE STORE & LOCALSTORAGE PERSISTENCE
-       -------------------------------------------------------------------------- */
+    // App state persistence via localStorage
     const Store = {
       defaults: {
         settings: {
@@ -5528,9 +5518,7 @@ function App() {
         }
       },
 
-      /* --------------------------------------------------------------------------
-         6. THE DEEP WORK ENGINE (Flow Sessions & Distraction Shield)
-         -------------------------------------------------------------------------- */
+      // Focus sessions & timer logic
       startFlowSession(minutes = 25, task = null) {
         const activeTask = task || this.state.tasks.find(t => t.isFocus)?.title || 'Deep Work Session';
         this.state.flowSession.active = true;
@@ -6008,16 +5996,7 @@ function App() {
       }
     };
 
-    /* --------------------------------------------------------------------------
-       8. BUILT-IN CORE APPLICATIONS IMPLEMENTATION
-       Files, Notes, Tasks, Flow Analytics, Terminal, Calculator, Settings, About
-       -------------------------------------------------------------------------- */
-    /* --------------------------------------------------------------------------
-       7.5 CODE LAB RUNTIME - sandboxed TS / React / JS / HTML execution engine
-       Transpiles TypeScript & JSX in-browser via Babel standalone (lazy-loaded
-       from unpkg), then evaluates the code inside a fresh sandboxed iframe
-       with a console bridge that streams output back to the OS.
-       -------------------------------------------------------------------------- */
+    // Code Lab runner: sandboxed runtime with console streaming
     const CodelabRuntime = {
       babelPromise: null,
 
@@ -6030,7 +6009,7 @@ function App() {
             script.onload = () => resolve();
             script.onerror = () => {
               this.babelPromise = null;
-              reject(new Error('Babel compiler failed to load'));
+              resolve(); // Don't reject, allow fallback transpiler
             };
             document.head.appendChild(script);
           });
@@ -6068,12 +6047,24 @@ function App() {
       transpile(code, lang) {
         const isReact = lang === 'react';
         const prepared = this.preprocess(code);
-        return Babel.transform(prepared, {
-          filename: isReact ? 'lab.tsx' : 'lab.ts',
-          presets: isReact
-            ? [['typescript', { allExtensions: true, isTSX: true }], ['react', { runtime: 'classic' }]]
-            : [['typescript', {}]]
-        }).code;
+        if (window.Babel) {
+          try {
+            return Babel.transform(prepared, {
+              filename: isReact ? 'lab.tsx' : 'lab.ts',
+              presets: isReact
+                ? [['typescript', { allExtensions: true, isTSX: true }], ['react', { runtime: 'classic' }]]
+                : [['typescript', {}]]
+            }).code;
+          } catch (e) {
+            console.warn('Babel transpile error, falling back:', e.message);
+          }
+        }
+        // Fallback: strip TypeScript types for direct execution
+        return prepared
+          .replace(/:\s*(string|number|boolean|any|void|object|unknown|never|React\.[A-Za-z0-9_]+)(\[\])?(\s*=[^;,\n)]+)?/g, '$3')
+          .replace(/interface\s+\w+\s*\{[^}]*\}/g, '')
+          .replace(/type\s+\w+\s*=\s*[^;]+;/g, '')
+          .replace(/<[A-Za-z0-9_,\s]+>(?=\s*\()/g, '');
       },
 
       wrap(userJs, react) {
