@@ -1,0 +1,5465 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Flow OS — Deep Work Desktop</title>
+  
+  <!-- Fonts: Sora (UI) + IBM Plex Mono (Code/Clocks/Numerals) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* ==========================================================================
+       0. DESIGN SYSTEM TOKENS & CSS RESET
+       ========================================================================== */
+    :root {
+      /* Typography */
+      --font-sans: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      
+      /* Radius Scale */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --radius-pill: 9999px;
+      
+      /* Motion */
+      --ease-flow: cubic-bezier(0.2, 0.9, 0.3, 1);
+      --transition-fast: 150ms var(--ease-flow);
+      --transition-normal: 240ms var(--ease-flow);
+      --transition-slow: 380ms var(--ease-flow);
+
+      /* Accent Color (Default Warm Coral) */
+      --accent: #ff7849;
+      --accent-hover: #ff8b61;
+      --accent-rgb: 255, 120, 73;
+      --accent-subtle: rgba(255, 120, 73, 0.14);
+      --accent-glow: rgba(255, 120, 73, 0.25);
+
+      /* Z-Indices */
+      --z-wallpaper: 0;
+      --z-desktop: 10;
+      --z-window-base: 100;
+      --z-snap-preview: 900;
+      --z-dock: 1000;
+      --z-menubar: 1100;
+      --z-menu-dropdown: 1200;
+      --z-spotlight: 1300;
+      --z-modal: 1400;
+      --z-toast: 1500;
+      --z-dimmer: 1600;
+      --z-lock: 1700;
+      --z-boot: 1800;
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+      --bg-base: #0e0f13;
+      --bg-surface: rgba(22, 23, 29, 0.72);
+      --bg-surface-elevated: rgba(30, 32, 40, 0.88);
+      --bg-surface-active: rgba(45, 48, 60, 0.9);
+      --bg-glass: rgba(18, 19, 25, 0.65);
+      --bg-glass-heavy: rgba(14, 15, 19, 0.88);
+      --border-hairline: rgba(255, 255, 255, 0.08);
+      --border-subtle: rgba(255, 255, 255, 0.12);
+      --border-focus: rgba(255, 255, 255, 0.24);
+      --text-primary: #e8e5de;
+      --text-secondary: rgba(232, 229, 222, 0.58);
+      --text-tertiary: rgba(232, 229, 222, 0.35);
+      --shadow-window: 0 16px 48px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.25);
+      --shadow-popover: 0 20px 50px rgba(0, 0, 0, 0.55), 0 6px 20px rgba(0, 0, 0, 0.35);
+      --shadow-dock: 0 16px 36px rgba(0, 0, 0, 0.5);
+      --dock-bg: rgba(18, 19, 24, 0.75);
+      --menubar-bg: rgba(14, 15, 19, 0.8);
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-hover: rgba(255, 255, 255, 0.08);
+      --input-bg: rgba(0, 0, 0, 0.35);
+      --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Light Theme */
+    [data-theme="light"] {
+      --bg-base: #f4f1ea;
+      --bg-surface: rgba(255, 255, 255, 0.78);
+      --bg-surface-elevated: rgba(255, 255, 255, 0.94);
+      --bg-surface-active: rgba(240, 237, 230, 0.95);
+      --bg-glass: rgba(244, 241, 234, 0.72);
+      --bg-glass-heavy: rgba(244, 241, 234, 0.92);
+      --border-hairline: rgba(0, 0, 0, 0.08);
+      --border-subtle: rgba(0, 0, 0, 0.12);
+      --border-focus: rgba(0, 0, 0, 0.25);
+      --text-primary: #1a1917;
+      --text-secondary: rgba(26, 25, 23, 0.62);
+      --text-tertiary: rgba(26, 25, 23, 0.38);
+      --shadow-window: 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
+      --shadow-popover: 0 20px 50px rgba(0, 0, 0, 0.16), 0 6px 20px rgba(0, 0, 0, 0.08);
+      --shadow-dock: 0 16px 36px rgba(0, 0, 0, 0.12);
+      --dock-bg: rgba(255, 255, 255, 0.8);
+      --menubar-bg: rgba(244, 241, 234, 0.85);
+      --card-bg: rgba(0, 0, 0, 0.03);
+      --card-hover: rgba(0, 0, 0, 0.06);
+      --input-bg: rgba(255, 255, 255, 0.7);
+      --scrollbar-thumb: rgba(0, 0, 0, 0.18);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+    }
+
+    input, textarea, button, select {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      border: none;
+      background: transparent;
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    button {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: var(--radius-pill);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+
+    /* Tabular figures for numbers */
+    .tabular, .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ==========================================================================
+       1. WALLPAPER & CANVAS ENGINE
+       ========================================================================== */
+    #wallpaper-container {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: var(--z-wallpaper);
+      overflow: hidden;
+      pointer-events: none;
+      background: var(--bg-base);
+    }
+
+    #wallpaper-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: blur(42px) saturate(1.25);
+      transform: scale(1.08);
+      transition: filter 1.2s var(--ease-flow), opacity 1.2s var(--ease-flow);
+    }
+
+    body.flow-active #wallpaper-canvas {
+      filter: blur(48px) saturate(0.45) brightness(0.85);
+    }
+
+    /* ==========================================================================
+       2. DESKTOP & SHELL
+       ========================================================================== */
+    #desktop {
+      position: absolute;
+      inset: 0;
+      top: 34px; /* below menu bar */
+      bottom: 0;
+      z-index: var(--z-desktop);
+      overflow: hidden;
+    }
+
+    /* Edge Snap Preview Overlay */
+    #snap-preview {
+      position: absolute;
+      z-index: var(--z-snap-preview);
+      border-radius: var(--radius-lg);
+      background: rgba(var(--accent-rgb), 0.12);
+      border: 1.5px solid rgba(var(--accent-rgb), 0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity var(--transition-fast), transform var(--transition-fast), top var(--transition-fast), left var(--transition-fast), width var(--transition-fast), height var(--transition-fast);
+    }
+
+    #snap-preview.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ==========================================================================
+       3. MENU BAR (macOS Style, 34px)
+       ========================================================================== */
+    #menubar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 34px;
+      z-index: var(--z-menubar);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      background: var(--menubar-bg);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-bottom: 1px solid var(--border-hairline);
+      font-size: 12.5px;
+      font-weight: 500;
+      transform: translateY(0);
+      transition: transform var(--transition-slow);
+    }
+
+    .menubar-section {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--text-primary);
+      transition: background var(--transition-fast), color var(--transition-fast);
+      position: relative;
+    }
+
+    .menu-item:hover, .menu-item.active {
+      background: var(--card-hover);
+    }
+
+    .menu-item.app-title {
+      font-weight: 600;
+    }
+
+    .menu-item.logo-btn {
+      padding: 4px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-item svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 2;
+    }
+
+    /* Menu Bar Right Tray */
+    .tray-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+
+    .tray-btn:hover, .tray-btn.active {
+      background: var(--card-hover);
+      color: var(--text-primary);
+    }
+
+    /* Flow Timer Badge in Menu Bar */
+    #flow-tray-badge {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-subtle);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 11.5px;
+      cursor: pointer;
+      animation: pulseGlow 3s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.3); }
+      50% { box-shadow: 0 0 12px 2px rgba(var(--accent-rgb), 0.25); }
+    }
+
+    /* Focus Mode Pill */
+    #focus-mode-badge {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-secondary);
+    }
+
+    /* Battery Pill */
+    .battery-pill {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11.5px;
+    }
+    .battery-icon {
+      width: 20px;
+      height: 11px;
+      border: 1.2px solid currentColor;
+      border-radius: 3px;
+      padding: 1px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -3px;
+      width: 2px;
+      height: 5px;
+      background: currentColor;
+      border-radius: 0 1px 1px 0;
+    }
+    .battery-fill {
+      height: 100%;
+      background: currentColor;
+      border-radius: 1.5px;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    /* Dropdown Menus */
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 200px;
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-popover);
+      padding: 6px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      z-index: var(--z-menu-dropdown);
+      animation: menuFadeIn var(--transition-fast);
+    }
+
+    @keyframes menuFadeIn {
+      from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .dropdown-menu.active {
+      display: flex;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .dropdown-item:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .dropdown-item:hover .dropdown-shortcut {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .dropdown-item.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .dropdown-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dropdown-item svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .dropdown-shortcut {
+      font-size: 10.5px;
+      font-family: var(--font-mono);
+      color: var(--text-tertiary);
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: var(--border-hairline);
+      margin: 4px 6px;
+    }
+
+    /* ==========================================================================
+       4. DOCK (Centered, Fisheye Magnification)
+       ========================================================================== */
+    #dock-container {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: var(--z-dock);
+      display: flex;
+      align-items: flex-end;
+      padding: 6px 10px;
+      background: var(--dock-bg);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-dock);
+      transition: transform var(--transition-slow), opacity var(--transition-slow);
+    }
+
+    #dock {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 52px;
+      padding: 0 4px;
+    }
+
+    .dock-item {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transform-origin: bottom center;
+      transition: transform 120ms cubic-bezier(0.2, 0, 0.2, 1), opacity var(--transition-normal);
+      will-change: transform;
+    }
+
+    .dock-icon-wrapper {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      color: var(--text-primary);
+      transition: background var(--transition-fast), border var(--transition-fast), box-shadow var(--transition-fast);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dock-item:hover .dock-icon-wrapper {
+      background: var(--card-hover);
+      border-color: var(--border-subtle);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .dock-item svg {
+      width: 22px;
+      height: 22px;
+      stroke-width: 2;
+      transition: transform var(--transition-fast);
+    }
+
+    .dock-item:active svg {
+      transform: scale(0.9);
+    }
+
+    /* Running Dot Indicator */
+    .dock-dot {
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: var(--radius-pill);
+      background: var(--text-secondary);
+      opacity: 0;
+      transition: all var(--transition-fast);
+    }
+
+    .dock-item.running .dock-dot {
+      opacity: 1;
+    }
+
+    .dock-item.focused .dock-dot {
+      opacity: 1;
+      width: 14px;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    /* Dock Dimming in Flow Mode */
+    body.flow-active .dock-item.non-essential {
+      opacity: 0.35;
+      filter: grayscale(0.6);
+    }
+
+    /* Dock Tooltip */
+    .dock-tooltip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      padding: 4px 10px;
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      box-shadow: var(--shadow-popover);
+      transition: opacity var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .dock-item:hover .dock-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .dock-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border-hairline);
+      margin: 0 2px 8px 2px;
+    }
+
+    /* ==========================================================================
+       5. WINDOW MANAGER (Kernel)
+       ========================================================================== */
+    .window {
+      position: absolute;
+      z-index: var(--z-window-base);
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-surface);
+      backdrop-filter: blur(34px);
+      -webkit-backdrop-filter: blur(34px);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-window);
+      overflow: hidden;
+      min-width: 320px;
+      min-height: 220px;
+      transition: box-shadow var(--transition-fast), border var(--transition-fast), transform var(--transition-normal), opacity var(--transition-normal);
+      will-change: transform, width, height, top, left;
+    }
+
+    .window.active {
+      box-shadow: var(--shadow-popover), 0 0 0 1px var(--border-focus);
+      border-color: var(--border-subtle);
+    }
+
+    .window.inactive {
+      filter: saturate(0.85);
+    }
+
+    .window.inactive .window-title {
+      color: var(--text-tertiary);
+    }
+
+    .window.inactive .traffic-light {
+      filter: grayscale(0.5) opacity(0.6);
+    }
+
+    .window.maximized {
+      border-radius: 0 !important;
+      border: none !important;
+    }
+
+    /* Genie Minimize Animation State */
+    .window.minimized {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.2) translateY(200px);
+    }
+
+    .window.opening {
+      animation: windowOpen var(--transition-normal) forwards;
+    }
+
+    @keyframes windowOpen {
+      from { opacity: 0; transform: scale(0.92) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Window Header / Titlebar */
+    .window-header {
+      height: 40px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border-hairline);
+      background: var(--card-bg);
+      cursor: grab;
+      position: relative;
+    }
+
+    .window-header:active {
+      cursor: grabbing;
+    }
+
+    .window-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .traffic-light {
+      width: 12px;
+      height: 12px;
+      border-radius: var(--radius-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: filter var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .traffic-light:hover {
+      transform: scale(1.1);
+    }
+
+    .traffic-light svg {
+      width: 8px;
+      height: 8px;
+      stroke-width: 2.5;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .window-controls:hover .traffic-light svg {
+      opacity: 0.85;
+    }
+
+    .tl-close { background: #ff5f56; color: #4d0000; border: 0.5px solid rgba(0,0,0,0.15); }
+    .tl-minimize { background: #ffbd2e; color: #593b00; border: 0.5px solid rgba(0,0,0,0.15); }
+    .tl-zoom { background: #27c93f; color: #004d0f; border: 0.5px solid rgba(0,0,0,0.15); }
+
+    .window-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+      max-width: 60%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .window-title svg {
+      width: 14px;
+      height: 14px;
+      color: var(--accent);
+    }
+
+    .window-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .window-action-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+
+    .window-action-btn:hover {
+      background: var(--card-hover);
+      color: var(--text-primary);
+    }
+
+    .window-action-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Windows 11-style Snap Flyout Menu */
+    .snap-flyout {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      width: 190px;
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-popover);
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1000;
+      animation: menuFadeIn var(--transition-fast);
+    }
+
+    .snap-flyout.active {
+      display: flex;
+    }
+
+    .snap-flyout-title {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .snap-grid-layouts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .snap-layout-card {
+      height: 48px;
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-sm);
+      background: var(--card-bg);
+      display: flex;
+      gap: 2px;
+      padding: 3px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .snap-layout-card:hover {
+      border-color: var(--accent);
+      background: var(--card-hover);
+    }
+
+    .snap-zone {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      transition: background var(--transition-fast);
+    }
+
+    .snap-layout-card:hover .snap-zone:hover {
+      background: var(--accent);
+    }
+
+    /* Layout 1: 50 / 50 */
+    .snap-l1 .snap-zone { flex: 1; }
+    /* Layout 2: 65 / 35 */
+    .snap-l2 .snap-z1 { flex: 2; }
+    .snap-l2 .snap-z2 { flex: 1; }
+    /* Layout 3: 4 Quarters */
+    .snap-l3 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    /* Layout 4: Full / Bottom */
+    .snap-l4 { display: grid; grid-template-rows: 1fr 1fr; }
+
+    /* Window Body */
+    .window-body {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Resize Handles */
+    .resize-handle {
+      position: absolute;
+      z-index: 10;
+    }
+    .rh-n { top: 0; left: 8px; right: 8px; height: 6px; cursor: n-resize; }
+    .rh-s { bottom: 0; left: 8px; right: 8px; height: 6px; cursor: s-resize; }
+    .rh-e { right: 0; top: 8px; bottom: 8px; width: 6px; cursor: e-resize; }
+    .rh-w { left: 0; top: 8px; bottom: 8px; width: 6px; cursor: w-resize; }
+    .rh-ne { top: 0; right: 0; width: 12px; height: 12px; cursor: ne-resize; }
+    .rh-nw { top: 0; left: 0; width: 12px; height: 12px; cursor: nw-resize; }
+    .rh-se { bottom: 0; right: 0; width: 12px; height: 12px; cursor: se-resize; }
+    .rh-sw { bottom: 0; left: 0; width: 12px; height: 12px; cursor: sw-resize; }
+
+    /* ==========================================================================
+       6. SPOTLIGHT (Ctrl/Cmd + K)
+       ========================================================================== */
+    #spotlight-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: var(--z-spotlight);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 14vh;
+      animation: fadeIn var(--transition-fast);
+    }
+
+    #spotlight-backdrop.active {
+      display: flex;
+    }
+
+    #spotlight-modal {
+      width: 580px;
+      max-width: 90vw;
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(34px);
+      -webkit-backdrop-filter: blur(34px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-popover);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalSlideDown var(--transition-normal);
+    }
+
+    @keyframes modalSlideDown {
+      from { opacity: 0; transform: translateY(-16px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .spotlight-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .spotlight-header svg {
+      width: 20px;
+      height: 20px;
+      color: var(--accent);
+      stroke-width: 2.2;
+    }
+
+    #spotlight-input {
+      flex: 1;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    #spotlight-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .spotlight-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 3px 7px;
+      border-radius: var(--radius-sm);
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-tertiary);
+    }
+
+    #spotlight-results {
+      max-height: 380px;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .spotlight-group-title {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 12px 4px 12px;
+    }
+
+    .spotlight-result-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .spotlight-result-item:hover, .spotlight-result-item.selected {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .spotlight-result-item:hover .spotlight-item-desc,
+    .spotlight-result-item.selected .spotlight-item-desc {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .spotlight-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .spotlight-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spotlight-result-item:hover .spotlight-item-icon,
+    .spotlight-result-item.selected .spotlight-item-icon {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: transparent;
+    }
+
+    .spotlight-item-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .spotlight-item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .spotlight-item-title {
+      font-size: 13.5px;
+      font-weight: 500;
+    }
+
+    .spotlight-item-title mark {
+      background: transparent;
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    .spotlight-result-item:hover .spotlight-item-title mark,
+    .spotlight-result-item.selected .spotlight-item-title mark {
+      color: #fff;
+    }
+
+    .spotlight-item-desc {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    .spotlight-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-hairline);
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    .spotlight-keys {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ==========================================================================
+       7. CONTROL CENTER & NOTIFICATION CENTER
+       ========================================================================== */
+    #control-center {
+      position: fixed;
+      top: 42px;
+      right: 12px;
+      width: 320px;
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(34px);
+      -webkit-backdrop-filter: blur(34px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-popover);
+      padding: 16px;
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      z-index: var(--z-modal);
+      animation: menuFadeIn var(--transition-fast);
+    }
+
+    #control-center.active {
+      display: flex;
+    }
+
+    .cc-tiles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .cc-tile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .cc-tile:hover {
+      background: var(--card-hover);
+    }
+
+    .cc-tile.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .cc-tile.active .cc-tile-desc {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .cc-tile-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cc-tile-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .cc-tile-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .cc-tile-title {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .cc-tile-desc {
+      font-size: 10.5px;
+      color: var(--text-secondary);
+    }
+
+    .cc-slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cc-slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .cc-slider-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .cc-slider-card svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text-secondary);
+    }
+
+    .cc-range-input {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+    }
+
+    [data-theme="light"] .cc-range-input {
+      background: rgba(0, 0, 0, 0.12);
+    }
+
+    .cc-range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    /* Soundscape Player in Control Center */
+    .cc-soundscape-card {
+      padding: 12px;
+      border-radius: var(--radius-md);
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cc-soundscape-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+
+    .soundscape-wave {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 14px;
+    }
+
+    .soundscape-bar {
+      width: 3px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 1px;
+      transition: height 0.2s ease;
+    }
+
+    .soundscape-playing .soundscape-bar {
+      animation: waveBars 0.8s ease-in-out infinite alternate;
+    }
+
+    .soundscape-playing .soundscape-bar:nth-child(2) { animation-delay: 0.2s; }
+    .soundscape-playing .soundscape-bar:nth-child(3) { animation-delay: 0.4s; }
+    .soundscape-playing .soundscape-bar:nth-child(4) { animation-delay: 0.1s; }
+
+    @keyframes waveBars {
+      0% { height: 4px; }
+      100% { height: 14px; }
+    }
+
+    .soundscape-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .soundscape-btn {
+      padding: 6px 4px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-hairline);
+      font-size: 10.5px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+
+    .soundscape-btn:hover {
+      background: var(--card-hover);
+      color: var(--text-primary);
+    }
+
+    .soundscape-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: transparent;
+      font-weight: 600;
+    }
+
+    /* Notification Center (Right Slide-Over) */
+    #notification-center {
+      position: fixed;
+      top: 42px;
+      right: 12px;
+      bottom: 74px;
+      width: 360px;
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(34px);
+      -webkit-backdrop-filter: blur(34px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-popover);
+      padding: 16px;
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      z-index: var(--z-modal);
+      overflow-y: auto;
+      animation: slideInRight var(--transition-normal);
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    #notification-center.active {
+      display: flex;
+    }
+
+    /* Analog Clock Canvas Widget */
+    .nc-widgets-row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 10px;
+    }
+
+    .nc-widget-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    #analog-clock-canvas {
+      width: 90px;
+      height: 90px;
+    }
+
+    .nc-clock-digital {
+      margin-top: 6px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    /* Calendar Widget */
+    .nc-calendar {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nc-cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+
+    .nc-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      width: 100%;
+      text-align: center;
+      font-size: 10px;
+    }
+
+    .nc-cal-day-name {
+      color: var(--text-tertiary);
+      font-weight: 600;
+      padding-bottom: 2px;
+    }
+
+    .nc-cal-day {
+      padding: 3px 0;
+      border-radius: 4px;
+      color: var(--text-secondary);
+    }
+
+    .nc-cal-day.today {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .nc-cal-day.other-month {
+      opacity: 0.3;
+    }
+
+    /* System Stats Widget */
+    .nc-stats-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nc-stats-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+    }
+
+    .nc-stats-label {
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nc-stats-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* Notifications List */
+    .nc-notifs-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nc-notifs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .nc-clear-btn {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+    }
+
+    .nc-clear-btn:hover {
+      color: var(--accent);
+    }
+
+    .nc-held-banner {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      background: var(--accent-subtle);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      color: var(--accent);
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+
+    .nc-notif-card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 10px 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      position: relative;
+      transition: all var(--transition-fast);
+    }
+
+    .nc-notif-card:hover {
+      background: var(--card-hover);
+    }
+
+    .nc-notif-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    .nc-notif-app {
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nc-notif-title {
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .nc-notif-msg {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================================================
+       8. TOASTS & SYSTEM MODALS
+       ========================================================================== */
+    #toast-container {
+      position: fixed;
+      top: 44px;
+      right: 16px;
+      z-index: var(--z-toast);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      min-width: 280px;
+      max-width: 360px;
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-popover);
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      animation: toastIn var(--transition-normal);
+      transition: all var(--transition-fast);
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(30px) scale(0.95); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    .toast.dismissing {
+      opacity: 0;
+      transform: translateX(30px) scale(0.9);
+    }
+
+    .toast-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-sm);
+      background: var(--accent-subtle);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .toast-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .toast-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .toast-title {
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .toast-message {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    .toast-action {
+      margin-top: 6px;
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    .toast-action:hover {
+      text-decoration: underline;
+    }
+
+    .toast-close {
+      cursor: pointer;
+      color: var(--text-tertiary);
+    }
+
+    .toast-close:hover {
+      color: var(--text-primary);
+    }
+
+    /* Screen Dimmer Overlay */
+    #screen-dimmer {
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-dimmer);
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.1s linear;
+    }
+
+    /* System Dialog Modal */
+    #system-dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: var(--z-modal);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #system-dialog-backdrop.active {
+      display: flex;
+    }
+
+    #system-dialog {
+      width: 400px;
+      max-width: 90vw;
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(34px);
+      -webkit-backdrop-filter: blur(34px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-popover);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: modalSlideDown var(--transition-normal);
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dialog-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      background: var(--accent-subtle);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dialog-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .dialog-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .dialog-message {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .dialog-input {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+
+    .dialog-input:focus {
+      border-color: var(--accent);
+    }
+
+    .dialog-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-primary);
+      font-weight: 500;
+      transition: background var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--card-hover);
+    }
+
+    .btn-primary {
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 2px 10px var(--accent-glow);
+      transition: background var(--transition-fast), transform var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      background: #e04b4b;
+      color: #fff;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ==========================================================================
+       9. THE DEEP WORK LAYER: DISTRACTION SHIELD & FLOW MODALS
+       ========================================================================== */
+    #distraction-shield-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 15, 19, 0.78);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: var(--z-modal);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #distraction-shield-backdrop.active {
+      display: flex;
+    }
+
+    #distraction-shield-modal {
+      width: 460px;
+      max-width: 90vw;
+      background: var(--bg-surface-elevated);
+      border: 1px solid rgba(var(--accent-rgb), 0.35);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(var(--accent-rgb), 0.2);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 18px;
+      animation: modalSlideDown var(--transition-normal);
+    }
+
+    .shield-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-subtle);
+      color: var(--accent);
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .shield-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .shield-intention-card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+    }
+
+    .shield-intention-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+    }
+
+    .shield-intention-val {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .shield-time-val {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .shield-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    /* Daily Intention Ritual Modal */
+    #ritual-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 15, 19, 0.85);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      z-index: var(--z-modal);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #ritual-modal-backdrop.active {
+      display: flex;
+    }
+
+    #ritual-modal {
+      width: 480px;
+      max-width: 90vw;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-popover);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      animation: modalSlideDown var(--transition-normal);
+    }
+
+    /* ==========================================================================
+       10. CORE APPLICATIONS STYLES
+       ========================================================================== */
+    
+    /* 10.1 FILES APP */
+    .files-layout {
+      display: flex;
+      height: 100%;
+    }
+
+    .files-sidebar {
+      width: 180px;
+      border-right: 1px solid var(--border-hairline);
+      background: var(--card-bg);
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .files-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .files-nav-item:hover, .files-nav-item.active {
+      background: var(--card-hover);
+      color: var(--text-primary);
+    }
+
+    .files-nav-item.active {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .files-nav-item svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .files-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .files-toolbar {
+      height: 42px;
+      border-bottom: 1px solid var(--border-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      gap: 10px;
+    }
+
+    .files-breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .files-breadcrumbs span {
+      cursor: pointer;
+    }
+
+    .files-breadcrumbs span:hover {
+      color: var(--accent);
+    }
+
+    .files-grid {
+      flex: 1;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 14px;
+      align-content: flex-start;
+      overflow-y: auto;
+    }
+
+    .file-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 6px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--transition-fast);
+    }
+
+    .file-item:hover {
+      background: var(--card-hover);
+    }
+
+    .file-item.selected {
+      background: var(--accent-subtle);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+    }
+
+    .file-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .file-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .file-name {
+      font-size: 11.5px;
+      word-break: break-word;
+      max-width: 100%;
+    }
+
+    /* 10.2 NOTES APP */
+    .notes-layout {
+      display: flex;
+      height: 100%;
+    }
+
+    .notes-sidebar {
+      width: 220px;
+      border-right: 1px solid var(--border-hairline);
+      background: var(--card-bg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notes-search-bar {
+      padding: 10px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .notes-search-input {
+      width: 100%;
+      padding: 6px 10px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-sm);
+      font-size: 11.5px;
+    }
+
+    .notes-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .note-card {
+      padding: 10px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: background var(--transition-fast);
+    }
+
+    .note-card:hover {
+      background: var(--card-hover);
+    }
+
+    .note-card.active {
+      background: var(--accent-subtle);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+    }
+
+    .note-card-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .note-card-excerpt {
+      font-size: 11px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .note-card-date {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-tertiary);
+    }
+
+    .notes-editor {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px;
+      gap: 12px;
+      background: var(--bg-surface);
+    }
+
+    .note-title-input {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      border: none;
+      outline: none;
+    }
+
+    .note-body-textarea {
+      flex: 1;
+      resize: none;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      outline: none;
+    }
+
+    /* 10.3 TERMINAL APP */
+    .terminal-window {
+      background: rgba(10, 11, 14, 0.95);
+      color: #70d8a5;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      padding: 12px 16px;
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .term-line {
+      line-height: 1.5;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+
+    .term-prompt {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .term-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .term-input {
+      flex: 1;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      border: none;
+      outline: none;
+      background: transparent;
+    }
+
+    /* 10.4 CALCULATOR APP */
+    .calc-container {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+    }
+
+    .calc-screen {
+      background: var(--input-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .calc-history {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      min-height: 16px;
+    }
+
+    .calc-display {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow-x: auto;
+    }
+
+    .calc-keypad {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      flex: 1;
+    }
+
+    .calc-btn {
+      border-radius: var(--radius-md);
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      font-size: 16px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .calc-btn:hover {
+      background: var(--card-hover);
+    }
+
+    .calc-btn:active {
+      transform: scale(0.96);
+    }
+
+    .calc-btn.op {
+      background: var(--accent-subtle);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .calc-btn.equals {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* 10.5 FLOW & TASKS APP */
+    .flow-app-layout {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .flow-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 0 16px;
+      gap: 16px;
+    }
+
+    .flow-tab {
+      padding: 12px 4px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all var(--transition-fast);
+    }
+
+    .flow-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .flow-tab-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .flow-tab-content.active {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Radial Progress Ring */
+    .flow-timer-circle-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 10px 0;
+    }
+
+    .flow-progress-svg {
+      width: 220px;
+      height: 220px;
+      transform: rotate(-90deg);
+    }
+
+    .flow-circle-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 8;
+    }
+
+    [data-theme="light"] .flow-circle-bg {
+      stroke: rgba(0, 0, 0, 0.08);
+    }
+
+    .flow-circle-bar {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 565.48;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    .flow-timer-text-overlay {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .flow-big-time {
+      font-family: var(--font-mono);
+      font-size: 38px;
+      font-weight: 700;
+    }
+
+    .flow-state-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Tasks List in Tasks/Flow App */
+    .tasks-header {
+      display: flex;
+      gap: 8px;
+    }
+
+    .task-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+    }
+
+    .tasks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+
+    .task-item:hover {
+      background: var(--card-hover);
+    }
+
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: var(--text-tertiary);
+    }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .task-checkbox {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1.5px solid var(--border-focus);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .task-item.completed .task-checkbox {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* 10.6 SETTINGS APP */
+    .settings-layout {
+      display: flex;
+      height: 100%;
+    }
+
+    .settings-sidebar {
+      width: 200px;
+      border-right: 1px solid var(--border-hairline);
+      background: var(--card-bg);
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .settings-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .settings-nav-item:hover, .settings-nav-item.active {
+      background: var(--card-hover);
+      color: var(--text-primary);
+    }
+
+    .settings-nav-item.active {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .settings-main {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .settings-section-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .theme-preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .theme-card {
+      border: 2px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--card-bg);
+      transition: all var(--transition-fast);
+    }
+
+    .theme-card.active {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    .accent-swatches {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .accent-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform var(--transition-fast);
+    }
+
+    .accent-swatch:hover {
+      transform: scale(1.15);
+    }
+
+    .accent-swatch.active {
+      border-color: #fff;
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    /* Miniature Canvas Wallpapers in Settings */
+    .wallpaper-previews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .wp-preview-card {
+      border: 2px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: all var(--transition-fast);
+    }
+
+    .wp-preview-card.active {
+      border-color: var(--accent);
+    }
+
+    .wp-mini-canvas {
+      width: 100%;
+      height: 75px;
+      display: block;
+      filter: blur(6px);
+      transform: scale(1.1);
+    }
+
+    .wp-preview-label {
+      padding: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      text-align: center;
+      background: var(--card-bg);
+    }
+
+    /* ==========================================================================
+       11. BOOT & LOCK SCREEN THEATER
+       ========================================================================== */
+    #boot-screen {
+      position: fixed;
+      inset: 0;
+      background: #08090b;
+      z-index: var(--z-boot);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      color: #e8e5de;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #boot-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .boot-logo-wrap {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .boot-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 120, 73, 0.2);
+      border-top-color: #ff7849;
+      animation: spin 1.2s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .boot-icon svg {
+      width: 36px;
+      height: 36px;
+      color: #ff7849;
+    }
+
+    .boot-progress-bar {
+      width: 220px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+    }
+
+    .boot-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #ff7849;
+      border-radius: var(--radius-pill);
+      transition: width 0.3s ease;
+    }
+
+    .boot-caption {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: rgba(232, 229, 222, 0.6);
+    }
+
+    /* Lock Screen */
+    #lock-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 15, 19, 0.88);
+      backdrop-filter: blur(48px);
+      -webkit-backdrop-filter: blur(48px);
+      z-index: var(--z-lock);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      animation: fadeIn var(--transition-normal);
+    }
+
+    #lock-screen.active {
+      display: flex;
+    }
+
+    .lock-time {
+      font-size: 64px;
+      font-weight: 300;
+      font-family: var(--font-mono);
+    }
+
+    .lock-date {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-top: -12px;
+    }
+
+    .lock-avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--accent-subtle);
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      margin-top: 10px;
+    }
+
+    .lock-avatar svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .lock-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      width: 240px;
+    }
+
+    .lock-input-wrap input {
+      flex: 1;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    /* ==========================================================================
+       12. CONTEXT MENUS & REDUCED MOTION
+       ========================================================================== */
+    #desktop-context-menu {
+      position: fixed;
+      z-index: var(--z-menu-dropdown);
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-popover);
+      padding: 6px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 180px;
+    }
+
+    #desktop-context-menu.active {
+      display: flex;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      #wallpaper-canvas {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. WALLPAPER GENERATIVE CANVAS -->
+  <div id="wallpaper-container">
+    <canvas id="wallpaper-canvas"></canvas>
+  </div>
+
+  <!-- 2. REAL SCREEN BRIGHTNESS DIMMER OVERLAY -->
+  <div id="screen-dimmer"></div>
+
+  <!-- 3. TOP MENU BAR (macOS Style) -->
+  <header id="menubar">
+    <!-- Left Section: Logo & Menus -->
+    <div class="menubar-section" id="menubar-left">
+      <!-- Flow OS System Logo Menu -->
+      <div class="menu-item logo-btn" id="menu-logo-btn" title="Flow OS Menu" onclick="FlowOS.toggleMenu('system-menu-dropdown', event)">
+        <i data-lucide="sparkles"></i>
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" id="system-menu-dropdown">
+          <div class="dropdown-item" onclick="FlowOS.openApp('about')">
+            <div class="dropdown-item-left"><i data-lucide="info"></i> About Flow OS</div>
+          </div>
+          <div class="dropdown-item" onclick="FlowOS.openApp('settings')">
+            <div class="dropdown-item-left"><i data-lucide="settings"></i> System Settings...</div>
+            <span class="dropdown-shortcut">⌘,</span>
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item" onclick="FlowOS.lockScreen()">
+            <div class="dropdown-item-left"><i data-lucide="lock"></i> Lock Screen</div>
+            <span class="dropdown-shortcut">Ctrl+L</span>
+          </div>
+          <div class="dropdown-item" onclick="FlowOS.restartOS()">
+            <div class="dropdown-item-left"><i data-lucide="rotate-cw"></i> Restart...</div>
+          </div>
+          <div class="dropdown-item" onclick="FlowOS.shutdownOS()">
+            <div class="dropdown-item-left"><i data-lucide="power"></i> Shut Down...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Focused App Name Menu -->
+      <div class="menu-item app-title" id="focused-app-menu-btn" onclick="FlowOS.toggleMenu('focused-app-dropdown', event)">
+        <span id="focused-app-name">Flow OS</span>
+        <div class="dropdown-menu" id="focused-app-dropdown">
+          <div class="dropdown-item" onclick="FlowOS.openApp('flow')">
+            <div class="dropdown-item-left"><i data-lucide="flame"></i> Focus Mode</div>
+          </div>
+          <div class="dropdown-item" onclick="FlowOS.closeActiveWindow()">
+            <div class="dropdown-item-left"><i data-lucide="x"></i> Close Active</div>
+            <span class="dropdown-shortcut">⌘W</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Menu -->
+      <div class="menu-item" id="menu-file-btn" onclick="FlowOS.toggleMenu('file-dropdown', event)">
+        <span>File</span>
+        <div class="dropdown-menu" id="file-dropdown">
+          <div class="dropdown-item" onclick="FlowOS.openApp('files')">
+            <div class="dropdown-item-left"><i data-lucide="folder-plus"></i> New Window</div>
+            <span class="dropdown-shortcut">⌘N</span>
+          </div>
+          <div class="dropdown-item" onclick="FlowOS.openApp('notes')">
+            <div class="dropdown-item-left"><i data-lucide="file-plus"></i> New Note</div>
+          </div>
+          <div class="dropdown-item" onclick="FlowOS.openApp('tasks')">
+            <div class="dropdown-item-left"><i data-lucide="check-square"></i> New Task</div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item" onclick="FlowOS.closeActiveWindow()">
+            <div class="dropdown-item-left"><i data-lucide="x"></i> Close Window</div>
+            <span class="dropdown-shortcut">⌘W</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Window Menu -->
+      <div class="menu-item" id="menu-window-btn" onclick="FlowOS.toggleMenu('window-list-dropdown', event)">
+        <span>Window</span>
+        <div class="dropdown-menu" id="window-list-dropdown">
+          <div class="dropdown-item" onclick="FlowOS.minimizeAll()">
+            <div class="dropdown-item-left"><i data-lucide="minimize-2"></i> Minimize All</div>
+            <span class="dropdown-shortcut">⌘M</span>
+          </div>
+          <div class="dropdown-item" onclick="FlowOS.tileWindows()">
+            <div class="dropdown-item-left"><i data-lucide="columns-2"></i> Tile Left & Right</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Focus Menu -->
+      <div class="menu-item" id="menu-focus-btn" onclick="FlowOS.toggleMenu('focus-dropdown', event)">
+        <span>Focus</span>
+        <div class="dropdown-menu" id="focus-dropdown">
+          <div class="dropdown-item" onclick="FlowOS.startFlowSession(25)">
+            <div class="dropdown-item-left"><i data-lucide="flame"></i> 25m Pomodoro Sprint</div>
+          </div>
+          <div class="dropdown-item" onclick="FlowOS.startFlowSession(50)">
+            <div class="dropdown-item-left"><i data-lucide="flame"></i> 50m Deep Work Block</div>
+          </div>
+          <div class="dropdown-item" onclick="FlowOS.startFlowSession(90)">
+            <div class="dropdown-item-left"><i data-lucide="flame"></i> 90m Ultradian Cycle</div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item" onclick="FlowOS.openApp('flow')">
+            <div class="dropdown-item-left"><i data-lucide="bar-chart-2"></i> Focus Analytics...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section: Flow Timer, Status & Control Center -->
+    <div class="menubar-section" id="menubar-right">
+      <!-- Flow Active Pill -->
+      <div id="flow-tray-badge" onclick="FlowOS.openApp('flow')">
+        <i data-lucide="flame"></i>
+        <span id="flow-tray-countdown" class="mono">25:00</span>
+      </div>
+
+      <!-- Focus Mode Pill -->
+      <div id="focus-mode-badge">Deep Work</div>
+
+      <!-- Wi-Fi Status -->
+      <div class="tray-btn" id="wifi-tray-btn" title="Wi-Fi Connected" onclick="FlowOS.toggleTile('wifi')">
+        <i data-lucide="wifi"></i>
+      </div>
+
+      <!-- Battery Indicator (Simulated Discharge) -->
+      <div class="tray-btn battery-pill" id="battery-tray-btn" title="Click to toggle Charging" onclick="FlowOS.toggleCharging()">
+        <div class="battery-icon">
+          <div class="battery-fill" id="battery-fill" style="width: 92%;"></div>
+        </div>
+        <span id="battery-percent" class="mono">92%</span>
+      </div>
+
+      <!-- Control Center Toggle -->
+      <div class="tray-btn" id="cc-tray-btn" title="Control Center" onclick="FlowOS.toggleControlCenter()">
+        <i data-lucide="sliders"></i>
+      </div>
+
+      <!-- Clock / Notification Center Trigger -->
+      <div class="tray-btn mono" id="clock-tray-btn" onclick="FlowOS.toggleNotificationCenter()">
+        <span id="menubar-clock">Mon 21:00</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 4. DESKTOP WORKSPACE & WINDOW CONTAINER -->
+  <main id="desktop">
+    <!-- Snapping Translucent Preview Rectangle -->
+    <div id="snap-preview"></div>
+  </main>
+
+  <!-- 5. DOCK (Centered, Fisheye Magnification) -->
+  <div id="dock-container">
+    <div id="dock">
+      <!-- 1. Files -->
+      <div class="dock-item" data-app="files" title="Files (Finder)">
+        <div class="dock-icon-wrapper"><i data-lucide="folder"></i></div>
+        <div class="dock-dot"></div>
+        <div class="dock-tooltip">Files</div>
+      </div>
+
+      <!-- 2. Notes -->
+      <div class="dock-item" data-app="notes" title="Notes">
+        <div class="dock-icon-wrapper"><i data-lucide="file-text"></i></div>
+        <div class="dock-dot"></div>
+        <div class="dock-tooltip">Notes</div>
+      </div>
+
+      <!-- 3. Tasks -->
+      <div class="dock-item" data-app="tasks" title="Tasks">
+        <div class="dock-icon-wrapper"><i data-lucide="check-square"></i></div>
+        <div class="dock-dot"></div>
+        <div class="dock-tooltip">Tasks</div>
+      </div>
+
+      <!-- 4. Flow & Analytics (The Deep Work Core) -->
+      <div class="dock-item" data-app="flow" title="Flow Engine">
+        <div class="dock-icon-wrapper"><i data-lucide="flame"></i></div>
+        <div class="dock-dot"></div>
+        <div class="dock-tooltip">Flow & Analytics</div>
+      </div>
+
+      <!-- 5. Terminal -->
+      <div class="dock-item" data-app="terminal" title="Terminal">
+        <div class="dock-icon-wrapper"><i data-lucide="terminal"></i></div>
+        <div class="dock-dot"></div>
+        <div class="dock-tooltip">Terminal</div>
+      </div>
+
+      <!-- 6. Calculator -->
+      <div class="dock-item" data-app="calculator" title="Calculator">
+        <div class="dock-icon-wrapper"><i data-lucide="calculator"></i></div>
+        <div class="dock-dot"></div>
+        <div class="dock-tooltip">Calculator</div>
+      </div>
+
+      <div class="dock-divider"></div>
+
+      <!-- 7. Settings -->
+      <div class="dock-item" data-app="settings" title="System Settings">
+        <div class="dock-icon-wrapper"><i data-lucide="settings"></i></div>
+        <div class="dock-dot"></div>
+        <div class="dock-tooltip">Settings</div>
+      </div>
+
+      <!-- 8. Trash -->
+      <div class="dock-item" data-app="trash" title="Trash">
+        <div class="dock-icon-wrapper"><i data-lucide="trash-2"></i></div>
+        <div class="dock-dot"></div>
+        <div class="dock-tooltip">Trash</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. SPOTLIGHT SEARCH (Ctrl/Cmd + K) -->
+  <div id="spotlight-backdrop" onclick="FlowOS.closeSpotlight(event)">
+    <div id="spotlight-modal" onclick="event.stopPropagation()">
+      <div class="spotlight-header">
+        <i data-lucide="search"></i>
+        <input type="text" id="spotlight-input" placeholder="Search apps, actions, notes, files..." autocomplete="off" />
+        <span class="spotlight-badge">ESC to close</span>
+      </div>
+      <div id="spotlight-results">
+        <!-- Injected dynamically -->
+      </div>
+      <div class="spotlight-footer">
+        <div class="spotlight-keys">
+          <span><kbd>↑</kbd> <kbd>↓</kbd> to navigate</span>
+          <span><kbd>↵</kbd> to execute</span>
+        </div>
+        <span>Flow OS Spotlight</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. CONTROL CENTER -->
+  <div id="control-center">
+    <div class="cc-tiles-grid">
+      <div class="cc-tile active" id="cc-wifi-tile" onclick="FlowOS.toggleTile('wifi')">
+        <div class="cc-tile-icon"><i data-lucide="wifi"></i></div>
+        <div class="cc-tile-text">
+          <span class="cc-tile-title">Wi-Fi</span>
+          <span class="cc-tile-desc" id="cc-wifi-status">Connected</span>
+        </div>
+      </div>
+      <div class="cc-tile active" id="cc-bt-tile" onclick="FlowOS.toggleTile('bt')">
+        <div class="cc-tile-icon"><i data-lucide="bluetooth"></i></div>
+        <div class="cc-tile-text">
+          <span class="cc-tile-title">Bluetooth</span>
+          <span class="cc-tile-desc">On</span>
+        </div>
+      </div>
+      <div class="cc-tile" id="cc-theme-tile" onclick="FlowOS.toggleTheme()">
+        <div class="cc-tile-icon"><i data-lucide="moon"></i></div>
+        <div class="cc-tile-text">
+          <span class="cc-tile-title">Dark Mode</span>
+          <span class="cc-tile-desc" id="cc-theme-desc">Active</span>
+        </div>
+      </div>
+      <div class="cc-tile" id="cc-dnd-tile" onclick="FlowOS.toggleTile('dnd')">
+        <div class="cc-tile-icon"><i data-lucide="bell-off"></i></div>
+        <div class="cc-tile-text">
+          <span class="cc-tile-title">Do Not Disturb</span>
+          <span class="cc-tile-desc" id="cc-dnd-desc">Off</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Brightness Slider (Dims Real Screen Overlay) -->
+    <div class="cc-slider-group">
+      <div class="cc-slider-header">
+        <span>Display Brightness</span>
+        <span id="cc-brightness-val" class="mono">100%</span>
+      </div>
+      <div class="cc-slider-card">
+        <i data-lucide="sun"></i>
+        <input type="range" class="cc-range-input" id="cc-brightness-slider" min="20" max="100" value="100" oninput="FlowOS.setBrightness(this.value)" />
+      </div>
+    </div>
+
+    <!-- Live WebAudio Master Volume Slider -->
+    <div class="cc-slider-group">
+      <div class="cc-slider-header">
+        <span>Sound Volume</span>
+        <span id="cc-volume-val" class="mono">80%</span>
+      </div>
+      <div class="cc-slider-card">
+        <i data-lucide="volume-2"></i>
+        <input type="range" class="cc-range-input" id="cc-volume-slider" min="0" max="100" value="80" oninput="FlowOS.setMasterVolume(this.value)" />
+      </div>
+    </div>
+
+    <!-- Synthesized WebAudio Soundscape Selector -->
+    <div class="cc-soundscape-card">
+      <div class="cc-soundscape-header">
+        <span>Ambient Soundscape</span>
+        <div class="soundscape-wave" id="cc-soundscape-wave">
+          <div class="soundscape-bar"></div>
+          <div class="soundscape-bar"></div>
+          <div class="soundscape-bar"></div>
+          <div class="soundscape-bar"></div>
+        </div>
+      </div>
+      <div class="soundscape-buttons">
+        <button class="soundscape-btn" data-sound="rain" onclick="FlowOS.setSoundscape('rain')">Rain</button>
+        <button class="soundscape-btn" data-sound="brown" onclick="FlowOS.setSoundscape('brown')">Brown</button>
+        <button class="soundscape-btn" data-sound="cafe" onclick="FlowOS.setSoundscape('cafe')">Café</button>
+        <button class="soundscape-btn" data-sound="wind" onclick="FlowOS.setSoundscape('wind')">Wind</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. NOTIFICATION CENTER (Right Tray) -->
+  <div id="notification-center">
+    <!-- Widgets Row -->
+    <div class="nc-widgets-row">
+      <!-- Live Analog Clock -->
+      <div class="nc-widget-card">
+        <canvas id="analog-clock-canvas" width="90" height="90"></canvas>
+        <div class="nc-clock-digital" id="nc-digital-clock">21:00:00</div>
+      </div>
+      <!-- Interactive Calendar -->
+      <div class="nc-widget-card">
+        <div class="nc-calendar">
+          <div class="nc-cal-header">
+            <span id="nc-cal-month-year">August 2026</span>
+          </div>
+          <div class="nc-cal-grid" id="nc-cal-grid">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Stats Widget -->
+    <div class="nc-stats-card">
+      <div class="nc-stats-row">
+        <span class="nc-stats-label"><i data-lucide="activity"></i> System Uptime</span>
+        <span class="nc-stats-val" id="nc-uptime">00:00:00</span>
+      </div>
+      <div class="nc-stats-row">
+        <span class="nc-stats-label"><i data-lucide="layers"></i> Active Windows</span>
+        <span class="nc-stats-val" id="nc-active-windows">0</span>
+      </div>
+      <div class="nc-stats-row">
+        <span class="nc-stats-label"><i data-lucide="hard-drive"></i> Local Storage</span>
+        <span class="nc-stats-val" id="nc-storage-used">14.2 KB</span>
+      </div>
+    </div>
+
+    <!-- Notifications Section -->
+    <div class="nc-notifs-section">
+      <div class="nc-notifs-header">
+        <span>Notifications</span>
+        <span class="nc-clear-btn" onclick="FlowOS.clearAllNotifications()">Clear All</span>
+      </div>
+
+      <!-- Flow Shield Queue Banner -->
+      <div class="nc-held-banner" id="nc-held-banner">
+        <i data-lucide="shield"></i>
+        <span id="nc-held-count">Flow Shield active: 0 notifications held</span>
+      </div>
+
+      <div id="nc-notifs-list" style="display: flex; flex-direction: column; gap: 8px;">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. TOASTS STACK -->
+  <div id="toast-container"></div>
+
+  <!-- 10. SYSTEM MODAL / CONFIRMATION / PROMPT -->
+  <div id="system-dialog-backdrop">
+    <div id="system-dialog">
+      <div class="dialog-header">
+        <div class="dialog-icon" id="dialog-icon"><i data-lucide="alert-circle"></i></div>
+        <div class="dialog-title" id="dialog-title">System Confirmation</div>
+      </div>
+      <div class="dialog-message" id="dialog-message">Message text...</div>
+      <input type="text" class="dialog-input" id="dialog-input" style="display: none;" />
+      <div class="dialog-actions" id="dialog-actions">
+        <button class="btn-secondary" id="dialog-cancel-btn">Cancel</button>
+        <button class="btn-primary" id="dialog-confirm-btn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. DISTRACTION SHIELD INTERCEPTION MODAL -->
+  <div id="distraction-shield-backdrop">
+    <div id="distraction-shield-modal">
+      <div class="shield-badge"><i data-lucide="shield-alert"></i> Distraction Shield Active</div>
+      <div class="shield-title">Protect Your Focus State</div>
+      <div class="shield-intention-card">
+        <span class="shield-intention-label">Current Deep Work Intention</span>
+        <span class="shield-intention-val" id="shield-task-name">Writing system architecture</span>
+        <span class="shield-time-val" id="shield-remaining-time">28 minutes remaining in session</span>
+      </div>
+      <div class="shield-actions">
+        <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="FlowOS.dismissDistractionShield(true)">
+          <i data-lucide="arrow-left"></i> Return to Flow Session
+        </button>
+        <button class="btn-secondary" style="width: 100%;" onclick="FlowOS.dismissDistractionShield(false)">
+          Open App Anyway (Record Interruption)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. DAILY INTENTION RITUAL MODAL -->
+  <div id="ritual-modal-backdrop">
+    <div id="ritual-modal">
+      <div class="shield-badge"><i data-lucide="sun"></i> Daily Intention Ritual</div>
+      <div style="font-size: 20px; font-weight: 700;">What is your single focus today?</div>
+      <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+        Calm environments produce clear thoughts. Choose the core outcome that makes today a success.
+      </div>
+      <input type="text" class="dialog-input" id="ritual-input" placeholder="e.g. Complete kernel window manager refactor" />
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn-secondary" onclick="FlowOS.skipDailyRitual()">Skip</button>
+        <button class="btn-primary" onclick="FlowOS.commitDailyRitual()">Commit Intention</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13. BOOT SCREEN THEATER -->
+  <div id="boot-screen">
+    <div class="boot-logo-wrap">
+      <div class="boot-ring"></div>
+      <div class="boot-icon"><i data-lucide="sparkles"></i></div>
+    </div>
+    <div class="boot-progress-bar">
+      <div class="boot-progress-fill" id="boot-progress-fill"></div>
+    </div>
+    <div class="boot-caption" id="boot-caption">Calibrating deep work environment...</div>
+  </div>
+
+  <!-- 14. LOCK SCREEN -->
+  <div id="lock-screen">
+    <div class="lock-time mono" id="lock-time">21:00</div>
+    <div class="lock-date" id="lock-date">Monday, August 29</div>
+    <div class="lock-avatar"><i data-lucide="user"></i></div>
+    <div style="font-weight: 600; font-size: 15px;">Flow User</div>
+    <div class="lock-input-wrap">
+      <input type="password" id="lock-pass-input" placeholder="Press Enter to Unlock" onkeydown="if(event.key==='Enter') FlowOS.unlockScreen()" />
+      <button onclick="FlowOS.unlockScreen()"><i data-lucide="arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- 15. DESKTOP CONTEXT MENU -->
+  <div id="desktop-context-menu">
+    <div class="dropdown-item" onclick="FlowOS.openApp('flow')">
+      <div class="dropdown-item-left"><i data-lucide="flame"></i> Start Flow Session</div>
+    </div>
+    <div class="dropdown-item" onclick="FlowOS.openApp('notes')">
+      <div class="dropdown-item-left"><i data-lucide="file-plus"></i> New Note</div>
+    </div>
+    <div class="dropdown-item" onclick="FlowOS.openApp('tasks')">
+      <div class="dropdown-item-left"><i data-lucide="check-square"></i> New Task</div>
+    </div>
+    <div class="dropdown-divider"></div>
+    <div class="dropdown-item" onclick="FlowOS.cycleWallpaper()">
+      <div class="dropdown-item-left"><i data-lucide="image"></i> Next Wallpaper</div>
+    </div>
+    <div class="dropdown-item" onclick="FlowOS.toggleTheme()">
+      <div class="dropdown-item-left"><i data-lucide="moon"></i> Toggle Theme</div>
+    </div>
+    <div class="dropdown-divider"></div>
+    <div class="dropdown-item" onclick="FlowOS.openApp('settings')">
+      <div class="dropdown-item-left"><i data-lucide="settings"></i> System Settings</div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT ENGINE: KERNEL, SHELL, APPS & DEEP WORK SOUL
+       ========================================================================== -->
+  <script>
+    /**
+     * FLOW OS — MASTER CLIENT KERNEL
+     * Self-contained, Hardware-grade, WebAudio synthesized, Canvas rendered OS
+     */
+    const OS_NAME = "Flow OS";
+    const OS_VERSION = "2.4.0 (Deep Work Edition)";
+
+    /* --------------------------------------------------------------------------
+       1. STATE STORE & LOCALSTORAGE PERSISTENCE
+       -------------------------------------------------------------------------- */
+    const Store = {
+      defaults: {
+        settings: {
+          theme: 'dark',
+          accent: '#ff7849',
+          wallpaperPreset: 'dawn', // dawn, water, ember
+          volume: 80,
+          soundscape: 'none',
+          brightness: 100,
+          dnd: false,
+          wifi: true,
+          bluetooth: true,
+          soundEffects: true,
+          lastRitualDate: null
+        },
+        notes: [
+          {
+            id: 'n1',
+            title: 'Deep Work Principles',
+            body: '# The 4 Rules of Flow\n\n1. Work deeply: Carve out protected uninterrupted intervals (50-90 min).\n2. Embrace boredom: Distraction is an addiction to shallow stimulation.\n3. Quit social friction: Keep inputs deliberate and sparse.\n4. Drain the shallows: Protect mental bandwidth for hard creative tasks.',
+            date: Date.now() - 3600000 * 2,
+            pinned: true
+          },
+          {
+            id: 'n2',
+            title: 'Flow OS Kernel Architecture',
+            body: '# Single-file Web OS\n\n- Zero frameworks, pure vanilla JS\n- Synthesized WebAudio oscillators\n- Hardware-accelerated canvas shaders\n- Ergonomic focus interception layer',
+            date: Date.now() - 3600000 * 24,
+            pinned: false
+          }
+        ],
+        tasks: [
+          { id: 't1', title: 'Refactor audio synthesis engine', completed: false, priority: 'high', isFocus: true },
+          { id: 't2', title: 'Design calm mode desaturation shader', completed: true, priority: 'medium', isFocus: false },
+          { id: 't3', title: 'Test 90-minute ultradian flow session', completed: false, priority: 'high', isFocus: false }
+        ],
+        sessions: [
+          { id: 's1', date: Date.now() - 86400000 * 2, minutes: 50, task: 'Refactor audio synthesis', endedEarly: false, interruptions: 0 },
+          { id: 's2', date: Date.now() - 86400000 * 1, minutes: 25, task: 'Canvas particle physics', endedEarly: false, interruptions: 1 },
+          { id: 's3', date: Date.now() - 3600000 * 4, minutes: 50, task: 'Window manager snapping', endedEarly: false, interruptions: 0 }
+        ]
+      },
+
+      load(key) {
+        try {
+          const raw = localStorage.getItem(`flow.${key}`);
+          return raw ? JSON.parse(raw) : this.defaults[key];
+        } catch (e) {
+          console.warn(`Storage load failed for flow.${key}`, e);
+          return this.defaults[key];
+        }
+      },
+
+      save(key, data) {
+        try {
+          localStorage.setItem(`flow.${key}`, JSON.stringify(data));
+        } catch (e) {
+          console.error(`Storage save failed for flow.${key}`, e);
+        }
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       2. WEBAUDIO SYNTHESIS ENGINE (UI Sounds + Ambient Soundscapes)
+       Zero audio files — 100% mathematical generation!
+       -------------------------------------------------------------------------- */
+    const SoundEngine = {
+      ctx: null,
+      masterGain: null,
+      soundscapeNodes: {},
+      activeSoundscape: 'none',
+
+      init() {
+        if (this.ctx) return;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioCtx();
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.setValueAtTime(0.8, this.ctx.currentTime);
+        this.masterGain.connect(this.ctx.destination);
+      },
+
+      ensureContext() {
+        this.init();
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      },
+
+      setVolume(val) {
+        this.ensureContext();
+        const normalized = Math.max(0, Math.min(1, val / 100));
+        this.masterGain.gain.setTargetAtTime(normalized, this.ctx.currentTime, 0.05);
+      },
+
+      /* UI Sound Effects */
+      playClick() {
+        if (!FlowOS.state.settings.soundEffects) return;
+        this.ensureContext();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.015);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.015);
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.02);
+      },
+
+      playWindowOpen() {
+        if (!FlowOS.state.settings.soundEffects) return;
+        this.ensureContext();
+        const now = this.ctx.currentTime;
+        [523.25, 659.25].forEach((freq, i) => { // C5, E5
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.04);
+          gain.gain.setValueAtTime(0.09, now + i * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.12);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(now + i * 0.04);
+          osc.stop(now + i * 0.04 + 0.13);
+        });
+      },
+
+      playWindowClose() {
+        if (!FlowOS.state.settings.soundEffects) return;
+        this.ensureContext();
+        const now = this.ctx.currentTime;
+        [659.25, 440].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.035);
+          gain.gain.setValueAtTime(0.07, now + i * 0.035);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.035 + 0.1);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(now + i * 0.035);
+          osc.stop(now + i * 0.035 + 0.11);
+        });
+      },
+
+      playNotification() {
+        if (!FlowOS.state.settings.soundEffects) return;
+        this.ensureContext();
+        const now = this.ctx.currentTime;
+        [783.99, 1174.66].forEach((freq, i) => { // G5, D6
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.08);
+          gain.gain.setValueAtTime(0.12, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.35);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.36);
+        });
+      },
+
+      playFlowComplete() {
+        this.ensureContext();
+        const now = this.ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => { // C5, E5, G5, C6
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.12);
+          gain.gain.setValueAtTime(0.16, now + i * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.8);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(now + i * 0.12);
+          osc.stop(now + i * 0.12 + 0.85);
+        });
+      },
+
+      /* Synthesized Ambient Soundscapes */
+      stopSoundscape() {
+        if (this.soundscapeGain) {
+          this.soundscapeGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.4);
+          setTimeout(() => {
+            if (this.soundscapeSource) {
+              try { this.soundscapeSource.stop(); } catch(e) {}
+              this.soundscapeSource.disconnect();
+            }
+            if (this.soundscapeInterval) clearInterval(this.soundscapeInterval);
+          }, 600);
+        }
+        this.activeSoundscape = 'none';
+      },
+
+      startSoundscape(type) {
+        this.ensureContext();
+        this.stopSoundscape();
+        if (type === 'none') return;
+        this.activeSoundscape = type;
+
+        const sGain = this.ctx.createGain();
+        sGain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+        sGain.gain.exponentialRampToValueAtTime(0.35, this.ctx.currentTime + 1.2);
+        sGain.connect(this.masterGain);
+        this.soundscapeGain = sGain;
+
+        const bufferSize = this.ctx.sampleRate * 4;
+        const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+
+        if (type === 'brown' || type === 'cafe') {
+          // Integrated Brownian Noise
+          let lastOut = 0.0;
+          for (let i = 0; i < bufferSize; i++) {
+            const white = Math.random() * 2 - 1;
+            output[i] = (lastOut + (0.02 * white)) / 1.02;
+            lastOut = output[i];
+            output[i] *= 3.5;
+          }
+        } else {
+          // White / Pink Noise
+          for (let i = 0; i < bufferSize; i++) {
+            output[i] = Math.random() * 2 - 1;
+          }
+        }
+
+        const whiteNoise = this.ctx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+        whiteNoise.loop = true;
+        this.soundscapeSource = whiteNoise;
+
+        if (type === 'rain') {
+          // Lowpass filter + random droplet blips
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.value = 850;
+          whiteNoise.connect(filter);
+          filter.connect(sGain);
+          whiteNoise.start();
+
+          // Droplet generator
+          this.soundscapeInterval = setInterval(() => {
+            if (this.activeSoundscape !== 'rain') return;
+            const drop = this.ctx.createOscillator();
+            const dGain = this.ctx.createGain();
+            drop.frequency.setValueAtTime(1800 + Math.random() * 1200, this.ctx.currentTime);
+            dGain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+            dGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.04);
+            drop.connect(dGain);
+            dGain.connect(sGain);
+            drop.start();
+            drop.stop(this.ctx.currentTime + 0.05);
+          }, 140);
+        }
+        else if (type === 'brown') {
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.value = 360;
+          whiteNoise.connect(filter);
+          filter.connect(sGain);
+          whiteNoise.start();
+        }
+        else if (type === 'cafe') {
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.value = 900;
+          filter.Q.value = 0.8;
+          whiteNoise.connect(filter);
+          filter.connect(sGain);
+          whiteNoise.start();
+
+          // Occasional gentle cup clink
+          this.soundscapeInterval = setInterval(() => {
+            if (this.activeSoundscape !== 'cafe' || Math.random() > 0.4) return;
+            const clink = this.ctx.createOscillator();
+            const cGain = this.ctx.createGain();
+            clink.frequency.setValueAtTime(2600 + Math.random() * 400, this.ctx.currentTime);
+            cGain.gain.setValueAtTime(0.03, this.ctx.currentTime);
+            cGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.08);
+            clink.connect(cGain);
+            cGain.connect(sGain);
+            clink.start();
+            clink.stop(this.ctx.currentTime + 0.09);
+          }, 3500);
+        }
+        else if (type === 'wind') {
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.value = 450;
+          filter.Q.value = 2.0;
+
+          // LFO sweep on filter cutoff
+          const lfo = this.ctx.createOscillator();
+          const lfoGain = this.ctx.createGain();
+          lfo.frequency.value = 0.15;
+          lfoGain.gain.value = 280;
+          lfo.connect(filter.frequency);
+          lfo.start();
+
+          whiteNoise.connect(filter);
+          filter.connect(sGain);
+          whiteNoise.start();
+        }
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       3. GENERATIVE CANVAS WALLPAPER ENGINE
+       Rendered at 1/3 viewport resolution, upscaled with CSS blur for 60fps
+       -------------------------------------------------------------------------- */
+    const WallpaperEngine = {
+      canvas: null,
+      ctx: null,
+      width: 0,
+      height: 0,
+      blobs: [],
+      animId: null,
+
+      presets: {
+        dawn: {
+          dark: ['rgba(255, 120, 73, 0.45)', 'rgba(230, 90, 140, 0.4)', 'rgba(160, 110, 220, 0.35)', 'rgba(250, 180, 80, 0.35)'],
+          light: ['rgba(255, 160, 120, 0.5)', 'rgba(240, 140, 170, 0.45)', 'rgba(190, 150, 230, 0.4)', 'rgba(250, 200, 130, 0.45)']
+        },
+        water: {
+          dark: ['rgba(20, 120, 200, 0.45)', 'rgba(40, 190, 180, 0.4)', 'rgba(60, 60, 160, 0.35)', 'rgba(15, 60, 120, 0.5)'],
+          light: ['rgba(120, 190, 240, 0.55)', 'rgba(110, 220, 210, 0.45)', 'rgba(140, 140, 210, 0.45)', 'rgba(80, 160, 220, 0.45)']
+        },
+        ember: {
+          dark: ['rgba(220, 75, 40, 0.45)', 'rgba(180, 100, 30, 0.4)', 'rgba(120, 40, 90, 0.35)', 'rgba(50, 30, 50, 0.5)'],
+          light: ['rgba(240, 130, 90, 0.5)', 'rgba(210, 150, 70, 0.45)', 'rgba(180, 110, 150, 0.4)', 'rgba(150, 100, 120, 0.45)']
+        }
+      },
+
+      init() {
+        this.canvas = document.getElementById('wallpaper-canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        this.createBlobs();
+        this.animate();
+      },
+
+      resize() {
+        this.width = Math.floor(window.innerWidth / 3);
+        this.height = Math.floor(window.innerHeight / 3);
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+      },
+
+      createBlobs() {
+        const theme = FlowOS.state.settings.theme;
+        const presetKey = FlowOS.state.settings.wallpaperPreset || 'dawn';
+        const colors = this.presets[presetKey][theme];
+        this.blobs = [];
+
+        colors.forEach((color, i) => {
+          this.blobs.push({
+            x: Math.random() * this.width,
+            y: Math.random() * this.height,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4,
+            radius: Math.min(this.width, this.height) * (0.45 + Math.random() * 0.25),
+            color: color,
+            phase: Math.random() * Math.PI * 2
+          });
+        });
+      },
+
+      animate() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        const isFlow = FlowOS.state.flowSession.active;
+        const speedMult = isFlow ? 0.35 : 1.0;
+
+        this.blobs.forEach(b => {
+          b.x += b.vx * speedMult;
+          b.y += b.vy * speedMult;
+          b.phase += 0.01 * speedMult;
+
+          if (b.x < -b.radius * 0.5 || b.x > this.width + b.radius * 0.5) b.vx *= -1;
+          if (b.y < -b.radius * 0.5 || b.y > this.height + b.radius * 0.5) b.vy *= -1;
+
+          const dynRadius = b.radius + Math.sin(b.phase) * 15;
+          const grad = this.ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, dynRadius);
+          grad.addColorStop(0, b.color);
+          grad.addColorStop(1, 'transparent');
+
+          this.ctx.fillStyle = grad;
+          this.ctx.beginPath();
+          this.ctx.arc(b.x, b.y, dynRadius, 0, Math.PI * 2);
+          this.ctx.fill();
+        });
+
+        this.animId = requestAnimationFrame(() => this.animate());
+      },
+
+      renderMini(canvasEl, presetName) {
+        if (!canvasEl) return;
+        const ctx = canvasEl.getContext('2d');
+        const w = canvasEl.width = 120;
+        const h = canvasEl.height = 70;
+        const theme = FlowOS.state.settings.theme;
+        const colors = this.presets[presetName][theme];
+
+        ctx.clearRect(0, 0, w, h);
+        colors.forEach((col, idx) => {
+          const x = (idx % 2 === 0 ? 0.3 : 0.7) * w;
+          const y = (idx < 2 ? 0.3 : 0.7) * h;
+          const grad = ctx.createRadialGradient(x, y, 0, x, y, 45);
+          grad.addColorStop(0, col);
+          grad.addColorStop(1, 'transparent');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(x, y, 45, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       4. WINDOW MANAGER (Kernel Core)
+       Pointer events, snapping, 8-dir resizing, focus model, snap flyout
+       -------------------------------------------------------------------------- */
+    const WindowManager = {
+      windows: {},
+      activeWindowId: null,
+      topZ: 100,
+      snapThreshold: 20,
+      cornerThreshold: 35,
+
+      createWindow(appKey, config = {}) {
+        const id = 'win_' + appKey + '_' + Date.now();
+        const desktopW = window.innerWidth;
+        const desktopH = window.innerHeight - 34 - 70; // minus menubar and dock
+        const winCount = Object.keys(this.windows).length;
+        const cascadeOffset = (winCount % 8) * 28;
+
+        const defaultW = Math.min(config.width || 720, desktopW - 40);
+        const defaultH = Math.min(config.height || 480, desktopH - 40);
+        const defaultX = Math.max(20, Math.min(60 + cascadeOffset, desktopW - defaultW - 20));
+        const defaultY = Math.max(44, Math.min(60 + cascadeOffset, desktopH - defaultH - 20));
+
+        const winState = {
+          id,
+          appKey,
+          title: config.title || appKey.toUpperCase(),
+          icon: config.icon || 'app-window',
+          x: defaultX,
+          y: defaultY,
+          width: defaultW,
+          height: defaultH,
+          minWidth: config.minWidth || 340,
+          minHeight: config.minHeight || 220,
+          zIndex: ++this.topZ,
+          isMinimized: false,
+          isMaximized: false,
+          preMaxState: null,
+          contentRenderer: config.render
+        };
+
+        this.windows[id] = winState;
+        this.renderWindowDOM(winState);
+        this.focusWindow(id);
+        SoundEngine.playWindowOpen();
+        FlowOS.updateDockState();
+        FlowOS.updateMenubarContext();
+        FlowOS.updateSystemStats();
+        return id;
+      },
+
+      renderWindowDOM(win) {
+        const el = document.createElement('div');
+        el.id = win.id;
+        el.className = 'window opening';
+        el.style.left = `${win.x}px`;
+        el.style.top = `${win.y}px`;
+        el.style.width = `${win.width}px`;
+        el.style.height = `${win.height}px`;
+        el.style.zIndex = win.zIndex;
+
+        el.innerHTML = `
+          <div class="window-header" onpointerdown="WindowManager.onTitlebarPointerDown(event, '${win.id}')" ondblclick="WindowManager.toggleMaximize('${win.id}')">
+            <div class="window-controls">
+              <div class="traffic-light tl-close" title="Close" onclick="WindowManager.closeWindow('${win.id}')">
+                <i data-lucide="x"></i>
+              </div>
+              <div class="traffic-light tl-minimize" title="Minimize" onclick="WindowManager.minimizeWindow('${win.id}')">
+                <i data-lucide="minus"></i>
+              </div>
+              <div class="traffic-light tl-zoom" id="tl-zoom-${win.id}" title="Zoom / Snap" onclick="WindowManager.toggleMaximize('${win.id}')" onmouseenter="WindowManager.showSnapFlyout('${win.id}')" onmouseleave="WindowManager.scheduleHideSnapFlyout('${win.id}')">
+                <i data-lucide="maximize-2"></i>
+                
+                <!-- Windows 11-style Snap Flyout -->
+                <div class="snap-flyout" id="snap-flyout-${win.id}">
+                  <span class="snap-flyout-title">Snap Layouts</span>
+                  <div class="snap-grid-layouts">
+                    <div class="snap-layout-card snap-l1" title="Left / Right Half" onclick="event.stopPropagation(); WindowManager.snapWindow('${win.id}', 'left')">
+                      <div class="snap-zone snap-z1"></div>
+                      <div class="snap-zone snap-z2"></div>
+                    </div>
+                    <div class="snap-layout-card snap-l2" title="Two-Thirds Left" onclick="event.stopPropagation(); WindowManager.snapWindow('${win.id}', 'left-two-thirds')">
+                      <div class="snap-zone snap-z1"></div>
+                      <div class="snap-zone snap-z2"></div>
+                    </div>
+                    <div class="snap-layout-card snap-l3" title="4 Quarters" onclick="event.stopPropagation(); WindowManager.snapWindow('${win.id}', 'top-left')">
+                      <div class="snap-zone"></div><div class="snap-zone"></div>
+                      <div class="snap-zone"></div><div class="snap-zone"></div>
+                    </div>
+                    <div class="snap-layout-card snap-l4" title="Full Screen" onclick="event.stopPropagation(); WindowManager.snapWindow('${win.id}', 'maximize')">
+                      <div class="snap-zone"></div>
+                      <div class="snap-zone"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="window-title">
+              <i data-lucide="${win.icon}"></i>
+              <span>${win.title}</span>
+            </div>
+
+            <div class="window-actions">
+              <div class="window-action-btn" title="Focus Mode" onclick="FlowOS.startFlowSession(25)">
+                <i data-lucide="flame"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="window-body" id="body-${win.id}">
+            <!-- App Content -->
+          </div>
+
+          <!-- 8-Directional Resize Handles -->
+          <div class="resize-handle rh-n" onpointerdown="WindowManager.onResizePointerDown(event, '${win.id}', 'n')"></div>
+          <div class="resize-handle rh-s" onpointerdown="WindowManager.onResizePointerDown(event, '${win.id}', 's')"></div>
+          <div class="resize-handle rh-e" onpointerdown="WindowManager.onResizePointerDown(event, '${win.id}', 'e')"></div>
+          <div class="resize-handle rh-w" onpointerdown="WindowManager.onResizePointerDown(event, '${win.id}', 'w')"></div>
+          <div class="resize-handle rh-ne" onpointerdown="WindowManager.onResizePointerDown(event, '${win.id}', 'ne')"></div>
+          <div class="resize-handle rh-nw" onpointerdown="WindowManager.onResizePointerDown(event, '${win.id}', 'nw')"></div>
+          <div class="resize-handle rh-se" onpointerdown="WindowManager.onResizePointerDown(event, '${win.id}', 'se')"></div>
+          <div class="resize-handle rh-sw" onpointerdown="WindowManager.onResizePointerDown(event, '${win.id}', 'sw')"></div>
+        `;
+
+        el.addEventListener('pointerdown', () => this.focusWindow(win.id));
+        document.getElementById('desktop').appendChild(el);
+
+        // Render App Content inside Window Body
+        if (win.contentRenderer) {
+          const bodyEl = document.getElementById(`body-${win.id}`);
+          win.contentRenderer(bodyEl, win);
+        }
+
+        lucide.createIcons();
+      },
+
+      focusWindow(id) {
+        if (!this.windows[id]) return;
+        this.activeWindowId = id;
+        this.windows[id].zIndex = ++this.topZ;
+
+        Object.values(this.windows).forEach(w => {
+          const el = document.getElementById(w.id);
+          if (!el) return;
+          if (w.id === id) {
+            el.classList.add('active');
+            el.classList.remove('inactive');
+            el.style.zIndex = w.zIndex;
+          } else {
+            el.classList.remove('active');
+            el.classList.add('inactive');
+          }
+        });
+
+        FlowOS.updateMenubarContext();
+        FlowOS.updateDockState();
+      },
+
+      closeWindow(id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.transform = 'scale(0.92)';
+          el.style.opacity = '0';
+          setTimeout(() => el.remove(), 160);
+        }
+        delete this.windows[id];
+        SoundEngine.playWindowClose();
+        FlowOS.updateDockState();
+        FlowOS.updateMenubarContext();
+        FlowOS.updateSystemStats();
+      },
+
+      minimizeWindow(id) {
+        const win = this.windows[id];
+        if (!win) return;
+        win.isMinimized = true;
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('minimized');
+        }
+        SoundEngine.playClick();
+        FlowOS.updateDockState();
+        FlowOS.updateMenubarContext();
+      },
+
+      restoreWindow(id) {
+        const win = this.windows[id];
+        if (!win) return;
+        win.isMinimized = false;
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('minimized');
+        }
+        this.focusWindow(id);
+        SoundEngine.playWindowOpen();
+        FlowOS.updateDockState();
+      },
+
+      toggleMaximize(id) {
+        const win = this.windows[id];
+        if (!win) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        if (win.isMaximized) {
+          // Restore pre-max state
+          win.isMaximized = false;
+          el.classList.remove('maximized');
+          if (win.preMaxState) {
+            win.x = win.preMaxState.x;
+            win.y = win.preMaxState.y;
+            win.width = win.preMaxState.width;
+            win.height = win.preMaxState.height;
+          }
+        } else {
+          // Maximize
+          win.preMaxState = { x: win.x, y: win.y, width: win.width, height: win.height };
+          win.isMaximized = true;
+          win.x = 0;
+          win.y = 0;
+          win.width = window.innerWidth;
+          win.height = window.innerHeight - 34; // full area below menubar
+          el.classList.add('maximized');
+        }
+
+        el.style.left = `${win.x}px`;
+        el.style.top = `${win.y}px`;
+        el.style.width = `${win.width}px`;
+        el.style.height = `${win.height}px`;
+        SoundEngine.playClick();
+      },
+
+      snapWindow(id, layout) {
+        const win = this.windows[id];
+        if (!win) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        const maxW = window.innerWidth;
+        const maxH = window.innerHeight - 34;
+
+        if (!win.preMaxState) {
+          win.preMaxState = { x: win.x, y: win.y, width: win.width, height: win.height };
+        }
+
+        if (layout === 'left') {
+          win.x = 0; win.y = 0; win.width = maxW / 2; win.height = maxH;
+        } else if (layout === 'right') {
+          win.x = maxW / 2; win.y = 0; win.width = maxW / 2; win.height = maxH;
+        } else if (layout === 'top-left') {
+          win.x = 0; win.y = 0; win.width = maxW / 2; win.height = maxH / 2;
+        } else if (layout === 'top-right') {
+          win.x = maxW / 2; win.y = 0; win.width = maxW / 2; win.height = maxH / 2;
+        } else if (layout === 'bottom-left') {
+          win.x = 0; win.y = maxH / 2; win.width = maxW / 2; win.height = maxH / 2;
+        } else if (layout === 'bottom-right') {
+          win.x = maxW / 2; win.y = maxH / 2; win.width = maxW / 2; win.height = maxH / 2;
+        } else if (layout === 'left-two-thirds') {
+          win.x = 0; win.y = 0; win.width = Math.floor(maxW * 0.65); win.height = maxH;
+        } else if (layout === 'maximize') {
+          this.toggleMaximize(id);
+          return;
+        }
+
+        win.isMaximized = false;
+        el.classList.remove('maximized');
+        el.style.left = `${win.x}px`;
+        el.style.top = `${win.y}px`;
+        el.style.width = `${win.width}px`;
+        el.style.height = `${win.height}px`;
+        this.hideSnapFlyout(id);
+        SoundEngine.playClick();
+      },
+
+      showSnapFlyout(id) {
+        const flyout = document.getElementById(`snap-flyout-${id}`);
+        if (flyout) flyout.classList.add('active');
+      },
+
+      scheduleHideSnapFlyout(id) {
+        setTimeout(() => this.hideSnapFlyout(id), 250);
+      },
+
+      hideSnapFlyout(id) {
+        const flyout = document.getElementById(`snap-flyout-${id}`);
+        if (flyout) flyout.classList.remove('active');
+      },
+
+      /* Unified Pointer Dragging for Windows */
+      onTitlebarPointerDown(e, id) {
+        if (e.target.closest('.window-controls') || e.target.closest('.window-actions')) return;
+        const win = this.windows[id];
+        if (!win || win.isMaximized) return;
+
+        const el = document.getElementById(id);
+        el.setPointerCapture(e.pointerId);
+
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const initialWinX = win.x;
+        const initialWinY = win.y;
+        const preview = document.getElementById('snap-preview');
+
+        const onPointerMove = (moveEvt) => {
+          const dx = moveEvt.clientX - startX;
+          const dy = moveEvt.clientY - startY;
+          win.x = initialWinX + dx;
+          win.y = Math.max(0, initialWinY + dy);
+
+          el.style.left = `${win.x}px`;
+          el.style.top = `${win.y}px`;
+
+          // Check Snap Boundaries
+          const clientX = moveEvt.clientX;
+          const clientY = moveEvt.clientY;
+          const screenW = window.innerWidth;
+          const screenH = window.innerHeight - 34;
+
+          if (clientX < this.snapThreshold) {
+            // Left Snap
+            preview.style.left = '0px';
+            preview.style.top = '0px';
+            preview.style.width = `${screenW / 2}px`;
+            preview.style.height = `${screenH}px`;
+            preview.classList.add('active');
+          } else if (clientX > screenW - this.snapThreshold) {
+            // Right Snap
+            preview.style.left = `${screenW / 2}px`;
+            preview.style.top = '0px';
+            preview.style.width = `${screenW / 2}px`;
+            preview.style.height = `${screenH}px`;
+            preview.classList.add('active');
+          } else if (clientY < 34 + this.snapThreshold) {
+            // Full Screen Snap
+            preview.style.left = '0px';
+            preview.style.top = '0px';
+            preview.style.width = `${screenW}px`;
+            preview.style.height = `${screenH}px`;
+            preview.classList.add('active');
+          } else {
+            preview.classList.remove('active');
+          }
+        };
+
+        const onPointerUp = (upEvt) => {
+          el.releasePointerCapture(e.pointerId);
+          window.removeEventListener('pointermove', onPointerMove);
+          window.removeEventListener('pointerup', onPointerUp);
+
+          const clientX = upEvt.clientX;
+          const clientY = upEvt.clientY;
+          const screenW = window.innerWidth;
+          preview.classList.remove('active');
+
+          if (clientX < this.snapThreshold) {
+            this.snapWindow(id, 'left');
+          } else if (clientX > screenW - this.snapThreshold) {
+            this.snapWindow(id, 'right');
+          } else if (clientY < 34 + this.snapThreshold) {
+            this.snapWindow(id, 'maximize');
+          }
+        };
+
+        window.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('pointerup', onPointerUp);
+      },
+
+      /* Unified 8-Directional Resizing */
+      onResizePointerDown(e, id, direction) {
+        e.stopPropagation();
+        const win = this.windows[id];
+        if (!win || win.isMaximized) return;
+
+        const el = document.getElementById(id);
+        el.setPointerCapture(e.pointerId);
+
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const startW = win.width;
+        const startH = win.height;
+        const startLeft = win.x;
+        const startTop = win.y;
+
+        const onResizeMove = (moveEvt) => {
+          const dx = moveEvt.clientX - startX;
+          const dy = moveEvt.clientY - startY;
+
+          if (direction.includes('e')) {
+            win.width = Math.max(win.minWidth, startW + dx);
+          }
+          if (direction.includes('s')) {
+            win.height = Math.max(win.minHeight, startH + dy);
+          }
+          if (direction.includes('w')) {
+            const newW = Math.max(win.minWidth, startW - dx);
+            win.x = startLeft + (startW - newW);
+            win.width = newW;
+            el.style.left = `${win.x}px`;
+          }
+          if (direction.includes('n')) {
+            const newH = Math.max(win.minHeight, startH - dy);
+            win.y = startTop + (startH - newH);
+            win.height = newH;
+            el.style.top = `${win.y}px`;
+          }
+
+          el.style.width = `${win.width}px`;
+          el.style.height = `${win.height}px`;
+        };
+
+        const onResizeUp = () => {
+          el.releasePointerCapture(e.pointerId);
+          window.removeEventListener('pointermove', onResizeMove);
+          window.removeEventListener('pointerup', onResizeUp);
+        };
+
+        window.addEventListener('pointermove', onResizeMove);
+        window.addEventListener('pointerup', onResizeUp);
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       5. FLOW OS MASTER CONTROLLER
+       -------------------------------------------------------------------------- */
+    const FlowOS = {
+      state: {
+        settings: Store.load('settings'),
+        notes: Store.load('notes'),
+        tasks: Store.load('tasks'),
+        sessions: Store.load('sessions'),
+        notifications: [
+          { id: 'notif_1', app: 'Flow OS', title: 'Welcome to Flow OS', message: 'An authored operating system engineered for deep work.', time: 'Just now' }
+        ],
+        heldNotifications: [],
+        flowSession: {
+          active: false,
+          remainingSeconds: 25 * 60,
+          totalSeconds: 25 * 60,
+          taskName: 'Core Development',
+          timerId: null,
+          distractionsBlocked: 0
+        },
+        uptimeSeconds: 0,
+        batteryCharging: true
+      },
+
+      init() {
+        this.applyTheme(this.state.settings.theme);
+        this.applyAccent(this.state.settings.accent);
+        WallpaperEngine.init();
+        this.initDockMagnification();
+        this.initClock();
+        this.initKeyboardShortcuts();
+        this.initDesktopContextMenu();
+        this.updateSystemStats();
+        this.startBootSequence();
+      },
+
+      /* Boot Sequence Theater */
+      startBootSequence() {
+        const fill = document.getElementById('boot-progress-fill');
+        const caption = document.getElementById('boot-caption');
+        const screen = document.getElementById('boot-screen');
+
+        const steps = [
+          { p: 20, t: 'Calibrating deep work environment...' },
+          { p: 55, t: 'Synthesizing ambient soundscapes...' },
+          { p: 85, t: 'Loading focus heuristics...' },
+          { p: 100, t: 'Flow OS Ready.' }
+        ];
+
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < steps.length) {
+            fill.style.width = `${steps[i].p}%`;
+            caption.innerText = steps[i].t;
+            i++;
+          } else {
+            clearInterval(interval);
+            setTimeout(() => {
+              screen.classList.add('hidden');
+              SoundEngine.playNotification();
+              this.showToast('Flow OS Ready', 'Press ⌘K or Ctrl+K anytime for Spotlight search.', 'sparkles');
+              this.checkDailyRitual();
+            }, 500);
+          }
+        }, 320);
+      },
+
+      checkDailyRitual() {
+        const todayStr = new Date().toDateString();
+        if (this.state.settings.lastRitualDate !== todayStr) {
+          setTimeout(() => {
+            document.getElementById('ritual-modal-backdrop').classList.add('active');
+          }, 1200);
+        }
+      },
+
+      skipDailyRitual() {
+        document.getElementById('ritual-modal-backdrop').classList.remove('active');
+        this.state.settings.lastRitualDate = new Date().toDateString();
+        Store.save('settings', this.state.settings);
+      },
+
+      commitDailyRitual() {
+        const val = document.getElementById('ritual-input').value.trim();
+        if (val) {
+          const newTask = { id: 't_' + Date.now(), title: val, completed: false, priority: 'high', isFocus: true };
+          this.state.tasks.unshift(newTask);
+          Store.save('tasks', this.state.tasks);
+          this.showToast('Intention Set', `Today's Focus: ${val}`, 'target');
+        }
+        this.skipDailyRitual();
+      },
+
+      /* Themes & Accents */
+      applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        this.state.settings.theme = theme;
+        Store.save('settings', this.state.settings);
+        const desc = document.getElementById('cc-theme-desc');
+        if (desc) desc.innerText = theme === 'dark' ? 'Dark Active' : 'Light Active';
+        if (WallpaperEngine.ctx) WallpaperEngine.createBlobs();
+      },
+
+      toggleTheme() {
+        const next = this.state.settings.theme === 'dark' ? 'light' : 'dark';
+        this.applyTheme(next);
+        SoundEngine.playClick();
+      },
+
+      applyAccent(color) {
+        document.documentElement.style.setProperty('--accent', color);
+        // compute RGB
+        const hex = color.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        document.documentElement.style.setProperty('--accent-rgb', `${r}, ${g}, ${b}`);
+        document.documentElement.style.setProperty('--accent-subtle', `rgba(${r}, ${g}, ${b}, 0.14)`);
+        document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.3)`);
+        this.state.settings.accent = color;
+        Store.save('settings', this.state.settings);
+      },
+
+      cycleWallpaper() {
+        const presets = ['dawn', 'water', 'ember'];
+        const curr = this.state.settings.wallpaperPreset || 'dawn';
+        const next = presets[(presets.indexOf(curr) + 1) % presets.length];
+        this.state.settings.wallpaperPreset = next;
+        Store.save('settings', this.state.settings);
+        WallpaperEngine.createBlobs();
+        this.showToast('Wallpaper Updated', `Switched to ${next.toUpperCase()} preset`, 'image');
+      },
+
+      /* Brightness & Sound Controls */
+      setBrightness(val) {
+        const opacity = (100 - val) / 100 * 0.75;
+        document.getElementById('screen-dimmer').style.opacity = opacity;
+        document.getElementById('cc-brightness-val').innerText = `${val}%`;
+        this.state.settings.brightness = val;
+        Store.save('settings', this.state.settings);
+      },
+
+      setMasterVolume(val) {
+        SoundEngine.setVolume(val);
+        document.getElementById('cc-volume-val').innerText = `${val}%`;
+        this.state.settings.volume = val;
+        Store.save('settings', this.state.settings);
+      },
+
+      setSoundscape(type) {
+        document.querySelectorAll('.soundscape-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.sound === type);
+        });
+        const wave = document.getElementById('cc-soundscape-wave');
+        if (type === 'none') {
+          wave.classList.remove('soundscape-playing');
+          SoundEngine.stopSoundscape();
+        } else {
+          wave.classList.add('soundscape-playing');
+          SoundEngine.startSoundscape(type);
+        }
+      },
+
+      toggleTile(tile) {
+        if (tile === 'wifi') {
+          this.state.settings.wifi = !this.state.settings.wifi;
+          document.getElementById('cc-wifi-tile').classList.toggle('active', this.state.settings.wifi);
+          document.getElementById('cc-wifi-status').innerText = this.state.settings.wifi ? 'Connected' : 'Off';
+          this.showToast('Wi-Fi', this.state.settings.wifi ? 'Connected to FlowNet 5G' : 'Wi-Fi Disconnected', 'wifi');
+        } else if (tile === 'bt') {
+          this.state.settings.bluetooth = !this.state.settings.bluetooth;
+          document.getElementById('cc-bt-tile').classList.toggle('active', this.state.settings.bluetooth);
+          this.showToast('Bluetooth', this.state.settings.bluetooth ? 'Bluetooth Active' : 'Bluetooth Off', 'bluetooth');
+        } else if (tile === 'dnd') {
+          this.state.settings.dnd = !this.state.settings.dnd;
+          document.getElementById('cc-dnd-tile').classList.toggle('active', this.state.settings.dnd);
+          document.getElementById('cc-dnd-desc').innerText = this.state.settings.dnd ? 'Active' : 'Off';
+          this.showToast('Focus Guard', this.state.settings.dnd ? 'Do Not Disturb Enabled' : 'Do Not Disturb Disabled', 'bell-off');
+        }
+        SoundEngine.playClick();
+      },
+
+      toggleCharging() {
+        this.state.batteryCharging = !this.state.batteryCharging;
+        this.showToast('Power Status', this.state.batteryCharging ? 'Power Connected (Charging 92%)' : 'On Battery Power (92% remaining)', 'battery-charging');
+      },
+
+      toggleMenu(dropdownId, evt) {
+        evt.stopPropagation();
+        const el = document.getElementById(dropdownId);
+        const isOpen = el.classList.contains('active');
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+        if (!isOpen) {
+          el.classList.add('active');
+          SoundEngine.playClick();
+        }
+      },
+
+      minimizeAll() {
+        Object.keys(WindowManager.windows).forEach(id => WindowManager.minimizeWindow(id));
+      },
+
+      tileWindows() {
+        const winIds = Object.keys(WindowManager.windows);
+        if (winIds.length >= 2) {
+          WindowManager.snapWindow(winIds[0], 'left');
+          WindowManager.snapWindow(winIds[1], 'right');
+        } else if (winIds.length === 1) {
+          WindowManager.snapWindow(winIds[0], 'left');
+        }
+      },
+
+      closeActiveWindow() {
+        if (WindowManager.activeWindowId) {
+          WindowManager.closeWindow(WindowManager.activeWindowId);
+        }
+      },
+
+      /* Dock Fisheye Physics */
+      initDockMagnification() {
+        const dock = document.getElementById('dock');
+        const items = document.querySelectorAll('.dock-item');
+
+        dock.addEventListener('pointermove', (e) => {
+          const mouseX = e.clientX;
+          items.forEach(item => {
+            const rect = item.getBoundingClientRect();
+            const itemCenter = rect.left + rect.width / 2;
+            const dist = Math.abs(mouseX - itemCenter);
+            const maxDist = 90;
+
+            if (dist < maxDist) {
+              const scale = 1 + (0.38 * (1 - dist / maxDist));
+              item.style.transform = `scale(${scale}) translateY(${- (scale - 1) * 14}px)`;
+            } else {
+              item.style.transform = 'scale(1) translateY(0)';
+            }
+          });
+        });
+
+        dock.addEventListener('pointerleave', () => {
+          items.forEach(item => {
+            item.style.transform = 'scale(1) translateY(0)';
+          });
+        });
+
+        items.forEach(item => {
+          item.addEventListener('click', () => {
+            const app = item.dataset.app;
+            this.handleDockClick(app);
+          });
+        });
+      },
+
+      handleDockClick(appKey) {
+        // Distraction Shield Check during Flow Session
+        if (this.state.flowSession.active && ['calculator', 'settings', 'trash'].includes(appKey)) {
+          this.triggerDistractionShield(appKey);
+          return;
+        }
+
+        // Find if already open
+        const existing = Object.values(WindowManager.windows).find(w => w.appKey === appKey);
+        if (existing) {
+          if (existing.isMinimized) {
+            WindowManager.restoreWindow(existing.id);
+          } else if (WindowManager.activeWindowId === existing.id) {
+            WindowManager.minimizeWindow(existing.id);
+          } else {
+            WindowManager.focusWindow(existing.id);
+          }
+        } else {
+          this.openApp(appKey);
+        }
+      },
+
+      updateDockState() {
+        const runningApps = Object.values(WindowManager.windows).map(w => w.appKey);
+        const activeApp = WindowManager.windows[WindowManager.activeWindowId]?.appKey;
+
+        document.querySelectorAll('.dock-item').forEach(item => {
+          const app = item.dataset.app;
+          const isRunning = runningApps.includes(app);
+          const isFocused = activeApp === app;
+
+          item.classList.toggle('running', isRunning);
+          item.classList.toggle('focused', isFocused);
+        });
+      },
+
+      /* App Launch Dispatcher */
+      openApp(appKey) {
+        // Distraction Shield Check
+        if (this.state.flowSession.active && ['settings', 'trash'].includes(appKey)) {
+          this.triggerDistractionShield(appKey);
+          return;
+        }
+
+        const appDef = this.apps[appKey];
+        if (appDef) {
+          WindowManager.createWindow(appKey, appDef);
+        } else {
+          this.showToast('App Launch', `Opening ${appKey}...`, 'app-window');
+        }
+      },
+
+      /* --------------------------------------------------------------------------
+         6. THE DEEP WORK ENGINE (Flow Sessions & Distraction Shield)
+         -------------------------------------------------------------------------- */
+      startFlowSession(minutes = 25, task = null) {
+        const activeTask = task || this.state.tasks.find(t => t.isFocus)?.title || 'Deep Work Session';
+        this.state.flowSession.active = true;
+        this.state.flowSession.totalSeconds = minutes * 60;
+        this.state.flowSession.remainingSeconds = minutes * 60;
+        this.state.flowSession.taskName = activeTask;
+        this.state.flowSession.distractionsBlocked = 0;
+
+        document.body.classList.add('flow-active');
+        document.getElementById('flow-tray-badge').style.display = 'flex';
+        document.getElementById('nc-held-banner').style.display = 'flex';
+
+        // Auto-start ambient soundscape
+        this.setSoundscape('brown');
+        SoundEngine.playFlowComplete();
+
+        this.showToast('Flow Session Activated', `${minutes}m focused on "${activeTask}". Shield engaged.`, 'flame');
+
+        if (this.state.flowSession.timerId) clearInterval(this.state.flowSession.timerId);
+        this.state.flowSession.timerId = setInterval(() => this.tickFlowSession(), 1000);
+        this.updateFlowUI();
+      },
+
+      tickFlowSession() {
+        const session = this.state.flowSession;
+        session.remainingSeconds--;
+
+        if (session.remainingSeconds <= 0) {
+          this.completeFlowSession();
+        } else {
+          this.updateFlowUI();
+        }
+      },
+
+      completeFlowSession() {
+        clearInterval(this.state.flowSession.timerId);
+        this.state.flowSession.active = false;
+        document.body.classList.remove('flow-active');
+        document.getElementById('flow-tray-badge').style.display = 'none';
+        document.getElementById('nc-held-banner').style.display = 'none';
+
+        // Log session
+        const durationMins = Math.round(this.state.flowSession.totalSeconds / 60);
+        const record = {
+          id: 'sess_' + Date.now(),
+          date: Date.now(),
+          minutes: durationMins,
+          task: this.state.flowSession.taskName,
+          endedEarly: false,
+          interruptions: this.state.flowSession.distractionsBlocked
+        };
+        this.state.sessions.unshift(record);
+        Store.save('sessions', this.state.sessions);
+
+        SoundEngine.playFlowComplete();
+        this.showToast('Deep Work Complete!', `Completed ${durationMins}m on "${record.task}". Excellent focus.`, 'award');
+
+        // Deliver queued notifications
+        if (this.state.heldNotifications.length > 0) {
+          this.state.heldNotifications.forEach(n => this.state.notifications.unshift(n));
+          this.state.heldNotifications = [];
+          this.renderNotificationCenter();
+        }
+      },
+
+      endFlowSessionEarly() {
+        clearInterval(this.state.flowSession.timerId);
+        this.state.flowSession.active = false;
+        document.body.classList.remove('flow-active');
+        document.getElementById('flow-tray-badge').style.display = 'none';
+        this.showToast('Session Ended', 'Flow session wrapped up early.', 'info');
+      },
+
+      updateFlowUI() {
+        const s = this.state.flowSession;
+        const mins = Math.floor(s.remainingSeconds / 60);
+        const secs = s.remainingSeconds % 60;
+        const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+        const trayClock = document.getElementById('flow-tray-countdown');
+        if (trayClock) trayClock.innerText = timeStr;
+
+        const bigTime = document.getElementById('flow-app-time');
+        if (bigTime) bigTime.innerText = timeStr;
+
+        const ring = document.getElementById('flow-circle-bar');
+        if (ring) {
+          const totalCirc = 565.48;
+          const progress = (s.totalSeconds - s.remainingSeconds) / s.totalSeconds;
+          ring.style.strokeDashoffset = totalCirc * (1 - progress);
+        }
+      },
+
+      triggerDistractionShield(appKey) {
+        this.state.flowSession.distractionsBlocked++;
+        document.getElementById('shield-task-name').innerText = this.state.flowSession.taskName;
+        const mins = Math.ceil(this.state.flowSession.remainingSeconds / 60);
+        document.getElementById('shield-remaining-time').innerText = `${mins} minutes remaining in session`;
+        document.getElementById('distraction-shield-backdrop').classList.add('active');
+        this.pendingShieldApp = appKey;
+      },
+
+      dismissDistractionShield(returnToFlow) {
+        document.getElementById('distraction-shield-backdrop').classList.remove('active');
+        if (!returnToFlow && this.pendingShieldApp) {
+          const appDef = this.apps[this.pendingShieldApp];
+          if (appDef) WindowManager.createWindow(this.pendingShieldApp, appDef);
+        }
+        this.pendingShieldApp = null;
+      },
+
+      /* --------------------------------------------------------------------------
+         7. SHELL: NOTIFICATIONS, SPOTLIGHT, CLOCK, STATS
+         -------------------------------------------------------------------------- */
+      showToast(title, message, icon = 'bell') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `
+          <div class="toast-icon"><i data-lucide="${icon}"></i></div>
+          <div class="toast-content">
+            <span class="toast-title">${title}</span>
+            <span class="toast-message">${message}</span>
+          </div>
+          <div class="toast-close" onclick="this.parentElement.remove()"><i data-lucide="x"></i></div>
+        `;
+        container.appendChild(toast);
+        lucide.createIcons();
+
+        setTimeout(() => {
+          toast.classList.add('dismissing');
+          setTimeout(() => toast.remove(), 250);
+        }, 4500);
+      },
+
+      toggleControlCenter() {
+        const cc = document.getElementById('control-center');
+        cc.classList.toggle('active');
+        document.getElementById('notification-center').classList.remove('active');
+        SoundEngine.playClick();
+      },
+
+      toggleNotificationCenter() {
+        const nc = document.getElementById('notification-center');
+        nc.classList.toggle('active');
+        document.getElementById('control-center').classList.remove('active');
+        this.renderNotificationCenter();
+        SoundEngine.playClick();
+      },
+
+      renderNotificationCenter() {
+        const list = document.getElementById('nc-notifs-list');
+        list.innerHTML = '';
+        this.state.notifications.forEach((n, idx) => {
+          const card = document.createElement('div');
+          card.className = 'nc-notif-card';
+          card.innerHTML = `
+            <div class="nc-notif-top">
+              <span class="nc-notif-app"><i data-lucide="sparkles"></i> ${n.app}</span>
+              <span>${n.time}</span>
+            </div>
+            <span class="nc-notif-title">${n.title}</span>
+            <span class="nc-notif-msg">${n.message}</span>
+          `;
+          list.appendChild(card);
+        });
+        lucide.createIcons();
+      },
+
+      clearAllNotifications() {
+        this.state.notifications = [];
+        this.renderNotificationCenter();
+      },
+
+      initClock() {
+        const update = () => {
+          const now = new Date();
+          const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          const timeStr = `${days[now.getDay()]} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+          document.getElementById('menubar-clock').innerText = timeStr;
+          document.getElementById('lock-time').innerText = timeStr.split(' ')[1];
+
+          // Digital clock in notification center
+          const dig = document.getElementById('nc-digital-clock');
+          if (dig) dig.innerText = now.toTimeString().split(' ')[0];
+
+          this.drawAnalogClock(now);
+          this.state.uptimeSeconds++;
+          this.updateSystemStats();
+        };
+        update();
+        setInterval(update, 1000);
+        this.renderCalendar();
+      },
+
+      drawAnalogClock(date) {
+        const canvas = document.getElementById('analog-clock-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const radius = 45;
+        ctx.clearRect(0, 0, 90, 90);
+
+        // Center point
+        ctx.save();
+        ctx.translate(radius, radius);
+
+        // Dial circle
+        ctx.beginPath();
+        ctx.arc(0, 0, radius - 2, 0, 2 * Math.PI);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Hour Hand
+        const hours = date.getHours() % 12;
+        const mins = date.getMinutes();
+        const secs = date.getSeconds();
+        const hourAngle = (hours * Math.PI / 6) + (mins * Math.PI / (6 * 60));
+        ctx.beginPath();
+        ctx.rotate(hourAngle);
+        ctx.moveTo(0, 4);
+        ctx.lineTo(0, -radius * 0.5);
+        ctx.strokeStyle = '#e8e5de';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        ctx.rotate(-hourAngle);
+
+        // Minute Hand
+        const minAngle = (mins * Math.PI / 30) + (secs * Math.PI / (30 * 60));
+        ctx.beginPath();
+        ctx.rotate(minAngle);
+        ctx.moveTo(0, 6);
+        ctx.lineTo(0, -radius * 0.7);
+        ctx.strokeStyle = '#e8e5de';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        ctx.rotate(-minAngle);
+
+        // Second Hand (Accent)
+        const secAngle = (secs * Math.PI / 30);
+        ctx.beginPath();
+        ctx.rotate(secAngle);
+        ctx.moveTo(0, 8);
+        ctx.lineTo(0, -radius * 0.8);
+        ctx.strokeStyle = FlowOS.state.settings.accent || '#ff7849';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.restore();
+      },
+
+      renderCalendar() {
+        const grid = document.getElementById('nc-cal-grid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        dayNames.forEach(d => {
+          const el = document.createElement('div');
+          el.className = 'nc-cal-day-name';
+          el.innerText = d;
+          grid.appendChild(el);
+        });
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const totalDays = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 0; i < firstDay; i++) {
+          const empty = document.createElement('div');
+          empty.className = 'nc-cal-day other-month';
+          grid.appendChild(empty);
+        }
+
+        for (let d = 1; d <= totalDays; d++) {
+          const dayEl = document.createElement('div');
+          dayEl.className = 'nc-cal-day';
+          if (d === today.getDate()) dayEl.classList.add('today');
+          dayEl.innerText = d;
+          grid.appendChild(dayEl);
+        }
+      },
+
+      updateSystemStats() {
+        const sec = this.state.uptimeSeconds;
+        const h = String(Math.floor(sec / 3600)).padStart(2, '0');
+        const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+
+        const uptimeEl = document.getElementById('nc-uptime');
+        if (uptimeEl) uptimeEl.innerText = `${h}:${m}:${s}`;
+
+        const winCount = Object.keys(WindowManager.windows).length;
+        const winEl = document.getElementById('nc-active-windows');
+        if (winEl) winEl.innerText = winCount;
+
+        // Calc rough storage
+        const bytes = (JSON.stringify(this.state.settings) + JSON.stringify(this.state.notes) + JSON.stringify(this.state.tasks)).length;
+        const storEl = document.getElementById('nc-storage-used');
+        if (storEl) storEl.innerText = `${(bytes / 1024).toFixed(1)} KB`;
+      },
+
+      /* Spotlight (Cmd/Ctrl + K) */
+      openSpotlight() {
+        document.getElementById('spotlight-backdrop').classList.add('active');
+        const input = document.getElementById('spotlight-input');
+        input.value = '';
+        input.focus();
+        this.renderSpotlightResults('');
+        SoundEngine.playClick();
+      },
+
+      closeSpotlight(e) {
+        document.getElementById('spotlight-backdrop').classList.remove('active');
+      },
+
+      renderSpotlightResults(query) {
+        const list = document.getElementById('spotlight-results');
+        list.innerHTML = '';
+        const q = query.toLowerCase().trim();
+
+        const allItems = [
+          { type: 'App', title: 'Flow & Analytics', desc: 'Focus sessions and deep work engine', icon: 'flame', action: () => this.openApp('flow') },
+          { type: 'App', title: 'Notes', desc: 'Markdown editor with autosave', icon: 'file-text', action: () => this.openApp('notes') },
+          { type: 'App', title: 'Tasks', desc: 'Today task list and focus intentions', icon: 'check-square', action: () => this.openApp('tasks') },
+          { type: 'App', title: 'Files', desc: 'Virtual hierarchical filesystem', icon: 'folder', action: () => this.openApp('files') },
+          { type: 'App', title: 'Terminal', desc: 'aura-sh shell with system utilities', icon: 'terminal', action: () => this.openApp('terminal') },
+          { type: 'App', title: 'Calculator', desc: 'Standard & scientific keyboard calculator', icon: 'calculator', action: () => this.openApp('calculator') },
+          { type: 'App', title: 'Settings', desc: 'Themes, soundscapes and storage management', icon: 'settings', action: () => this.openApp('settings') },
+          { type: 'Action', title: 'Start 25m Pomodoro Sprint', desc: 'Launch focused flow session', icon: 'flame', action: () => this.startFlowSession(25) },
+          { type: 'Action', title: 'Toggle Dark / Light Theme', desc: 'Switch system appearance', icon: 'moon', action: () => this.toggleTheme() },
+          { type: 'Action', title: 'Play Rain Soundscape', desc: 'Synthesized ambient rain generator', icon: 'volume-2', action: () => this.setSoundscape('rain') },
+          { type: 'Action', title: 'Lock Screen', desc: 'Secure workspace', icon: 'lock', action: () => this.lockScreen() }
+        ];
+
+        // Also search user notes
+        this.state.notes.forEach(n => {
+          allItems.push({
+            type: 'Note',
+            title: n.title,
+            desc: n.body.substring(0, 45) + '...',
+            icon: 'file-text',
+            action: () => { this.openApp('notes'); }
+          });
+        });
+
+        const filtered = allItems.filter(item => item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q));
+
+        filtered.slice(0, 7).forEach((item, idx) => {
+          const row = document.createElement('div');
+          row.className = 'spotlight-result-item' + (idx === 0 ? ' selected' : '');
+          row.innerHTML = `
+            <div class="spotlight-item-left">
+              <div class="spotlight-item-icon"><i data-lucide="${item.icon}"></i></div>
+              <div class="spotlight-item-info">
+                <span class="spotlight-item-title">${this.highlightMatch(item.title, q)}</span>
+                <span class="spotlight-item-desc">${item.desc}</span>
+              </div>
+            </div>
+            <span class="spotlight-badge">${item.type}</span>
+          `;
+          row.onclick = () => {
+            this.closeSpotlight();
+            item.action();
+          };
+          list.appendChild(row);
+        });
+
+        lucide.createIcons();
+      },
+
+      highlightMatch(text, query) {
+        if (!query) return text;
+        const idx = text.toLowerCase().indexOf(query);
+        if (idx === -1) return text;
+        return text.substring(0, idx) + `<mark>${text.substring(idx, idx + query.length)}</mark>` + text.substring(idx + query.length);
+      },
+
+      /* Keyboard Shortcuts & Global Inputs */
+      initKeyboardShortcuts() {
+        window.addEventListener('keydown', (e) => {
+          // Spotlight: Cmd+K or Ctrl+K
+          if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            this.openSpotlight();
+          }
+          // Lock Screen: Ctrl+L
+          if (e.ctrlKey && e.key === 'l') {
+            e.preventDefault();
+            this.lockScreen();
+          }
+          // Escape closes top modal / spotlight / menus
+          if (e.key === 'Escape') {
+            this.closeSpotlight();
+            document.getElementById('control-center').classList.remove('active');
+            document.getElementById('notification-center').classList.remove('active');
+            document.getElementById('desktop-context-menu').classList.remove('active');
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+          }
+        });
+
+        document.getElementById('spotlight-input').addEventListener('input', (e) => {
+          this.renderSpotlightResults(e.target.value);
+        });
+
+        // Close dropdowns on outside click
+        window.addEventListener('click', (e) => {
+          if (!e.target.closest('.menu-item')) {
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+          }
+        });
+      },
+
+      /* Desktop Context Menu */
+      initDesktopContextMenu() {
+        const desktop = document.getElementById('desktop');
+        const menu = document.getElementById('desktop-context-menu');
+
+        desktop.addEventListener('contextmenu', (e) => {
+          if (e.target.closest('.window')) return;
+          e.preventDefault();
+          menu.style.left = `${Math.min(e.clientX, window.innerWidth - 200)}px`;
+          menu.style.top = `${Math.min(e.clientY, window.innerHeight - 240)}px`;
+          menu.classList.add('active');
+        });
+
+        window.addEventListener('click', (e) => {
+          if (!e.target.closest('#desktop-context-menu')) {
+            menu.classList.remove('active');
+          }
+        });
+      },
+
+      /* Lock, Restart & Shutdown Theater */
+      lockScreen() {
+        document.getElementById('lock-screen').classList.add('active');
+        SoundEngine.playClick();
+      },
+
+      unlockScreen() {
+        document.getElementById('lock-screen').classList.remove('active');
+        SoundEngine.playWindowOpen();
+      },
+
+      restartOS() {
+        document.getElementById('boot-screen').classList.remove('hidden');
+        this.startBootSequence();
+      },
+
+      shutdownOS() {
+        document.body.innerHTML = `
+          <div style="width:100vw; height:100vh; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#e8e5de; gap:16px; font-family:'Sora',sans-serif;">
+            <div style="width:40px; height:40px; border-radius:50%; background:#ff7849; display:flex; align-items:center; justify-content:center; color:#fff;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/></svg>
+            </div>
+            <div style="font-size:18px; font-weight:600;">Flow OS has shut down.</div>
+            <button onclick="location.reload()" style="padding:8px 20px; border-radius:12px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; cursor:pointer;">
+              Power On
+            </button>
+          </div>
+        `;
+      },
+
+      updateMenubarContext() {
+        const activeWin = WindowManager.windows[WindowManager.activeWindowId];
+        const nameEl = document.getElementById('focused-app-name');
+        nameEl.innerText = activeWin ? activeWin.title : 'Flow OS';
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       8. BUILT-IN CORE APPLICATIONS IMPLEMENTATION
+       Files, Notes, Tasks, Flow Analytics, Terminal, Calculator, Settings, About
+       -------------------------------------------------------------------------- */
+    FlowOS.apps = {
+      /* 8.1 FILES APP */
+      files: {
+        title: 'Files',
+        icon: 'folder',
+        width: 760,
+        height: 480,
+        render(container) {
+          container.innerHTML = `
+            <div class="files-layout">
+              <div class="files-sidebar">
+                <div class="files-nav-item active"><i data-lucide="home"></i> Home</div>
+                <div class="files-nav-item"><i data-lucide="file-text"></i> Documents</div>
+                <div class="files-nav-item"><i data-lucide="image"></i> Pictures</div>
+                <div class="files-nav-item"><i data-lucide="code"></i> Projects</div>
+                <div class="files-nav-item"><i data-lucide="download"></i> Downloads</div>
+                <div class="files-nav-item"><i data-lucide="trash-2"></i> Trash</div>
+              </div>
+              <div class="files-main">
+                <div class="files-toolbar">
+                  <div class="files-breadcrumbs">
+                    <span>Home</span> <i data-lucide="chevron-right" style="width:12px;"></i> <span>Documents</span>
+                  </div>
+                  <div style="display: flex; gap: 6px;">
+                    <button class="btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="FlowOS.showToast('Files', 'Created new folder', 'folder-plus')">
+                      <i data-lucide="folder-plus"></i> New Folder
+                    </button>
+                  </div>
+                </div>
+                <div class="files-grid">
+                  <div class="file-item" ondblclick="FlowOS.openApp('notes')">
+                    <div class="file-icon"><i data-lucide="file-text"></i></div>
+                    <span class="file-name">Deep Work.md</span>
+                  </div>
+                  <div class="file-item">
+                    <div class="file-icon"><i data-lucide="folder"></i></div>
+                    <span class="file-name">Architecture</span>
+                  </div>
+                  <div class="file-item">
+                    <div class="file-icon"><i data-lucide="image"></i></div>
+                    <span class="file-name">FlowDiagram.svg</span>
+                  </div>
+                  <div class="file-item">
+                    <div class="file-icon"><i data-lucide="code"></i></div>
+                    <span class="file-name">kernel.js</span>
+                  </div>
+                  <div class="file-item">
+                    <div class="file-icon"><i data-lucide="file"></i></div>
+                    <span class="file-name">manifest.json</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      },
+
+      /* 8.2 NOTES APP */
+      notes: {
+        title: 'Notes',
+        icon: 'file-text',
+        width: 800,
+        height: 520,
+        render(container) {
+          const notes = FlowOS.state.notes;
+          let activeNote = notes[0] || { title: 'Untitled', body: '' };
+
+          container.innerHTML = `
+            <div class="notes-layout">
+              <div class="notes-sidebar">
+                <div class="notes-search-bar">
+                  <input type="text" class="notes-search-input" placeholder="Search notes..." />
+                </div>
+                <div class="notes-list" id="notes-app-list"></div>
+                <div style="padding: 8px; border-top: 1px solid var(--border-hairline);">
+                  <button class="btn-primary" style="width: 100%; font-size: 11.5px;" id="new-note-btn">
+                    <i data-lucide="plus"></i> New Note
+                  </button>
+                </div>
+              </div>
+              <div class="notes-editor">
+                <input type="text" class="note-title-input" id="note-editor-title" value="${activeNote.title}" />
+                <textarea class="note-body-textarea" id="note-editor-body">${activeNote.body}</textarea>
+              </div>
+            </div>
+          `;
+
+          const renderList = () => {
+            const listEl = container.querySelector('#notes-app-list');
+            listEl.innerHTML = '';
+            notes.forEach(n => {
+              const item = document.createElement('div');
+              item.className = 'note-card' + (n.id === activeNote.id ? ' active' : '');
+              item.innerHTML = `
+                <span class="note-card-title">${n.title || 'Untitled'}</span>
+                <span class="note-card-excerpt">${n.body.substring(0, 32)}...</span>
+                <span class="note-card-date">${new Date(n.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              `;
+              item.onclick = () => {
+                activeNote = n;
+                container.querySelector('#note-editor-title').value = n.title;
+                container.querySelector('#note-editor-body').value = n.body;
+                renderList();
+              };
+              listEl.appendChild(item);
+            });
+          };
+          renderList();
+
+          const titleInput = container.querySelector('#note-editor-title');
+          const bodyInput = container.querySelector('#note-editor-body');
+
+          const saveNote = () => {
+            activeNote.title = titleInput.value;
+            activeNote.body = bodyInput.value;
+            activeNote.date = Date.now();
+            Store.save('notes', notes);
+            renderList();
+          };
+
+          titleInput.addEventListener('input', saveNote);
+          bodyInput.addEventListener('input', saveNote);
+
+          container.querySelector('#new-note-btn').onclick = () => {
+            const fresh = { id: 'n_' + Date.now(), title: 'New Note', body: '', date: Date.now() };
+            notes.unshift(fresh);
+            activeNote = fresh;
+            titleInput.value = fresh.title;
+            bodyInput.value = fresh.body;
+            Store.save('notes', notes);
+            renderList();
+          };
+        }
+      },
+
+      /* 8.3 TASKS APP */
+      tasks: {
+        title: 'Tasks',
+        icon: 'check-square',
+        width: 580,
+        height: 500,
+        render(container) {
+          const tasks = FlowOS.state.tasks;
+
+          const renderTasks = () => {
+            container.innerHTML = `
+              <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px; height: 100%;">
+                <div class="tasks-header">
+                  <input type="text" class="task-input" id="new-task-input" placeholder="Add a new deep work task..." />
+                  <button class="btn-primary" id="add-task-btn"><i data-lucide="plus"></i> Add</button>
+                </div>
+                <div class="tasks-list" style="flex: 1; overflow-y: auto;">
+                  ${tasks.map(t => `
+                    <div class="task-item ${t.completed ? 'completed' : ''}" data-id="${t.id}">
+                      <div class="task-left">
+                        <div class="task-checkbox" onclick="FlowOS.toggleTask('${t.id}')">
+                          ${t.completed ? '<i data-lucide="check" style="width:12px;"></i>' : ''}
+                        </div>
+                        <span class="task-text">${t.title}</span>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <button class="tray-btn" title="Set as Active Flow Focus" onclick="FlowOS.setFocusTask('${t.id}')" style="color: ${t.isFocus ? 'var(--accent)' : 'inherit'};">
+                          <i data-lucide="target"></i>
+                        </button>
+                        <button class="tray-btn" onclick="FlowOS.deleteTask('${t.id}')"><i data-lucide="trash"></i></button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+            lucide.createIcons();
+
+            const input = container.querySelector('#new-task-input');
+            const addBtn = container.querySelector('#add-task-btn');
+            const doAdd = () => {
+              const val = input.value.trim();
+              if (val) {
+                tasks.unshift({ id: 't_' + Date.now(), title: val, completed: false, priority: 'medium', isFocus: false });
+                Store.save('tasks', tasks);
+                renderTasks();
+              }
+            };
+            addBtn.onclick = doAdd;
+            input.onkeydown = (e) => { if (e.key === 'Enter') doAdd(); };
+          };
+
+          FlowOS.toggleTask = (id) => {
+            const t = tasks.find(x => x.id === id);
+            if (t) { t.completed = !t.completed; Store.save('tasks', tasks); renderTasks(); }
+          };
+
+          FlowOS.setFocusTask = (id) => {
+            tasks.forEach(x => x.isFocus = (x.id === id));
+            Store.save('tasks', tasks);
+            const chosen = tasks.find(x => x.id === id);
+            if (chosen) FlowOS.showToast('Intention Bound', `Active task: ${chosen.title}`, 'target');
+            renderTasks();
+          };
+
+          FlowOS.deleteTask = (id) => {
+            const idx = tasks.findIndex(x => x.id === id);
+            if (idx > -1) { tasks.splice(idx, 1); Store.save('tasks', tasks); renderTasks(); }
+          };
+
+          renderTasks();
+        }
+      },
+
+      /* 8.4 FLOW & ANALYTICS ENGINE APP */
+      flow: {
+        title: 'Flow & Analytics',
+        icon: 'flame',
+        width: 780,
+        height: 560,
+        render(container) {
+          const sessions = FlowOS.state.sessions;
+          const totalMins = sessions.reduce((acc, s) => acc + s.minutes, 0);
+
+          container.innerHTML = `
+            <div class="flow-app-layout">
+              <div class="flow-tabs">
+                <div class="flow-tab active" data-tab="timer">Focus Session</div>
+                <div class="flow-tab" data-tab="analytics">Analytics & Streaks</div>
+              </div>
+
+              <!-- Tab 1: Timer Controls -->
+              <div class="flow-tab-content active" id="tab-timer">
+                <div class="flow-timer-circle-wrap">
+                  <svg class="flow-progress-svg" viewBox="0 0 200 200">
+                    <circle class="flow-circle-bg" cx="100" cy="100" r="90" />
+                    <circle class="flow-circle-bar" id="flow-circle-bar" cx="100" cy="100" r="90" />
+                  </svg>
+                  <div class="flow-timer-text-overlay">
+                    <span class="flow-big-time mono" id="flow-app-time">25:00</span>
+                    <span class="flow-state-label">${FlowOS.state.flowSession.active ? 'Flow Active' : 'Ready to Start'}</span>
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: center; gap: 12px; margin-top: 10px;">
+                  <button class="btn-primary" style="padding: 10px 24px;" onclick="FlowOS.startFlowSession(25)">
+                    <i data-lucide="play"></i> 25m Sprint
+                  </button>
+                  <button class="btn-primary" style="padding: 10px 24px;" onclick="FlowOS.startFlowSession(50)">
+                    <i data-lucide="play"></i> 50m Deep Work
+                  </button>
+                  <button class="btn-secondary" style="padding: 10px 20px;" onclick="FlowOS.endFlowSessionEarly()">
+                    <i data-lucide="square"></i> End Session
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tab 2: Analytics & Chart -->
+              <div class="flow-tab-content" id="tab-analytics">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                  <div class="nc-widget-card" style="align-items: flex-start;">
+                    <span class="nc-stats-label">Total Flow Hours</span>
+                    <span style="font-size: 24px; font-weight: 700; color: var(--accent); margin-top: 4px;" class="mono">${(totalMins / 60).toFixed(1)} hrs</span>
+                  </div>
+                  <div class="nc-widget-card" style="align-items: flex-start;">
+                    <span class="nc-stats-label">Current Streak</span>
+                    <span style="font-size: 24px; font-weight: 700; color: var(--accent); margin-top: 4px;" class="mono">4 Days 🔥</span>
+                  </div>
+                  <div class="nc-widget-card" style="align-items: flex-start;">
+                    <span class="nc-stats-label">Completed Sessions</span>
+                    <span style="font-size: 24px; font-weight: 700; color: var(--accent); margin-top: 4px;" class="mono">${sessions.length}</span>
+                  </div>
+                </div>
+
+                <!-- 7-Day Canvas Bar Chart -->
+                <div class="nc-widget-card" style="align-items: stretch; height: 180px; padding: 16px;">
+                  <span style="font-weight: 600; font-size: 12px; margin-bottom: 8px;">Weekly Focus Hours</span>
+                  <canvas id="flow-chart-canvas" width="600" height="120" style="width: 100%; height: 120px;"></canvas>
+                </div>
+              </div>
+            </div>
+          `;
+
+          // Tab switcher
+          container.querySelectorAll('.flow-tab').forEach(tab => {
+            tab.onclick = () => {
+              container.querySelectorAll('.flow-tab').forEach(t => t.classList.remove('active'));
+              container.querySelectorAll('.flow-tab-content').forEach(c => c.classList.remove('active'));
+              tab.classList.add('active');
+              container.querySelector(`#tab-${tab.dataset.tab}`).classList.add('active');
+
+              if (tab.dataset.tab === 'analytics') {
+                setTimeout(() => FlowOS.drawAnalyticsChart(), 50);
+              }
+            };
+          });
+
+          FlowOS.updateFlowUI();
+        }
+      },
+
+      drawAnalyticsChart() {
+        const canvas = document.getElementById('flow-chart-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width = 600;
+        const h = canvas.height = 120;
+        ctx.clearRect(0, 0, w, h);
+
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const values = [45, 90, 75, 120, 95, 60, 110]; // sample focus minutes
+        const maxVal = 140;
+        const barWidth = 40;
+        const spacing = (w - (barWidth * 7)) / 8;
+
+        days.forEach((day, i) => {
+          const x = spacing + i * (barWidth + spacing);
+          const barHeight = (values[i] / maxVal) * (h - 30);
+          const y = h - 20 - barHeight;
+
+          // Bar gradient
+          const grad = ctx.createLinearGradient(x, y, x, y + barHeight);
+          grad.addColorStop(0, FlowOS.state.settings.accent || '#ff7849');
+          grad.addColorStop(1, 'rgba(255, 120, 73, 0.2)');
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.roundRect(x, y, barWidth, barHeight, [6, 6, 0, 0]);
+          ctx.fill();
+
+          // Label
+          ctx.fillStyle = '#a09d95';
+          ctx.font = '11px "IBM Plex Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(day, x + barWidth / 2, h - 4);
+        });
+      },
+
+      /* 8.5 TERMINAL APP (aura-sh) */
+      terminal: {
+        title: 'Terminal (aura-sh)',
+        icon: 'terminal',
+        width: 680,
+        height: 440,
+        render(container) {
+          container.innerHTML = `
+            <div class="terminal-window" id="term-view">
+              <div class="term-line">Flow OS Shell (aura-sh) — Type 'help' for commands.</div>
+              <div id="term-history"></div>
+              <div class="term-input-row">
+                <span class="term-prompt">flow@desktop:~$</span>
+                <input type="text" class="term-input" id="term-cli-input" autofocus autocomplete="off" />
+              </div>
+            </div>
+          `;
+
+          const input = container.querySelector('#term-cli-input');
+          const historyEl = container.querySelector('#term-history');
+          const termView = container.querySelector('#term-view');
+
+          const printLine = (text, isCmd = false) => {
+            const line = document.createElement('div');
+            line.className = 'term-line';
+            line.innerHTML = isCmd ? `<span class="term-prompt">flow@desktop:~$</span> ${text}` : text;
+            historyEl.appendChild(line);
+            termView.scrollTop = termView.scrollHeight;
+          };
+
+          input.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+              const cmd = input.value.trim();
+              if (cmd) {
+                printLine(cmd, true);
+                FlowOS.executeTermCmd(cmd, printLine);
+              }
+              input.value = '';
+            }
+          };
+        }
+      },
+
+      executeTermCmd(cmd, print) {
+        const parts = cmd.split(' ');
+        const c = parts[0].toLowerCase();
+        const arg = parts[1];
+
+        switch(c) {
+          case 'help':
+            print('Available commands: help, neofetch, theme, wallpaper, flow, soundscape, ls, clear, date, whoami, uname');
+            break;
+          case 'neofetch':
+            print(`
+  <span style="color:var(--accent); font-weight:700;">
+   ███████╗██╗      ██████╗ ██╗    ██╗
+   ██╔════╝██║     ██╔═══██╗██║    ██║
+   █████╗  ██║     ██║   ██║██║ █╗ ██║
+   ██╔══╝  ██║     ██║   ██║██║███╗██║
+   ██║     ███████╗╚██████╔╝╚███╔███╔╝
+   ╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝ 
+  </span>
+  ------------------------------------
+  <b>OS:</b> Flow OS 2.4.0 x86_64
+  <b>Kernel:</b> WebKernel 2026.8 (Deep Work)
+  <b>Uptime:</b> ${Math.floor(FlowOS.state.uptimeSeconds / 60)} mins
+  <b>Shell:</b> aura-sh (vanilla JS)
+  <b>Memory:</b> ~48.2 MB
+  <b>Theme:</b> ${FlowOS.state.settings.theme} (${FlowOS.state.settings.accent})
+            `);
+            break;
+          case 'theme':
+            if (arg === 'dark' || arg === 'light') {
+              FlowOS.applyTheme(arg);
+              print(`Theme updated to ${arg}`);
+            } else {
+              print('Usage: theme <dark|light>');
+            }
+            break;
+          case 'wallpaper':
+            if (['dawn', 'water', 'ember'].includes(arg)) {
+              FlowOS.state.settings.wallpaperPreset = arg;
+              Store.save('settings', FlowOS.state.settings);
+              WallpaperEngine.createBlobs();
+              print(`Wallpaper preset set to ${arg}`);
+            } else {
+              print('Usage: wallpaper <dawn|water|ember>');
+            }
+            break;
+          case 'flow':
+            if (arg === 'start') {
+              FlowOS.startFlowSession(25);
+              print('25m Flow session initiated.');
+            } else if (arg === 'stop') {
+              FlowOS.endFlowSessionEarly();
+              print('Flow session stopped.');
+            } else {
+              print('Usage: flow <start|stop>');
+            }
+            break;
+          case 'clear':
+            document.getElementById('term-history').innerHTML = '';
+            break;
+          case 'whoami':
+            print('flow_user (focus engineer)');
+            break;
+          case 'uname':
+            print('FlowOS 2.4.0-deepwork WebKernel 2026.8');
+            break;
+          case 'date':
+            print(new Date().toString());
+            break;
+          default:
+            print(`aura-sh: command not found: ${c}`);
+        }
+      },
+
+      /* 8.6 CALCULATOR APP */
+      calculator: {
+        title: 'Calculator',
+        icon: 'calculator',
+        width: 320,
+        height: 420,
+        render(container) {
+          let curr = '0';
+          let prev = '';
+          let op = null;
+
+          container.innerHTML = `
+            <div class="calc-container">
+              <div class="calc-screen">
+                <span class="calc-history" id="calc-hist"></span>
+                <span class="calc-display" id="calc-disp">0</span>
+              </div>
+              <div class="calc-keypad">
+                <button class="calc-btn op" data-k="C">C</button>
+                <button class="calc-btn op" data-k="+/-">±</button>
+                <button class="calc-btn op" data-k="%">%</button>
+                <button class="calc-btn op" data-k="/">÷</button>
+
+                <button class="calc-btn" data-k="7">7</button>
+                <button class="calc-btn" data-k="8">8</button>
+                <button class="calc-btn" data-k="9">9</button>
+                <button class="calc-btn op" data-k="*">×</button>
+
+                <button class="calc-btn" data-k="4">4</button>
+                <button class="calc-btn" data-k="5">5</button>
+                <button class="calc-btn" data-k="6">6</button>
+                <button class="calc-btn op" data-k="-">−</button>
+
+                <button class="calc-btn" data-k="1">1</button>
+                <button class="calc-btn" data-k="2">2</button>
+                <button class="calc-btn" data-k="3">3</button>
+                <button class="calc-btn op" data-k="+">+</button>
+
+                <button class="calc-btn" style="grid-column: span 2;" data-k="0">0</button>
+                <button class="calc-btn" data-k=".">.</button>
+                <button class="calc-btn equals" data-k="=">=</button>
+              </div>
+            </div>
+          `;
+
+          const disp = container.querySelector('#calc-disp');
+          const hist = container.querySelector('#calc-hist');
+
+          const updateScreen = () => {
+            disp.innerText = curr;
+            hist.innerText = prev + (op ? ' ' + op : '');
+          };
+
+          container.querySelectorAll('.calc-btn').forEach(btn => {
+            btn.onclick = () => {
+              const k = btn.dataset.k;
+              SoundEngine.playClick();
+
+              if (!isNaN(k)) {
+                curr = curr === '0' ? k : curr + k;
+              } else if (k === '.') {
+                if (!curr.includes('.')) curr += '.';
+              } else if (k === 'C') {
+                curr = '0'; prev = ''; op = null;
+              } else if (k === '+/-') {
+                curr = String(-parseFloat(curr));
+              } else if (k === '%') {
+                curr = String(parseFloat(curr) / 100);
+              } else if (['+', '-', '*', '/'].includes(k)) {
+                op = k;
+                prev = curr;
+                curr = '0';
+              } else if (k === '=') {
+                if (op && prev) {
+                  try {
+                    curr = String(eval(`${parseFloat(prev)} ${op} ${parseFloat(curr)}`));
+                    op = null; prev = '';
+                  } catch(e) { curr = 'Error'; }
+                }
+              }
+              updateScreen();
+            };
+          });
+        }
+      },
+
+      /* 8.7 SETTINGS APP */
+      settings: {
+        title: 'Settings',
+        icon: 'settings',
+        width: 740,
+        height: 520,
+        render(container) {
+          container.innerHTML = `
+            <div class="settings-layout">
+              <div class="settings-sidebar">
+                <div class="settings-nav-item active"><i data-lucide="palette"></i> Appearance</div>
+                <div class="settings-nav-item"><i data-lucide="volume-2"></i> Sound & Audio</div>
+                <div class="settings-nav-item"><i data-lucide="flame"></i> Deep Work</div>
+                <div class="settings-nav-item"><i data-lucide="hard-drive"></i> Storage & Reset</div>
+              </div>
+              <div class="settings-main">
+                <div class="settings-section-title">Appearance & Aesthetics</div>
+
+                <!-- Theme Cards -->
+                <div class="theme-preview-grid">
+                  <div class="theme-card ${FlowOS.state.settings.theme === 'dark' ? 'active' : ''}" onclick="FlowOS.applyTheme('dark')">
+                    <span style="font-weight:600;">Charcoal Dark Mode</span>
+                    <span style="font-size:11.5px; color:var(--text-secondary);">Warm glass over deep dark layers</span>
+                  </div>
+                  <div class="theme-card ${FlowOS.state.settings.theme === 'light' ? 'active' : ''}" onclick="FlowOS.applyTheme('light')">
+                    <span style="font-weight:600;">Warm Paper Light Mode</span>
+                    <span style="font-size:11.5px; color:var(--text-secondary);">High-legibility morning paper tones</span>
+                  </div>
+                </div>
+
+                <!-- Accent Color Swatches -->
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <span style="font-weight:600; font-size:12.5px;">Accent Color Palette</span>
+                  <div class="accent-swatches">
+                    <div class="accent-swatch" style="background:#ff7849;" title="Warm Coral" onclick="FlowOS.applyAccent('#ff7849')"></div>
+                    <div class="accent-swatch" style="background:#e5983b;" title="Amber Ochre" onclick="FlowOS.applyAccent('#e5983b')"></div>
+                    <div class="accent-swatch" style="background:#4e9b7a;" title="Sage Green" onclick="FlowOS.applyAccent('#4e9b7a')"></div>
+                    <div class="accent-swatch" style="background:#d9654d;" title="Terracotta" onclick="FlowOS.applyAccent('#d9654d')"></div>
+                    <div class="accent-swatch" style="background:#d1a87b;" title="Dune Sand" onclick="FlowOS.applyAccent('#d1a87b')"></div>
+                    <div class="accent-swatch" style="background:#6a9eb5;" title="Nordic Frost" onclick="FlowOS.applyAccent('#6a9eb5')"></div>
+                  </div>
+                </div>
+
+                <!-- Mini Canvas Wallpapers -->
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <span style="font-weight:600; font-size:12.5px;">Generative Wallpaper Presets</span>
+                  <div class="wallpaper-previews-grid">
+                    <div class="wp-preview-card ${FlowOS.state.settings.wallpaperPreset === 'dawn' ? 'active' : ''}" onclick="FlowOS.setWallpaperPreset('dawn')">
+                      <canvas class="wp-mini-canvas" id="mini-wp-dawn"></canvas>
+                      <span class="wp-preview-label">Calm Dawn</span>
+                    </div>
+                    <div class="wp-preview-card ${FlowOS.state.settings.wallpaperPreset === 'water' ? 'active' : ''}" onclick="FlowOS.setWallpaperPreset('water')">
+                      <canvas class="wp-mini-canvas" id="mini-wp-water"></canvas>
+                      <span class="wp-preview-label">Deep Water</span>
+                    </div>
+                    <div class="wp-preview-card ${FlowOS.state.settings.wallpaperPreset === 'ember' ? 'active' : ''}" onclick="FlowOS.setWallpaperPreset('ember')">
+                      <canvas class="wp-mini-canvas" id="mini-wp-ember"></canvas>
+                      <span class="wp-preview-label">Night Ember</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Reset Data -->
+                <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-hairline);">
+                  <button class="btn-danger" onclick="FlowOS.wipeAllData()">
+                    <i data-lucide="trash-2"></i> Wipe All Storage & Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+
+          setTimeout(() => {
+            WallpaperEngine.renderMini(document.getElementById('mini-wp-dawn'), 'dawn');
+            WallpaperEngine.renderMini(document.getElementById('mini-wp-water'), 'water');
+            WallpaperEngine.renderMini(document.getElementById('mini-wp-ember'), 'ember');
+          }, 50);
+        }
+      },
+
+      setWallpaperPreset(preset) {
+        FlowOS.state.settings.wallpaperPreset = preset;
+        Store.save('settings', FlowOS.state.settings);
+        WallpaperEngine.createBlobs();
+        FlowOS.showToast('Wallpaper Saved', `Active preset: ${preset.toUpperCase()}`, 'image');
+      },
+
+      wipeAllData() {
+        if (confirm("Reset Flow OS? All notes, tasks, and analytics will be wiped.")) {
+          localStorage.clear();
+          location.reload();
+        }
+      },
+
+      /* 8.8 ABOUT WINDOW */
+      about: {
+        title: 'About Flow OS',
+        icon: 'info',
+        width: 440,
+        height: 380,
+        render(container) {
+          container.innerHTML = `
+            <div style="padding: 28px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
+              <div style="width: 58px; height: 58px; border-radius: 50%; background: var(--accent-subtle); color: var(--accent); display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="sparkles" style="width: 28px; height: 28px;"></i>
+              </div>
+              <div style="font-size: 20px; font-weight: 700;">${OS_NAME}</div>
+              <div style="font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono);">${OS_VERSION}</div>
+              <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px;">
+                Engineered from the ground up for deep focus, flow sessions, and noise reduction. Runs 100% locally in browser memory.
+              </div>
+              <div class="nc-stats-card" style="width: 100%; margin-top: 8px; text-align: left;">
+                <div class="nc-stats-row"><span class="nc-stats-label">Audio:</span><span class="nc-stats-val">WebAudio Synthesizer</span></div>
+                <div class="nc-stats-row"><span class="nc-stats-label">Graphics:</span><span class="nc-stats-val">HTML5 Canvas Shader</span></div>
+                <div class="nc-stats-row"><span class="nc-stats-label">Persistence:</span><span class="nc-stats-val">LocalStorage Engine</span></div>
+              </div>
+            </div>
+          `;
+        }
+      }
+    };
+
+    // Initialize OS on window load
+    window.addEventListener('DOMContentLoaded', () => {
+      FlowOS.init();
+    });
+  </script>
+</body>
+</html>
