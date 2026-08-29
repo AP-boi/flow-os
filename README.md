@@ -1,5 +1,7 @@
 # Flow OS
 
+> **Live Demo:** [flowosv1.vercel.app](https://flowosv1.vercel.app)
+
 A lightweight, web-based desktop environment built from scratch in vanilla JavaScript, HTML5 Canvas, and WebAudio API.
 
 Flow OS is designed around distraction-free productivity. It combines a clean macOS-style menu bar and dock with Windows-style snap window tiling, a built-in focus timer, ambient sound generators, a terminal, and a sandboxed live code playground.
