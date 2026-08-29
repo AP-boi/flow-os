@@ -524,44 +524,87 @@
     .dock-icon-wrapper {
       width: 100%;
       height: 100%;
-      border-radius: var(--radius-md);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--card-bg);
-      border: 1px solid var(--border-hairline);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      color: var(--text-primary);
-      transition: background var(--transition-fast), border var(--transition-fast), box-shadow var(--transition-fast);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 12px rgba(0, 0, 0, 0.25);
+      color: #fff;
+      transition: all var(--transition-fast);
       position: relative;
       overflow: hidden;
     }
 
     .dock-item:hover .dock-icon-wrapper {
-      background: var(--card-hover);
-      border-color: var(--border-subtle);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 20px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
     }
 
-    .dock-icon-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: var(--radius-md);
-      display: block;
-      pointer-events: none;
-      transition: transform var(--transition-fast), filter var(--transition-fast);
+    /* Minimalist Tonal App Accents */
+    .dock-item[data-app="files"] .dock-icon-wrapper {
+      background: linear-gradient(145deg, #1b263b, #0f172a);
+      color: #60a5fa;
+      border-color: rgba(96, 165, 250, 0.25);
     }
-
-    .dock-item:hover .dock-icon-img {
-      transform: scale(1.06);
+    .dock-item[data-app="notes"] .dock-icon-wrapper {
+      background: linear-gradient(145deg, #2a2215, #17120a);
+      color: #fbbf24;
+      border-color: rgba(251, 191, 36, 0.25);
+    }
+    .dock-item[data-app="tasks"] .dock-icon-wrapper {
+      background: linear-gradient(145deg, #132a1e, #0a1710);
+      color: #34d399;
+      border-color: rgba(52, 211, 153, 0.25);
+    }
+    .dock-item[data-app="flow"] .dock-icon-wrapper {
+      background: linear-gradient(145deg, #381f18, #200f0a);
+      color: #ff7849;
+      border-color: rgba(255, 120, 73, 0.35);
+      box-shadow: inset 0 1px 0 rgba(255, 120, 73, 0.3), 0 4px 14px rgba(255, 120, 73, 0.2);
+    }
+    .dock-item[data-app="terminal"] .dock-icon-wrapper {
+      background: linear-gradient(145deg, #1f2128, #111216);
+      color: #f59e0b;
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+    .dock-item[data-app="calculator"] .dock-icon-wrapper {
+      background: linear-gradient(145deg, #252830, #14161b);
+      color: #cbd5e1;
+      border-color: rgba(203, 213, 225, 0.2);
+    }
+    .dock-item[data-app="codelab"] .dock-icon-wrapper {
+      background: linear-gradient(145deg, #271a38, #150d20);
+      color: #c084fc;
+      border-color: rgba(192, 132, 252, 0.3);
+    }
+    .dock-item[data-app="cypher"] .dock-icon-wrapper {
+      background: linear-gradient(145deg, #0e271f, #061510);
+      color: #10b981;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .dock-item[data-app="settings"] .dock-icon-wrapper {
+      background: linear-gradient(145deg, #252832, #15171d);
+      color: #94a3b8;
+      border-color: rgba(148, 163, 184, 0.2);
+    }
+    .dock-item[data-app="trash"] .dock-icon-wrapper {
+      background: linear-gradient(145deg, #1e1e24, #121216);
+      color: #9ca3af;
+      border-color: rgba(156, 163, 175, 0.2);
     }
 
     .dock-item svg {
-      width: 22px;
-      height: 22px;
-      stroke-width: 2;
+      width: 21px;
+      height: 21px;
+      stroke-width: 1.8;
       transition: transform var(--transition-fast);
+    }
+
+    .dock-item:hover svg {
+      transform: scale(1.1);
     }
 
     .dock-item:active svg {
@@ -3646,49 +3689,49 @@
     <div id="dock">
       <!-- 1. Files -->
       <div class="dock-item" data-app="files" title="Files (Finder)">
-        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/files.jpg" alt="Files" /></div>
+        <div class="dock-icon-wrapper"><i data-lucide="folder"></i></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Files</div>
       </div>
 
       <!-- 2. Notes -->
       <div class="dock-item" data-app="notes" title="Notes">
-        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/notes.jpg" alt="Notes" /></div>
+        <div class="dock-icon-wrapper"><i data-lucide="file-text"></i></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Notes</div>
       </div>
 
       <!-- 3. Tasks -->
       <div class="dock-item" data-app="tasks" title="Tasks">
-        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/tasks.jpg" alt="Tasks" /></div>
+        <div class="dock-icon-wrapper"><i data-lucide="check-square"></i></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Tasks</div>
       </div>
 
       <!-- 4. Flow & Analytics (The Deep Work Core) -->
       <div class="dock-item" data-app="flow" title="Flow Engine">
-        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/flow.jpg" alt="Flow" /></div>
+        <div class="dock-icon-wrapper"><i data-lucide="flame"></i></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Flow & Analytics</div>
       </div>
 
       <!-- 5. Terminal -->
       <div class="dock-item" data-app="terminal" title="Terminal">
-        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/terminal.jpg" alt="Terminal" /></div>
+        <div class="dock-icon-wrapper"><i data-lucide="terminal"></i></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Terminal</div>
       </div>
 
       <!-- 6. Calculator -->
       <div class="dock-item" data-app="calculator" title="Calculator">
-        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/calculator.jpg" alt="Calculator" /></div>
+        <div class="dock-icon-wrapper"><i data-lucide="calculator"></i></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Calculator</div>
       </div>
 
       <!-- 7. Code Lab -->
       <div class="dock-item" data-app="codelab" title="Code Lab - JS / TypeScript / React / HTML">
-        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/codelab.jpg" alt="Code Lab" /></div>
+        <div class="dock-icon-wrapper"><i data-lucide="code"></i></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Code Lab</div>
       </div>
@@ -3697,14 +3740,14 @@
 
       <!-- 8. Cipher Vault -->
       <div class="dock-item" data-app="cypher" title="Cipher Vault - encryption &amp; hashing tools">
-        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/cypher.jpg" alt="Cipher Vault" /></div>
+        <div class="dock-icon-wrapper"><i data-lucide="lock"></i></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Cipher Vault</div>
       </div>
 
       <!-- 9. Settings -->
       <div class="dock-item" data-app="settings" title="System Settings">
-        <div class="dock-icon-wrapper"><img class="dock-icon-img" src="assets/icons/settings.jpg" alt="Settings" /></div>
+        <div class="dock-icon-wrapper"><i data-lucide="settings"></i></div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Settings</div>
       </div>
