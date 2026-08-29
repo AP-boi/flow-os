@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Flow OS — Deep Work Desktop</title>
-  
+
   <!-- Fonts: Sora (UI) + IBM Plex Mono (Code/Clocks/Numerals) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Sora:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -21,14 +24,14 @@
       /* Typography */
       --font-sans: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'IBM Plex Mono', monospace;
-      
+
       /* Radius Scale */
       --radius-sm: 8px;
       --radius-md: 12px;
       --radius-lg: 16px;
       --radius-xl: 22px;
       --radius-pill: 9999px;
-      
+
       /* Motion */
       --ease-flow: cubic-bezier(0.2, 0.9, 0.3, 1);
       --transition-fast: 150ms var(--ease-flow);
@@ -108,7 +111,9 @@
       --scrollbar-thumb: rgba(0, 0, 0, 0.18);
     }
 
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -118,7 +123,8 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    html, body {
+    html,
+    body {
       width: 100vw;
       height: 100vh;
       overflow: hidden;
@@ -128,7 +134,10 @@
       background-color: var(--bg-base);
     }
 
-    input, textarea, button, select {
+    input,
+    textarea,
+    button,
+    select {
       font-family: inherit;
       font-size: inherit;
       color: inherit;
@@ -149,19 +158,23 @@
       width: 6px;
       height: 6px;
     }
+
     ::-webkit-scrollbar-track {
       background: transparent;
     }
+
     ::-webkit-scrollbar-thumb {
       background: var(--scrollbar-thumb);
       border-radius: var(--radius-pill);
     }
+
     ::-webkit-scrollbar-thumb:hover {
       background: var(--accent);
     }
 
     /* Tabular figures for numbers */
-    .tabular, .mono {
+    .tabular,
+    .mono {
       font-family: var(--font-mono);
       font-variant-numeric: tabular-nums;
     }
@@ -199,7 +212,8 @@
     #desktop {
       position: absolute;
       inset: 0;
-      top: 34px; /* below menu bar */
+      top: 34px;
+      /* below menu bar */
       bottom: 0;
       z-index: var(--z-desktop);
       overflow: hidden;
@@ -268,7 +282,8 @@
       position: relative;
     }
 
-    .menu-item:hover, .menu-item.active {
+    .menu-item:hover,
+    .menu-item.active {
       background: var(--card-hover);
     }
 
@@ -301,7 +316,8 @@
       transition: all var(--transition-fast);
     }
 
-    .tray-btn:hover, .tray-btn.active {
+    .tray-btn:hover,
+    .tray-btn.active {
       background: var(--card-hover);
       color: var(--text-primary);
     }
@@ -323,8 +339,15 @@
     }
 
     @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.3); }
-      50% { box-shadow: 0 0 12px 2px rgba(var(--accent-rgb), 0.25); }
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.3);
+      }
+
+      50% {
+        box-shadow: 0 0 12px 2px rgba(var(--accent-rgb), 0.25);
+      }
     }
 
     /* Focus Mode Pill */
@@ -344,6 +367,7 @@
       gap: 4px;
       font-size: 11.5px;
     }
+
     .battery-icon {
       width: 20px;
       height: 11px;
@@ -354,6 +378,7 @@
       display: flex;
       align-items: center;
     }
+
     .battery-icon::after {
       content: '';
       position: absolute;
@@ -363,6 +388,7 @@
       background: currentColor;
       border-radius: 0 1px 1px 0;
     }
+
     .battery-fill {
       height: 100%;
       background: currentColor;
@@ -391,8 +417,15 @@
     }
 
     @keyframes menuFadeIn {
-      from { opacity: 0; transform: translateY(-4px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .dropdown-menu.active {
@@ -645,8 +678,15 @@
     }
 
     @keyframes windowOpen {
-      from { opacity: 0; transform: scale(0.92) translateY(12px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
+      from {
+        opacity: 0;
+        transform: scale(0.92) translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     /* Window Header / Titlebar */
@@ -702,9 +742,23 @@
       opacity: 0.85;
     }
 
-    .tl-close { background: #ff5f56; color: #4d0000; border: 0.5px solid rgba(0,0,0,0.15); }
-    .tl-minimize { background: #ffbd2e; color: #593b00; border: 0.5px solid rgba(0,0,0,0.15); }
-    .tl-zoom { background: #27c93f; color: #004d0f; border: 0.5px solid rgba(0,0,0,0.15); }
+    .tl-close {
+      background: #ff5f56;
+      color: #4d0000;
+      border: 0.5px solid rgba(0, 0, 0, 0.15);
+    }
+
+    .tl-minimize {
+      background: #ffbd2e;
+      color: #593b00;
+      border: 0.5px solid rgba(0, 0, 0, 0.15);
+    }
+
+    .tl-zoom {
+      background: #27c93f;
+      color: #004d0f;
+      border: 0.5px solid rgba(0, 0, 0, 0.15);
+    }
 
     .window-title {
       position: absolute;
@@ -822,14 +876,31 @@
     }
 
     /* Layout 1: 50 / 50 */
-    .snap-l1 .snap-zone { flex: 1; }
+    .snap-l1 .snap-zone {
+      flex: 1;
+    }
+
     /* Layout 2: 65 / 35 */
-    .snap-l2 .snap-z1 { flex: 2; }
-    .snap-l2 .snap-z2 { flex: 1; }
+    .snap-l2 .snap-z1 {
+      flex: 2;
+    }
+
+    .snap-l2 .snap-z2 {
+      flex: 1;
+    }
+
     /* Layout 3: 4 Quarters */
-    .snap-l3 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .snap-l3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
     /* Layout 4: Full / Bottom */
-    .snap-l4 { display: grid; grid-template-rows: 1fr 1fr; }
+    .snap-l4 {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+    }
 
     /* Window Body */
     .window-body {
@@ -845,14 +916,70 @@
       position: absolute;
       z-index: 10;
     }
-    .rh-n { top: 0; left: 8px; right: 8px; height: 6px; cursor: n-resize; }
-    .rh-s { bottom: 0; left: 8px; right: 8px; height: 6px; cursor: s-resize; }
-    .rh-e { right: 0; top: 8px; bottom: 8px; width: 6px; cursor: e-resize; }
-    .rh-w { left: 0; top: 8px; bottom: 8px; width: 6px; cursor: w-resize; }
-    .rh-ne { top: 0; right: 0; width: 12px; height: 12px; cursor: ne-resize; }
-    .rh-nw { top: 0; left: 0; width: 12px; height: 12px; cursor: nw-resize; }
-    .rh-se { bottom: 0; right: 0; width: 12px; height: 12px; cursor: se-resize; }
-    .rh-sw { bottom: 0; left: 0; width: 12px; height: 12px; cursor: sw-resize; }
+
+    .rh-n {
+      top: 0;
+      left: 8px;
+      right: 8px;
+      height: 6px;
+      cursor: n-resize;
+    }
+
+    .rh-s {
+      bottom: 0;
+      left: 8px;
+      right: 8px;
+      height: 6px;
+      cursor: s-resize;
+    }
+
+    .rh-e {
+      right: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 6px;
+      cursor: e-resize;
+    }
+
+    .rh-w {
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 6px;
+      cursor: w-resize;
+    }
+
+    .rh-ne {
+      top: 0;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      cursor: ne-resize;
+    }
+
+    .rh-nw {
+      top: 0;
+      left: 0;
+      width: 12px;
+      height: 12px;
+      cursor: nw-resize;
+    }
+
+    .rh-se {
+      bottom: 0;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      cursor: se-resize;
+    }
+
+    .rh-sw {
+      bottom: 0;
+      left: 0;
+      width: 12px;
+      height: 12px;
+      cursor: sw-resize;
+    }
 
     /* ==========================================================================
        6. SPOTLIGHT (Ctrl/Cmd + K)
@@ -891,8 +1018,15 @@
     }
 
     @keyframes modalSlideDown {
-      from { opacity: 0; transform: translateY(-16px) scale(0.97); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .spotlight-header {
@@ -959,7 +1093,8 @@
       transition: background var(--transition-fast);
     }
 
-    .spotlight-result-item:hover, .spotlight-result-item.selected {
+    .spotlight-result-item:hover,
+    .spotlight-result-item.selected {
       background: var(--accent);
       color: #fff;
     }
@@ -1183,7 +1318,7 @@
       border-radius: 50%;
       background: var(--accent);
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
 
     /* Soundscape Player in Control Center */
@@ -1224,13 +1359,26 @@
       animation: waveBars 0.8s ease-in-out infinite alternate;
     }
 
-    .soundscape-playing .soundscape-bar:nth-child(2) { animation-delay: 0.2s; }
-    .soundscape-playing .soundscape-bar:nth-child(3) { animation-delay: 0.4s; }
-    .soundscape-playing .soundscape-bar:nth-child(4) { animation-delay: 0.1s; }
+    .soundscape-playing .soundscape-bar:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .soundscape-playing .soundscape-bar:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .soundscape-playing .soundscape-bar:nth-child(4) {
+      animation-delay: 0.1s;
+    }
 
     @keyframes waveBars {
-      0% { height: 4px; }
-      100% { height: 14px; }
+      0% {
+        height: 4px;
+      }
+
+      100% {
+        height: 14px;
+      }
     }
 
     .soundscape-buttons {
@@ -1286,8 +1434,15 @@
     }
 
     @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(20px); }
-      to { opacity: 1; transform: translateX(0); }
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
     #notification-center.active {
@@ -1518,8 +1673,15 @@
     }
 
     @keyframes toastIn {
-      from { opacity: 0; transform: translateX(30px) scale(0.95); }
-      to { opacity: 1; transform: translateX(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateX(30px) scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
     }
 
     .toast.dismissing {
@@ -1853,7 +2015,7 @@
     /* ==========================================================================
        10. CORE APPLICATIONS STYLES
        ========================================================================== */
-    
+
     /* 10.1 FILES APP */
     .files-layout {
       display: flex;
@@ -1882,7 +2044,8 @@
       transition: all var(--transition-fast);
     }
 
-    .files-nav-item:hover, .files-nav-item.active {
+    .files-nav-item:hover,
+    .files-nav-item.active {
       background: var(--card-hover);
       color: var(--text-primary);
     }
@@ -2396,7 +2559,8 @@
       transition: all var(--transition-fast);
     }
 
-    .settings-nav-item:hover, .settings-nav-item.active {
+    .settings-nav-item:hover,
+    .settings-nav-item.active {
       background: var(--card-hover);
       color: var(--text-primary);
     }
@@ -2546,7 +2710,9 @@
     }
 
     @keyframes spin {
-      100% { transform: rotate(360deg); }
+      100% {
+        transform: rotate(360deg);
+      }
     }
 
     .boot-icon svg {
@@ -2668,17 +2834,22 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
+
+      *,
+      *::before,
+      *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
+
       #wallpaper-canvas {
         animation: none !important;
       }
     }
   </style>
 </head>
+
 <body>
 
   <!-- 1. WALLPAPER GENERATIVE CANVAS -->
@@ -2694,7 +2865,8 @@
     <!-- Left Section: Logo & Menus -->
     <div class="menubar-section" id="menubar-left">
       <!-- Flow OS System Logo Menu -->
-      <div class="menu-item logo-btn" id="menu-logo-btn" title="Flow OS Menu" onclick="FlowOS.toggleMenu('system-menu-dropdown', event)">
+      <div class="menu-item logo-btn" id="menu-logo-btn" title="Flow OS Menu"
+        onclick="FlowOS.toggleMenu('system-menu-dropdown', event)">
         <i data-lucide="sparkles"></i>
         <!-- Dropdown Menu -->
         <div class="dropdown-menu" id="system-menu-dropdown">
@@ -2720,7 +2892,8 @@
       </div>
 
       <!-- Focused App Name Menu -->
-      <div class="menu-item app-title" id="focused-app-menu-btn" onclick="FlowOS.toggleMenu('focused-app-dropdown', event)">
+      <div class="menu-item app-title" id="focused-app-menu-btn"
+        onclick="FlowOS.toggleMenu('focused-app-dropdown', event)">
         <span id="focused-app-name">Flow OS</span>
         <div class="dropdown-menu" id="focused-app-dropdown">
           <div class="dropdown-item" onclick="FlowOS.openApp('flow')">
@@ -2807,7 +2980,8 @@
       </div>
 
       <!-- Battery Indicator (Simulated Discharge) -->
-      <div class="tray-btn battery-pill" id="battery-tray-btn" title="Click to toggle Charging" onclick="FlowOS.toggleCharging()">
+      <div class="tray-btn battery-pill" id="battery-tray-btn" title="Click to toggle Charging"
+        onclick="FlowOS.toggleCharging()">
         <div class="battery-icon">
           <div class="battery-fill" id="battery-fill" style="width: 92%;"></div>
         </div>
@@ -2900,7 +3074,8 @@
     <div id="spotlight-modal" onclick="event.stopPropagation()">
       <div class="spotlight-header">
         <i data-lucide="search"></i>
-        <input type="text" id="spotlight-input" placeholder="Search apps, actions, notes, files..." autocomplete="off" />
+        <input type="text" id="spotlight-input" placeholder="Search apps, actions, notes, files..."
+          autocomplete="off" />
         <span class="spotlight-badge">ESC to close</span>
       </div>
       <div id="spotlight-results">
@@ -2957,7 +3132,8 @@
       </div>
       <div class="cc-slider-card">
         <i data-lucide="sun"></i>
-        <input type="range" class="cc-range-input" id="cc-brightness-slider" min="20" max="100" value="100" oninput="FlowOS.setBrightness(this.value)" />
+        <input type="range" class="cc-range-input" id="cc-brightness-slider" min="20" max="100" value="100"
+          oninput="FlowOS.setBrightness(this.value)" />
       </div>
     </div>
 
@@ -2969,7 +3145,8 @@
       </div>
       <div class="cc-slider-card">
         <i data-lucide="volume-2"></i>
-        <input type="range" class="cc-range-input" id="cc-volume-slider" min="0" max="100" value="80" oninput="FlowOS.setMasterVolume(this.value)" />
+        <input type="range" class="cc-range-input" id="cc-volume-slider" min="0" max="100" value="80"
+          oninput="FlowOS.setMasterVolume(this.value)" />
       </div>
     </div>
 
@@ -3098,7 +3275,8 @@
       <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
         Calm environments produce clear thoughts. Choose the core outcome that makes today a success.
       </div>
-      <input type="text" class="dialog-input" id="ritual-input" placeholder="e.g. Complete kernel window manager refactor" />
+      <input type="text" class="dialog-input" id="ritual-input"
+        placeholder="e.g. Complete kernel window manager refactor" />
       <div style="display: flex; justify-content: flex-end; gap: 10px;">
         <button class="btn-secondary" onclick="FlowOS.skipDailyRitual()">Skip</button>
         <button class="btn-primary" onclick="FlowOS.commitDailyRitual()">Commit Intention</button>
@@ -3125,7 +3303,8 @@
     <div class="lock-avatar"><i data-lucide="user"></i></div>
     <div style="font-weight: 600; font-size: 15px;">Flow User</div>
     <div class="lock-input-wrap">
-      <input type="password" id="lock-pass-input" placeholder="Press Enter to Unlock" onkeydown="if(event.key==='Enter') FlowOS.unlockScreen()" />
+      <input type="password" id="lock-pass-input" placeholder="Press Enter to Unlock"
+        onkeydown="if(event.key==='Enter') FlowOS.unlockScreen()" />
       <button onclick="FlowOS.unlockScreen()"><i data-lucide="arrow-right"></i></button>
     </div>
   </div>
@@ -3356,7 +3535,7 @@
           this.soundscapeGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.4);
           setTimeout(() => {
             if (this.soundscapeSource) {
-              try { this.soundscapeSource.stop(); } catch(e) {}
+              try { this.soundscapeSource.stop(); } catch (e) { }
               this.soundscapeSource.disconnect();
             }
             if (this.soundscapeInterval) clearInterval(this.soundscapeInterval);
@@ -5179,7 +5358,7 @@
         const c = parts[0].toLowerCase();
         const arg = parts[1];
 
-        switch(c) {
+        switch (c) {
           case 'help':
             print('Available commands: help, neofetch, theme, wallpaper, flow, soundscape, ls, clear, date, whoami, uname');
             break;
@@ -5325,7 +5504,7 @@
                   try {
                     curr = String(eval(`${parseFloat(prev)} ${op} ${parseFloat(curr)}`));
                     op = null; prev = '';
-                  } catch(e) { curr = 'Error'; }
+                  } catch (e) { curr = 'Error'; }
                 }
               }
               updateScreen();
@@ -5462,4 +5641,5 @@
     });
   </script>
 </body>
+
 </html>
