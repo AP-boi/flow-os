@@ -2714,11 +2714,11 @@
       box-shadow: 0 0 10px var(--accent);
     }
 
-    /* Miniature Canvas Wallpapers in Settings */
+    /* Miniature Canvas & Photo Wallpapers in Settings */
     .wallpaper-previews-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
     }
 
     .wp-preview-card {
@@ -2728,27 +2728,48 @@
       cursor: pointer;
       display: flex;
       flex-direction: column;
+      background: var(--card-bg);
       transition: all var(--transition-fast);
+      position: relative;
+    }
+
+    .wp-preview-card:hover {
+      border-color: var(--border-subtle);
+      transform: translateY(-2px);
     }
 
     .wp-preview-card.active {
       border-color: var(--accent);
+      box-shadow: 0 0 14px var(--accent-glow);
     }
 
     .wp-mini-canvas {
       width: 100%;
-      height: 75px;
+      height: 70px;
       display: block;
       filter: blur(6px);
       transform: scale(1.1);
     }
 
+    .wp-mini-img {
+      width: 100%;
+      height: 70px;
+      object-fit: cover;
+      display: block;
+      transition: transform var(--transition-fast);
+    }
+
+    .wp-preview-card:hover .wp-mini-img {
+      transform: scale(1.06);
+    }
+
     .wp-preview-label {
-      padding: 8px;
-      font-size: 11.5px;
+      padding: 6px;
+      font-size: 11px;
       font-weight: 600;
       text-align: center;
       background: var(--card-bg);
+      border-top: 1px solid var(--border-hairline);
     }
 
     /* Boot & lock screens */
@@ -5254,6 +5275,35 @@ function App() {
         this.setWallpaperPreset(next);
       },
 
+      selectPhotoWallpaper(url) {
+        this.setCustomWallpaper(url);
+        this.showToast('Wallpaper Saved', 'Desktop photo wallpaper applied', 'image');
+        const win = this.state.windows.get('settings');
+        if (win) {
+          const body = win.element.querySelector('.window-body');
+          if (body) this.apps.settings.render(body);
+        }
+      },
+
+      selectCanvasWallpaper(preset) {
+        this.setWallpaperPreset(preset);
+        const win = this.state.windows.get('settings');
+        if (win) {
+          const body = win.element.querySelector('.window-body');
+          if (body) this.apps.settings.render(body);
+        }
+      },
+
+      handleWallpaperUpload(e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          this.selectPhotoWallpaper(evt.target.result);
+        };
+        reader.readAsDataURL(file);
+      },
+
       setCustomWallpaper(url) {
         let customEl = document.getElementById('custom-wallpaper-bg');
         if (!customEl) {
@@ -7521,25 +7571,54 @@ ${mount}
                   </div>
                 </div>
 
-                <!-- Mini Canvas Wallpapers -->
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                  <span style="font-weight:600; font-size:12.5px;">Generative Wallpaper Presets</span>
-                  <div class="wallpaper-previews-grid">
-                    <div class="wp-preview-card ${FlowOS.state.settings.wallpaperPreset === 'dawn' ? 'active' : ''}" onclick="FlowOS.setWallpaperPreset('dawn')">
-                      <canvas class="wp-mini-canvas" id="mini-wp-dawn"></canvas>
+                <!-- High-Definition Picture Wallpapers -->
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-weight:600; font-size:12.5px;">Desktop Wallpapers (Photos)</span>
+                    <label class="btn-secondary" style="padding: 4px 10px; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                      <i data-lucide="upload" style="width:13px; height:13px;"></i> Custom Image...
+                      <input type="file" accept="image/*" style="display:none;" onchange="FlowOS.handleWallpaperUpload(event)" />
+                    </label>
+                  </div>
+                  <div class="wallpaper-previews-grid" id="settings-photo-wallpapers">
+                    <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/dawn.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/dawn.jpg')">
+                      <img class="wp-mini-img" src="assets/wallpapers/dawn.jpg" alt="Calm Dawn" />
                       <span class="wp-preview-label">Calm Dawn</span>
                     </div>
-                    <div class="wp-preview-card ${FlowOS.state.settings.wallpaperPreset === 'water' ? 'active' : ''}" onclick="FlowOS.setWallpaperPreset('water')">
-                      <canvas class="wp-mini-canvas" id="mini-wp-water"></canvas>
+                    <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/water.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/water.jpg')">
+                      <img class="wp-mini-img" src="assets/wallpapers/water.jpg" alt="Deep Water" />
                       <span class="wp-preview-label">Deep Water</span>
                     </div>
-                    <div class="wp-preview-card ${FlowOS.state.settings.wallpaperPreset === 'ember' ? 'active' : ''}" onclick="FlowOS.setWallpaperPreset('ember')">
-                      <canvas class="wp-mini-canvas" id="mini-wp-ember"></canvas>
+                    <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/ember.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/ember.jpg')">
+                      <img class="wp-mini-img" src="assets/wallpapers/ember.jpg" alt="Night Ember" />
                       <span class="wp-preview-label">Night Ember</span>
                     </div>
-                    <div class="wp-preview-card ${FlowOS.state.settings.wallpaperPreset === 'matrix' ? 'active' : ''}" onclick="FlowOS.setWallpaperPreset('matrix')">
-                      <canvas class="wp-mini-canvas" id="mini-wp-matrix"></canvas>
+                    <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/matrix.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/matrix.jpg')">
+                      <img class="wp-mini-img" src="assets/wallpapers/matrix.jpg" alt="Cypher Matrix" />
                       <span class="wp-preview-label">Cypher Matrix</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Generative Live Canvas Wallpapers -->
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+                  <span style="font-weight:600; font-size:12.5px;">Generative Animated Canvas (Live Blobs)</span>
+                  <div class="wallpaper-previews-grid" id="settings-canvas-wallpapers">
+                    <div class="wp-preview-card ${(!FlowOS.state.settings.customWallpaper && FlowOS.state.settings.wallpaperPreset === 'dawn') ? 'active' : ''}" onclick="FlowOS.selectCanvasWallpaper('dawn')">
+                      <canvas class="wp-mini-canvas" id="mini-wp-dawn"></canvas>
+                      <span class="wp-preview-label">Live Dawn</span>
+                    </div>
+                    <div class="wp-preview-card ${(!FlowOS.state.settings.customWallpaper && FlowOS.state.settings.wallpaperPreset === 'water') ? 'active' : ''}" onclick="FlowOS.selectCanvasWallpaper('water')">
+                      <canvas class="wp-mini-canvas" id="mini-wp-water"></canvas>
+                      <span class="wp-preview-label">Live Water</span>
+                    </div>
+                    <div class="wp-preview-card ${(!FlowOS.state.settings.customWallpaper && FlowOS.state.settings.wallpaperPreset === 'ember') ? 'active' : ''}" onclick="FlowOS.selectCanvasWallpaper('ember')">
+                      <canvas class="wp-mini-canvas" id="mini-wp-ember"></canvas>
+                      <span class="wp-preview-label">Live Ember</span>
+                    </div>
+                    <div class="wp-preview-card ${(!FlowOS.state.settings.customWallpaper && FlowOS.state.settings.wallpaperPreset === 'matrix') ? 'active' : ''}" onclick="FlowOS.selectCanvasWallpaper('matrix')">
+                      <canvas class="wp-mini-canvas" id="mini-wp-matrix"></canvas>
+                      <span class="wp-preview-label">Live Matrix</span>
                     </div>
                   </div>
                 </div>
