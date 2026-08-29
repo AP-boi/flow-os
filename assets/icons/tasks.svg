@@ -1,22 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
   <defs>
-    <linearGradient id="tasks-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+    <linearGradient id="bg-tasks" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#ededed"/>
+      <stop offset="100%" stop-color="#f0f0f5"/>
     </linearGradient>
-    <filter id="mac-sh" x="-10%" y="-10%" width="120%" height="125%">
-      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/>
-    </filter>
   </defs>
-  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#tasks-bg)" filter="url(#mac-sh)"/>
-  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>
-  <!-- Colored Dot 1: Blue -->
-  <circle cx="32" cy="38" r="10" fill="#007aff"/>
-  <rect x="52" y="34" width="54" height="8" rx="4" fill="#3a3a3c"/>
-  <!-- Colored Dot 2: Red -->
-  <circle cx="32" cy="64" r="10" fill="#ff3b30"/>
-  <rect x="52" y="60" width="54" height="8" rx="4" fill="#3a3a3c"/>
-  <!-- Colored Dot 3: Orange -->
-  <circle cx="32" cy="90" r="10" fill="#ff9500"/>
-  <rect x="52" y="86" width="42" height="8" rx="4" fill="#8e8e93"/>
+  <rect width="128" height="128" rx="28" fill="url(#bg-tasks)"/>
+  <!-- Row 1: Blue -->
+  <circle cx="34" cy="38" r="10" fill="#007aff"/>
+  <rect x="54" y="33" width="50" height="10" rx="5" fill="#3a3a3c"/>
+  <!-- Row 2: Red -->
+  <circle cx="34" cy="64" r="10" fill="#ff3b30"/>
+  <rect x="54" y="59" width="50" height="10" rx="5" fill="#3a3a3c"/>
+  <!-- Row 3: Orange -->
+  <circle cx="34" cy="90" r="10" fill="#ff9500"/>
+  <rect x="54" y="85" width="40" height="10" rx="5" fill="#8e8e93"/>
 </svg>

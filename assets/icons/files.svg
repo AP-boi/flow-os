@@ -1,34 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
   <defs>
-    <linearGradient id="finder-base" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#45b8ff"/>
-      <stop offset="100%" stop-color="#0066d6"/>
+    <linearGradient id="bg-files" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00a0ff"/>
+      <stop offset="100%" stop-color="#0062e0"/>
     </linearGradient>
-    <linearGradient id="finder-face" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#e1f0ff"/>
-    </linearGradient>
-    <filter id="mac-shadow" x="-10%" y="-10%" width="120%" height="125%">
-      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000000" flood-opacity="0.35"/>
-    </filter>
   </defs>
-  <!-- Squircle Base -->
-  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#finder-base)" filter="url(#mac-shadow)"/>
-  <!-- Specular Highlight -->
-  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
-  
-  <!-- Finder Face Center -->
-  <g transform="translate(18, 16)">
-    <!-- Left face (White) -->
-    <path d="M46 14C32 14 20 25 20 40c0 24 16 38 26 42V14z" fill="url(#finder-face)"/>
-    <!-- Right face (Light Blue) -->
-    <path d="M46 14v68c10-4 26-18 26-42 0-15-12-26-26-26z" fill="#9de0ff"/>
-    <!-- Smile Line -->
-    <path d="M28 54c6 14 30 14 36 0" fill="none" stroke="#1d4370" stroke-width="4.5" stroke-linecap="round"/>
-    <!-- Eyes -->
-    <ellipse cx="34" cy="38" rx="3.5" ry="5.5" fill="#1d4370"/>
-    <ellipse cx="58" cy="38" rx="3.5" ry="5.5" fill="#1d4370"/>
-    <!-- Division line / Nose -->
-    <path d="M46 14v42c0 4-4 8-8 8h-4" fill="none" stroke="#1d4370" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="128" height="128" rx="28" fill="url(#bg-files)"/>
+  <g fill="#ffffff" transform="translate(24, 28)">
+    <path d="M6 10a6 6 0 0 1 6-6h20a6 6 0 0 1 5 3l4 6h33a6 6 0 0 1 6 6v42a6 6 0 0 1-6 6H12a6 6 0 0 1-6-6V10z" opacity="0.95"/>
+    <path d="M6 24h68a4 4 0 0 1 4 4v33a6 6 0 0 1-6 6H12a6 6 0 0 1-6-6V24z" fill="#ffffff"/>
   </g>
 </svg>

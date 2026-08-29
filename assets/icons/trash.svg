@@ -1,23 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
   <defs>
-    <linearGradient id="trash-mesh" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#d1d1d6"/>
+    <linearGradient id="bg-trash" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff453a"/>
+      <stop offset="100%" stop-color="#d70015"/>
     </linearGradient>
-    <filter id="mac-sh" x="-10%" y="-10%" width="120%" height="125%">
-      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/>
-    </filter>
   </defs>
-  <g filter="url(#mac-sh)">
-    <!-- Wire basket rim -->
-    <ellipse cx="64" cy="30" rx="36" ry="10" fill="#e5e5ea" stroke="#8e8e93" stroke-width="2"/>
-    <!-- Wire basket body -->
-    <path d="M28 30 L38 106 Q64 116 90 106 L100 30" fill="url(#trash-mesh)" opacity="0.88" stroke="#8e8e93" stroke-width="2"/>
-    <!-- Vertical Wire Slats -->
-    <line x1="44" y1="38" x2="48" y2="102" stroke="#8e8e93" stroke-width="2"/>
-    <line x1="54" y1="40" x2="56" y2="105" stroke="#8e8e93" stroke-width="2"/>
-    <line x1="64" y1="40" x2="64" y2="106" stroke="#8e8e93" stroke-width="2"/>
-    <line x1="74" y1="40" x2="72" y2="105" stroke="#8e8e93" stroke-width="2"/>
-    <line x1="84" y1="38" x2="80" y2="102" stroke="#8e8e93" stroke-width="2"/>
+  <rect width="128" height="128" rx="28" fill="url(#bg-trash)"/>
+  <!-- White Trash Bin Pictogram -->
+  <g fill="#ffffff" transform="translate(32, 28)">
+    <path d="M8 18h48M20 18v-6a4 4 0 0 1 4-4h16a4 4 0 0 1 4 4v6" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+    <path d="M14 18l4 44a6 6 0 0 0 6 6h16a6 6 0 0 0 6-6l4-44" fill="#ffffff" opacity="0.95"/>
+    <line x1="26" y1="28" x2="26" y2="58" stroke="#d70015" stroke-width="4" stroke-linecap="round"/>
+    <line x1="38" y1="28" x2="38" y2="58" stroke="#d70015" stroke-width="4" stroke-linecap="round"/>
   </g>
 </svg>
