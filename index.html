@@ -7574,7 +7574,7 @@ ${mount}
                 <!-- High-Definition Picture Wallpapers -->
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
                   <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <span style="font-weight:600; font-size:12.5px;">Desktop Wallpapers (Photos)</span>
+                    <span style="font-weight:600; font-size:12.5px;">Desktop Wallpapers</span>
                     <label class="btn-secondary" style="padding: 4px 10px; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
                       <i data-lucide="upload" style="width:13px; height:13px;"></i> Custom Image...
                       <input type="file" accept="image/*" style="display:none;" onchange="FlowOS.handleWallpaperUpload(event)" />
@@ -7596,29 +7596,6 @@ ${mount}
                     <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/matrix.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/matrix.jpg')">
                       <img class="wp-mini-img" src="assets/wallpapers/matrix.jpg" alt="Cypher Matrix" />
                       <span class="wp-preview-label">Cypher Matrix</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Generative Live Canvas Wallpapers -->
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
-                  <span style="font-weight:600; font-size:12.5px;">Generative Animated Canvas (Live Blobs)</span>
-                  <div class="wallpaper-previews-grid" id="settings-canvas-wallpapers">
-                    <div class="wp-preview-card ${(!FlowOS.state.settings.customWallpaper && FlowOS.state.settings.wallpaperPreset === 'dawn') ? 'active' : ''}" onclick="FlowOS.selectCanvasWallpaper('dawn')">
-                      <canvas class="wp-mini-canvas" id="mini-wp-dawn"></canvas>
-                      <span class="wp-preview-label">Live Dawn</span>
-                    </div>
-                    <div class="wp-preview-card ${(!FlowOS.state.settings.customWallpaper && FlowOS.state.settings.wallpaperPreset === 'water') ? 'active' : ''}" onclick="FlowOS.selectCanvasWallpaper('water')">
-                      <canvas class="wp-mini-canvas" id="mini-wp-water"></canvas>
-                      <span class="wp-preview-label">Live Water</span>
-                    </div>
-                    <div class="wp-preview-card ${(!FlowOS.state.settings.customWallpaper && FlowOS.state.settings.wallpaperPreset === 'ember') ? 'active' : ''}" onclick="FlowOS.selectCanvasWallpaper('ember')">
-                      <canvas class="wp-mini-canvas" id="mini-wp-ember"></canvas>
-                      <span class="wp-preview-label">Live Ember</span>
-                    </div>
-                    <div class="wp-preview-card ${(!FlowOS.state.settings.customWallpaper && FlowOS.state.settings.wallpaperPreset === 'matrix') ? 'active' : ''}" onclick="FlowOS.selectCanvasWallpaper('matrix')">
-                      <canvas class="wp-mini-canvas" id="mini-wp-matrix"></canvas>
-                      <span class="wp-preview-label">Live Matrix</span>
                     </div>
                   </div>
                 </div>
@@ -7646,13 +7623,6 @@ ${mount}
               </div>
             </div>
           `;
-
-          setTimeout(() => {
-            WallpaperEngine.renderMini(document.getElementById('mini-wp-dawn'), 'dawn');
-            WallpaperEngine.renderMini(document.getElementById('mini-wp-water'), 'water');
-            WallpaperEngine.renderMini(document.getElementById('mini-wp-ember'), 'ember');
-            WallpaperEngine.renderMini(document.getElementById('mini-wp-matrix'), 'matrix');
-          }, 50);
         }
       },
 
