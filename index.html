@@ -2640,16 +2640,25 @@
       font-weight: 500;
       cursor: pointer;
       transition: all var(--transition-fast);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
     }
 
-    .settings-nav-item:hover,
-    .settings-nav-item.active {
+    .settings-nav-item:hover {
       background: var(--card-hover);
       color: var(--text-primary);
     }
 
     .settings-nav-item.active {
       color: var(--accent);
+      background: var(--accent-subtle);
       font-weight: 600;
     }
 
@@ -5275,9 +5284,14 @@ function App() {
         this.setWallpaperPreset(next);
       },
 
-      selectPhotoWallpaper(url) {
-        this.setCustomWallpaper(url);
-        this.showToast('Wallpaper Saved', 'Desktop photo wallpaper applied', 'image');
+      /* Settings Tab Router & Handlers */
+      switchSettingsTab(tab) {
+        this.apps.settings.activeTab = tab;
+        this.refreshSettingsTab();
+        SoundEngine.playClick();
+      },
+
+      refreshSettingsTab() {
         const win = this.state.windows.get('settings');
         if (win) {
           const body = win.element.querySelector('.window-body');
@@ -5285,13 +5299,100 @@ function App() {
         }
       },
 
+      setMasterVolume(val) {
+        const num = parseInt(val, 10);
+        this.state.settings.volume = num;
+        SoundEngine.setVolume(num);
+        const txt = document.getElementById('settings-vol-text');
+        if (txt) txt.innerText = `${num}%`;
+        Store.save('settings', this.state.settings);
+      },
+
+      toggleSoundEffects() {
+        const curr = this.state.settings.soundEffects !== false;
+        this.state.settings.soundEffects = !curr;
+        Store.save('settings', this.state.settings);
+        this.showToast('Audio Settings', `UI Sound Effects: ${!curr ? 'Enabled' : 'Muted'}`, 'volume-2');
+      },
+
+      setFocusInterval(minutes) {
+        if (!this.state.flow) this.state.flow = {};
+        this.state.flow.focusMinutes = minutes;
+        this.state.flow.duration = minutes * 60;
+        this.state.flow.timeLeft = minutes * 60;
+        Store.save('flow', this.state.flow);
+        this.showToast('Focus Interval Saved', `Default duration set to ${minutes}m`, 'flame');
+        const badge = document.getElementById('flow-tray-countdown');
+        if (badge && !this.state.flow.isRunning) badge.innerText = `${minutes}:00`;
+      },
+
+      toggleAutoDnd() {
+        const curr = this.state.settings.autoDnd !== false;
+        this.state.settings.autoDnd = !curr;
+        Store.save('settings', this.state.settings);
+        this.showToast('Deep Work Automation', `Auto DND during focus: ${!curr ? 'Enabled' : 'Disabled'}`, 'bell-off');
+      },
+
+      toggleDimBgWindows() {
+        const curr = this.state.settings.dimBackgroundWindows !== false;
+        this.state.settings.dimBackgroundWindows = !curr;
+        Store.save('settings', this.state.settings);
+        this.showToast('Focus Mode', `Dim background windows: ${!curr ? 'Enabled' : 'Disabled'}`, 'eye');
+      },
+
+      exportSystemBackup() {
+        const backup = {
+          version: '1.0.0',
+          appName: 'Flow OS',
+          exportDate: new Date().toISOString(),
+          settings: this.state.settings,
+          notes: Store.load('notes'),
+          tasks: Store.load('tasks'),
+          files: Store.load('files'),
+          flow: Store.load('flow'),
+          analytics: Store.load('analytics')
+        };
+        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `flowos-backup-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.showToast('Backup Exported', 'Workspace backup saved successfully', 'download');
+      },
+
+      importSystemBackup(e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          try {
+            const data = JSON.parse(evt.target.result);
+            if (data.settings) Store.save('settings', data.settings);
+            if (data.notes) Store.save('notes', data.notes);
+            if (data.tasks) Store.save('tasks', data.tasks);
+            if (data.files) Store.save('files', data.files);
+            if (data.flow) Store.save('flow', data.flow);
+            if (data.analytics) Store.save('analytics', data.analytics);
+            this.showToast('Backup Restored', 'Reloading system...', 'check');
+            setTimeout(() => location.reload(), 700);
+          } catch (err) {
+            alert('Invalid backup JSON file: ' + err.message);
+          }
+        };
+        reader.readAsText(file);
+      },
+
+      selectPhotoWallpaper(url) {
+        this.setCustomWallpaper(url);
+        this.showToast('Wallpaper Saved', 'Desktop photo wallpaper applied', 'image');
+        this.refreshSettingsTab();
+      },
+
       selectCanvasWallpaper(preset) {
         this.setWallpaperPreset(preset);
-        const win = this.state.windows.get('settings');
-        if (win) {
-          const body = win.element.querySelector('.window-body');
-          if (body) this.apps.settings.render(body);
-        }
+        this.refreshSettingsTab();
       },
 
       handleWallpaperUpload(e) {
@@ -7532,97 +7633,314 @@ ${mount}
       settings: {
         title: 'Settings',
         icon: 'settings',
-        width: 740,
-        height: 520,
+        width: 760,
+        height: 540,
+        activeTab: 'appearance',
         render(container) {
+          const tab = FlowOS.apps.settings.activeTab || 'appearance';
+
+          let tabContentHtml = '';
+
+          if (tab === 'appearance') {
+            tabContentHtml = `
+              <div class="settings-section-title">Appearance & Aesthetics</div>
+
+              <!-- Theme Cards -->
+              <div class="theme-preview-grid">
+                <div class="theme-card ${FlowOS.state.settings.theme === 'dark' ? 'active' : ''}" onclick="FlowOS.applyTheme('dark'); FlowOS.refreshSettingsTab();">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <i data-lucide="moon" style="width:16px; color:var(--accent);"></i>
+                    <span style="font-weight:600;">Charcoal Dark Mode</span>
+                  </div>
+                  <span style="font-size:11.5px; color:var(--text-secondary);">Warm glass over deep dark layers</span>
+                </div>
+                <div class="theme-card ${FlowOS.state.settings.theme === 'light' ? 'active' : ''}" onclick="FlowOS.applyTheme('light'); FlowOS.refreshSettingsTab();">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <i data-lucide="sun" style="width:16px; color:var(--accent);"></i>
+                    <span style="font-weight:600;">Warm Paper Light Mode</span>
+                  </div>
+                  <span style="font-size:11.5px; color:var(--text-secondary);">High-legibility morning paper tones</span>
+                </div>
+              </div>
+
+              <!-- Accent Color Swatches -->
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span style="font-weight:600; font-size:12.5px;">Accent Color Palette</span>
+                <div class="accent-swatches">
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#ff7849' ? 'active' : ''}" style="background:#ff7849;" title="Warm Coral" onclick="FlowOS.applyAccent('#ff7849'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#e5983b' ? 'active' : ''}" style="background:#e5983b;" title="Amber Ochre" onclick="FlowOS.applyAccent('#e5983b'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#4e9b7a' ? 'active' : ''}" style="background:#4e9b7a;" title="Sage Green" onclick="FlowOS.applyAccent('#4e9b7a'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#d9654d' ? 'active' : ''}" style="background:#d9654d;" title="Terracotta" onclick="FlowOS.applyAccent('#d9654d'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#d1a87b' ? 'active' : ''}" style="background:#d1a87b;" title="Dune Sand" onclick="FlowOS.applyAccent('#d1a87b'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#6a9eb5' ? 'active' : ''}" style="background:#6a9eb5;" title="Nordic Frost" onclick="FlowOS.applyAccent('#6a9eb5'); FlowOS.refreshSettingsTab();"></div>
+                </div>
+              </div>
+
+              <!-- Desktop Wallpapers -->
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-weight:600; font-size:12.5px;">Desktop Wallpapers</span>
+                  <label class="btn-secondary" style="padding: 4px 10px; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                    <i data-lucide="upload" style="width:13px; height:13px;"></i> Custom Image...
+                    <input type="file" accept="image/*" style="display:none;" onchange="FlowOS.handleWallpaperUpload(event)" />
+                  </label>
+                </div>
+                <div class="wallpaper-previews-grid" id="settings-photo-wallpapers">
+                  <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/dawn.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/dawn.jpg')">
+                    <img class="wp-mini-img" src="assets/wallpapers/dawn.jpg" alt="Calm Dawn" />
+                    <span class="wp-preview-label">Calm Dawn</span>
+                  </div>
+                  <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/water.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/water.jpg')">
+                    <img class="wp-mini-img" src="assets/wallpapers/water.jpg" alt="Deep Water" />
+                    <span class="wp-preview-label">Deep Water</span>
+                  </div>
+                  <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/ember.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/ember.jpg')">
+                    <img class="wp-mini-img" src="assets/wallpapers/ember.jpg" alt="Night Ember" />
+                    <span class="wp-preview-label">Night Ember</span>
+                  </div>
+                  <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/matrix.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/matrix.jpg')">
+                    <img class="wp-mini-img" src="assets/wallpapers/matrix.jpg" alt="Cypher Matrix" />
+                    <span class="wp-preview-label">Cypher Matrix</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cypher Mode -->
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; margin-top: 8px; background: var(--card-bg); border: 1px solid var(--border-hairline); border-radius: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <i data-lucide="lock" style="width: 16px; color: var(--text-secondary);"></i>
+                  <div>
+                    <div style="font-weight: 600; font-size: 12.5px;">Cypher Security Mode</div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Arm the offline cryptography workstation &amp; matrix aesthetic</div>
+                  </div>
+                </div>
+                <button class="btn-secondary" style="padding: 5px 14px; font-size: 11px;" onclick="FlowOS.toggleCypherMode(); FlowOS.refreshSettingsTab();">
+                  <i data-lucide="shield"></i> ${FlowOS.state.settings.cypherMode ? 'Disable' : 'Enable'}
+                </button>
+              </div>
+            `;
+          } else if (tab === 'sound') {
+            const currentVol = FlowOS.state.settings.volume !== undefined ? FlowOS.state.settings.volume : 80;
+            const soundEffects = FlowOS.state.settings.soundEffects !== false;
+            const activeNoise = SoundEngine.activeSoundscape || 'none';
+
+            tabContentHtml = `
+              <div class="settings-section-title">Sound & Audio Controls</div>
+
+              <!-- Master Volume Card -->
+              <div style="padding: 16px; background: var(--card-bg); border: 1px solid var(--border-hairline); border-radius: 12px; display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-weight: 600; font-size: 13px;">Master System Volume</span>
+                  <span class="mono" id="settings-vol-text" style="font-size: 12px; color: var(--accent);">${currentVol}%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <i data-lucide="volume-1" style="width: 18px; color: var(--text-secondary);"></i>
+                  <input type="range" min="0" max="100" value="${currentVol}" style="flex:1;" oninput="FlowOS.setMasterVolume(this.value);" />
+                  <i data-lucide="volume-2" style="width: 18px; color: var(--text-primary);"></i>
+                  <button class="btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="SoundEngine.playNotification();">
+                    <i data-lucide="play" style="width:12px;"></i> Test Chime
+                  </button>
+                </div>
+              </div>
+
+              <!-- Interface Feedback Toggles -->
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-weight: 600; font-size: 12.5px;">UI Feedback & Sound Effects</span>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--card-bg); border: 1px solid var(--border-hairline); border-radius: 12px;">
+                  <div>
+                    <div style="font-weight: 600; font-size: 12.5px;">Synthesized UI Sound Effects</div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Subtle click feedback on buttons, window snapping, and app launches</div>
+                  </div>
+                  <button class="btn-secondary" onclick="FlowOS.toggleSoundEffects(); FlowOS.refreshSettingsTab();">
+                    ${soundEffects ? '<i data-lucide="volume-2"></i> Enabled' : '<i data-lucide="volume-x"></i> Muted'}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Synthesized Ambient Soundscapes -->
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-weight: 600; font-size: 12.5px;">Synthesized Background Soundscapes (Web Audio API)</span>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                  <div class="theme-card ${activeNoise === 'none' ? 'active' : ''}" style="padding:10px; text-align:center; align-items:center;" onclick="SoundEngine.stopSoundscape(); FlowOS.refreshSettingsTab();">
+                    <i data-lucide="volume-x" style="width:20px; color:var(--text-secondary);"></i>
+                    <span style="font-size:12px; font-weight:600;">Off</span>
+                  </div>
+                  <div class="theme-card ${activeNoise === 'brown' ? 'active' : ''}" style="padding:10px; text-align:center; align-items:center;" onclick="SoundEngine.startSoundscape('brown'); FlowOS.refreshSettingsTab();">
+                    <i data-lucide="cloud-rain" style="width:20px; color:var(--accent);"></i>
+                    <span style="font-size:12px; font-weight:600;">Deep Rain</span>
+                  </div>
+                  <div class="theme-card ${activeNoise === 'pink' ? 'active' : ''}" style="padding:10px; text-align:center; align-items:center;" onclick="SoundEngine.startSoundscape('pink'); FlowOS.refreshSettingsTab();">
+                    <i data-lucide="wind" style="width:20px; color:var(--accent);"></i>
+                    <span style="font-size:12px; font-weight:600;">Pink Noise</span>
+                  </div>
+                  <div class="theme-card ${activeNoise === 'cafe' ? 'active' : ''}" style="padding:10px; text-align:center; align-items:center;" onclick="SoundEngine.startSoundscape('cafe'); FlowOS.refreshSettingsTab();">
+                    <i data-lucide="coffee" style="width:20px; color:var(--accent);"></i>
+                    <span style="font-size:12px; font-weight:600;">Warm Cafe</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          } else if (tab === 'focus') {
+            const focusMinutes = FlowOS.state.flow && FlowOS.state.flow.focusMinutes ? FlowOS.state.flow.focusMinutes : 25;
+            const autoDnd = FlowOS.state.settings.autoDnd !== false;
+            const dimBg = FlowOS.state.settings.dimBackgroundWindows !== false;
+
+            tabContentHtml = `
+              <div class="settings-section-title">Deep Work & Focus Engine</div>
+
+              <!-- Default Session Length -->
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-weight: 600; font-size: 12.5px;">Default Focus Interval</span>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                  <div class="theme-card ${focusMinutes === 25 ? 'active' : ''}" style="text-align:center; padding:12px;" onclick="FlowOS.setFocusInterval(25); FlowOS.refreshSettingsTab();">
+                    <span style="font-size: 16px; font-weight:700; color:var(--accent);">25m</span>
+                    <span style="font-size: 11px; color:var(--text-secondary);">Pomodoro</span>
+                  </div>
+                  <div class="theme-card ${focusMinutes === 45 ? 'active' : ''}" style="text-align:center; padding:12px;" onclick="FlowOS.setFocusInterval(45); FlowOS.refreshSettingsTab();">
+                    <span style="font-size: 16px; font-weight:700; color:var(--accent);">45m</span>
+                    <span style="font-size: 11px; color:var(--text-secondary);">Deep Sprint</span>
+                  </div>
+                  <div class="theme-card ${focusMinutes === 60 ? 'active' : ''}" style="text-align:center; padding:12px;" onclick="FlowOS.setFocusInterval(60); FlowOS.refreshSettingsTab();">
+                    <span style="font-size: 16px; font-weight:700; color:var(--accent);">60m</span>
+                    <span style="font-size: 11px; color:var(--text-secondary);">Ultradian</span>
+                  </div>
+                  <div class="theme-card ${focusMinutes === 90 ? 'active' : ''}" style="text-align:center; padding:12px;" onclick="FlowOS.setFocusInterval(90); FlowOS.refreshSettingsTab();">
+                    <span style="font-size: 16px; font-weight:700; color:var(--accent);">90m</span>
+                    <span style="font-size: 11px; color:var(--text-secondary);">Flow Marathon</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Automation Toggles -->
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-weight: 600; font-size: 12.5px;">Focus Automations</span>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--card-bg); border: 1px solid var(--border-hairline); border-radius: 12px;">
+                  <div>
+                    <div style="font-weight: 600; font-size: 12.5px;">Automatic Do Not Disturb</div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Silence notifications and mute banners when a focus session begins</div>
+                  </div>
+                  <button class="btn-secondary" onclick="FlowOS.toggleAutoDnd(); FlowOS.refreshSettingsTab();">
+                    ${autoDnd ? '<i data-lucide="check"></i> Enabled' : '<i data-lucide="x"></i> Disabled'}
+                  </button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--card-bg); border: 1px solid var(--border-hairline); border-radius: 12px;">
+                  <div>
+                    <div style="font-weight: 600; font-size: 12.5px;">Dim Background Windows</div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Reduce opacity of unfocused inactive windows to eliminate distractions</div>
+                  </div>
+                  <button class="btn-secondary" onclick="FlowOS.toggleDimBgWindows(); FlowOS.refreshSettingsTab();">
+                    ${dimBg ? '<i data-lucide="check"></i> Enabled' : '<i data-lucide="x"></i> Disabled'}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Quick Launch -->
+              <div style="padding: 14px; background: var(--card-bg); border: 1px solid var(--border-hairline); border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <i data-lucide="flame" style="width: 20px; color: var(--accent);"></i>
+                  <div>
+                    <div style="font-weight: 600; font-size: 13px;">Launch Flow Engine</div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Open full timer, daily productivity charts, and streaks</div>
+                  </div>
+                </div>
+                <button class="btn-primary" onclick="FlowOS.openApp('flow');">
+                  Open Flow Engine
+                </button>
+              </div>
+            `;
+          } else if (tab === 'storage') {
+            // Calculate storage metrics
+            let totalBytes = 0;
+            let notesBytes = (localStorage.getItem('flowos_notes') || '').length;
+            let tasksBytes = (localStorage.getItem('flowos_tasks') || '').length;
+            let filesBytes = (localStorage.getItem('flowos_files') || '').length;
+            for (let i = 0; i < localStorage.length; i++) {
+              const k = localStorage.key(i);
+              totalBytes += (localStorage.getItem(k) || '').length;
+            }
+            const usedKB = (totalBytes / 1024).toFixed(1);
+            const percent = Math.min(100, Math.max(1, ((totalBytes / (5 * 1024 * 1024)) * 100).toFixed(1)));
+
+            tabContentHtml = `
+              <div class="settings-section-title">Storage, Backup & Reset</div>
+
+              <!-- Storage Breakdown Card -->
+              <div style="padding: 16px; background: var(--card-bg); border: 1px solid var(--border-hairline); border-radius: 12px; display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-weight: 600; font-size: 13px;">Browser Local Storage Usage</span>
+                  <span class="mono" style="font-size: 12px; color: var(--accent);">${usedKB} KB used (${percent}% of 5 MB)</span>
+                </div>
+                <div style="width: 100%; height: 8px; background: var(--surface-secondary); border-radius: 4px; overflow: hidden;">
+                  <div style="width: ${percent}%; height: 100%; background: var(--accent); border-radius: 4px;"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 4px;">
+                  <div style="padding: 8px; background: var(--surface-secondary); border-radius: 8px; font-size: 11px;">
+                    <div style="color:var(--text-secondary);">Notes Data</div>
+                    <div class="mono" style="font-weight:600; font-size:12px;">${(notesBytes/1024).toFixed(1)} KB</div>
+                  </div>
+                  <div style="padding: 8px; background: var(--surface-secondary); border-radius: 8px; font-size: 11px;">
+                    <div style="color:var(--text-secondary);">Tasks Data</div>
+                    <div class="mono" style="font-weight:600; font-size:12px;">${(tasksBytes/1024).toFixed(1)} KB</div>
+                  </div>
+                  <div style="padding: 8px; background: var(--surface-secondary); border-radius: 8px; font-size: 11px;">
+                    <div style="color:var(--text-secondary);">Files & Media</div>
+                    <div class="mono" style="font-weight:600; font-size:12px;">${(filesBytes/1024).toFixed(1)} KB</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Backup & Restore -->
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-weight: 600; font-size: 12.5px;">Workspace Backup & Portability</span>
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn-secondary" style="flex:1; justify-content:center; padding:10px;" onclick="FlowOS.exportSystemBackup();">
+                    <i data-lucide="download"></i> Export Workspace JSON Backup
+                  </button>
+                  <label class="btn-secondary" style="flex:1; justify-content:center; padding:10px; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                    <i data-lucide="upload"></i> Restore from Backup File
+                    <input type="file" accept=".json" style="display:none;" onchange="FlowOS.importSystemBackup(event);" />
+                  </label>
+                </div>
+              </div>
+
+              <!-- Danger Zone -->
+              <div style="margin-top: 10px; padding: 14px; border: 1px solid rgba(255, 69, 58, 0.25); background: rgba(255, 69, 58, 0.05); border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <div style="font-weight: 600; font-size: 12.5px; color: #ff453a;">Factory Reset</div>
+                  <div style="font-size: 11px; color: var(--text-secondary);">Permanently erase all files, notes, tasks, custom wallpapers, and preferences</div>
+                </div>
+                <button class="btn-danger" onclick="FlowOS.wipeAllData();">
+                  <i data-lucide="trash-2"></i> Wipe All Data
+                </button>
+              </div>
+            `;
+          }
+
           container.innerHTML = `
             <div class="settings-layout">
               <div class="settings-sidebar">
-                <div class="settings-nav-item active"><i data-lucide="palette"></i> Appearance</div>
-                <div class="settings-nav-item"><i data-lucide="volume-2"></i> Sound & Audio</div>
-                <div class="settings-nav-item"><i data-lucide="flame"></i> Deep Work</div>
-                <div class="settings-nav-item"><i data-lucide="hard-drive"></i> Storage & Reset</div>
+                <div class="settings-nav-item ${tab === 'appearance' ? 'active' : ''}" onclick="FlowOS.switchSettingsTab('appearance')">
+                  <i data-lucide="palette"></i> Appearance
+                </div>
+                <div class="settings-nav-item ${tab === 'sound' ? 'active' : ''}" onclick="FlowOS.switchSettingsTab('sound')">
+                  <i data-lucide="volume-2"></i> Sound & Audio
+                </div>
+                <div class="settings-nav-item ${tab === 'focus' ? 'active' : ''}" onclick="FlowOS.switchSettingsTab('focus')">
+                  <i data-lucide="flame"></i> Deep Work
+                </div>
+                <div class="settings-nav-item ${tab === 'storage' ? 'active' : ''}" onclick="FlowOS.switchSettingsTab('storage')">
+                  <i data-lucide="hard-drive"></i> Storage & Reset
+                </div>
               </div>
               <div class="settings-main">
-                <div class="settings-section-title">Appearance & Aesthetics</div>
-
-                <!-- Theme Cards -->
-                <div class="theme-preview-grid">
-                  <div class="theme-card ${FlowOS.state.settings.theme === 'dark' ? 'active' : ''}" onclick="FlowOS.applyTheme('dark')">
-                    <span style="font-weight:600;">Charcoal Dark Mode</span>
-                    <span style="font-size:11.5px; color:var(--text-secondary);">Warm glass over deep dark layers</span>
-                  </div>
-                  <div class="theme-card ${FlowOS.state.settings.theme === 'light' ? 'active' : ''}" onclick="FlowOS.applyTheme('light')">
-                    <span style="font-weight:600;">Warm Paper Light Mode</span>
-                    <span style="font-size:11.5px; color:var(--text-secondary);">High-legibility morning paper tones</span>
-                  </div>
-                </div>
-
-                <!-- Accent Color Swatches -->
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                  <span style="font-weight:600; font-size:12.5px;">Accent Color Palette</span>
-                  <div class="accent-swatches">
-                    <div class="accent-swatch" style="background:#ff7849;" title="Warm Coral" onclick="FlowOS.applyAccent('#ff7849')"></div>
-                    <div class="accent-swatch" style="background:#e5983b;" title="Amber Ochre" onclick="FlowOS.applyAccent('#e5983b')"></div>
-                    <div class="accent-swatch" style="background:#4e9b7a;" title="Sage Green" onclick="FlowOS.applyAccent('#4e9b7a')"></div>
-                    <div class="accent-swatch" style="background:#d9654d;" title="Terracotta" onclick="FlowOS.applyAccent('#d9654d')"></div>
-                    <div class="accent-swatch" style="background:#d1a87b;" title="Dune Sand" onclick="FlowOS.applyAccent('#d1a87b')"></div>
-                    <div class="accent-swatch" style="background:#6a9eb5;" title="Nordic Frost" onclick="FlowOS.applyAccent('#6a9eb5')"></div>
-                  </div>
-                </div>
-
-                <!-- High-Definition Picture Wallpapers -->
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
-                  <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <span style="font-weight:600; font-size:12.5px;">Desktop Wallpapers</span>
-                    <label class="btn-secondary" style="padding: 4px 10px; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-                      <i data-lucide="upload" style="width:13px; height:13px;"></i> Custom Image...
-                      <input type="file" accept="image/*" style="display:none;" onchange="FlowOS.handleWallpaperUpload(event)" />
-                    </label>
-                  </div>
-                  <div class="wallpaper-previews-grid" id="settings-photo-wallpapers">
-                    <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/dawn.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/dawn.jpg')">
-                      <img class="wp-mini-img" src="assets/wallpapers/dawn.jpg" alt="Calm Dawn" />
-                      <span class="wp-preview-label">Calm Dawn</span>
-                    </div>
-                    <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/water.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/water.jpg')">
-                      <img class="wp-mini-img" src="assets/wallpapers/water.jpg" alt="Deep Water" />
-                      <span class="wp-preview-label">Deep Water</span>
-                    </div>
-                    <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/ember.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/ember.jpg')">
-                      <img class="wp-mini-img" src="assets/wallpapers/ember.jpg" alt="Night Ember" />
-                      <span class="wp-preview-label">Night Ember</span>
-                    </div>
-                    <div class="wp-preview-card ${FlowOS.state.settings.customWallpaper === 'assets/wallpapers/matrix.jpg' ? 'active' : ''}" onclick="FlowOS.selectPhotoWallpaper('assets/wallpapers/matrix.jpg')">
-                      <img class="wp-mini-img" src="assets/wallpapers/matrix.jpg" alt="Cypher Matrix" />
-                      <span class="wp-preview-label">Cypher Matrix</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Cypher Mode -->
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; margin-top: 14px; background: var(--card-bg); border: 1px solid var(--border-hairline); border-radius: 12px;">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <i data-lucide="lock" style="width: 16px; color: var(--text-secondary);"></i>
-                    <div>
-                      <div style="font-weight: 600; font-size: 12.5px;">Cypher Mode</div>
-                      <div style="font-size: 11px; color: var(--text-secondary);">Arm the offline cryptography workstation &amp; matrix aesthetic</div>
-                    </div>
-                  </div>
-                  <button class="btn-secondary" style="padding: 5px 14px; font-size: 11px;" onclick="FlowOS.toggleCypherMode()">
-                    <i data-lucide="shield"></i> Toggle
-                  </button>
-                </div>
-
-                <!-- Reset Data -->
-                <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-hairline);">
-                  <button class="btn-danger" onclick="FlowOS.wipeAllData()">
-                    <i data-lucide="trash-2"></i> Wipe All Storage & Reset
-                  </button>
-                </div>
+                ${tabContentHtml}
               </div>
             </div>
           `;
+
+          if (window.lucide) {
+            window.lucide.createIcons({ root: container });
+          }
         }
       },
 
