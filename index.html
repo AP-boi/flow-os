@@ -17,7 +17,9 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* Design tokens and base styles */
+    /* ==========================================================================
+       0. DESIGN SYSTEM TOKENS & CSS RESET
+       ========================================================================== */
     :root {
       /* Typography */
       --font-sans: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -4009,12 +4011,20 @@
     </div>
   </div>
 
-  <!-- Flow OS Client Scripts -->
+  <!-- ==========================================================================
+       JAVASCRIPT ENGINE: KERNEL, SHELL, APPS & DEEP WORK SOUL
+       ========================================================================== -->
   <script>
+    /**
+     * FLOW OS — MASTER CLIENT KERNEL
+     * Self-contained, Hardware-grade, WebAudio synthesized, Canvas rendered OS
+     */
     const OS_NAME = "Flow OS";
-    const OS_VERSION = "2.4.0";
+    const OS_VERSION = "2.4.0 (Deep Work Edition)";
 
-    // App state persistence via localStorage
+    /* --------------------------------------------------------------------------
+       1. STATE STORE & LOCALSTORAGE PERSISTENCE
+       -------------------------------------------------------------------------- */
     const Store = {
       defaults: {
         settings: {
@@ -4228,9 +4238,9 @@ function App() {
     document.getElementById('out').innerText = 'Clicked at ' + new Date().toLocaleTimeString();
   };
 <\/script>`
-          }
-        },
+        }
       },
+    },
 
       load(key) {
         try {
@@ -4242,13 +4252,13 @@ function App() {
         }
       },
 
-      save(key, data) {
-        try {
-          localStorage.setItem(`flow.${key}`, JSON.stringify(data));
-        } catch (e) {
-          console.error(`Storage save failed for flow.${key}`, e);
-        }
+        save(key, data) {
+      try {
+        localStorage.setItem(`flow.${key}`, JSON.stringify(data));
+      } catch (e) {
+        console.error(`Storage save failed for flow.${key}`, e);
       }
+    }
     };
 
     /* --------------------------------------------------------------------------
@@ -5518,7 +5528,9 @@ function App() {
         }
       },
 
-      // Focus sessions & timer logic
+      /* --------------------------------------------------------------------------
+         6. THE DEEP WORK ENGINE (Flow Sessions & Distraction Shield)
+         -------------------------------------------------------------------------- */
       startFlowSession(minutes = 25, task = null) {
         const activeTask = task || this.state.tasks.find(t => t.isFocus)?.title || 'Deep Work Session';
         this.state.flowSession.active = true;
@@ -5996,7 +6008,16 @@ function App() {
       }
     };
 
-    // Code Lab runner: sandboxed runtime with console streaming
+    /* --------------------------------------------------------------------------
+       8. BUILT-IN CORE APPLICATIONS IMPLEMENTATION
+       Files, Notes, Tasks, Flow Analytics, Terminal, Calculator, Settings, About
+       -------------------------------------------------------------------------- */
+    /* --------------------------------------------------------------------------
+       7.5 CODE LAB RUNTIME - sandboxed TS / React / JS / HTML execution engine
+       Transpiles TypeScript & JSX in-browser via Babel standalone (lazy-loaded
+       from unpkg), then evaluates the code inside a fresh sandboxed iframe
+       with a console bridge that streams output back to the OS.
+       -------------------------------------------------------------------------- */
     const CodelabRuntime = {
       babelPromise: null,
 
@@ -6009,7 +6030,7 @@ function App() {
             script.onload = () => resolve();
             script.onerror = () => {
               this.babelPromise = null;
-              resolve(); // Don't reject, allow fallback transpiler
+              reject(new Error('Babel compiler failed to load'));
             };
             document.head.appendChild(script);
           });
@@ -6047,24 +6068,12 @@ function App() {
       transpile(code, lang) {
         const isReact = lang === 'react';
         const prepared = this.preprocess(code);
-        if (window.Babel) {
-          try {
-            return Babel.transform(prepared, {
-              filename: isReact ? 'lab.tsx' : 'lab.ts',
-              presets: isReact
-                ? [['typescript', { allExtensions: true, isTSX: true }], ['react', { runtime: 'classic' }]]
-                : [['typescript', {}]]
-            }).code;
-          } catch (e) {
-            console.warn('Babel transpile error, falling back:', e.message);
-          }
-        }
-        // Fallback: strip TypeScript types for direct execution
-        return prepared
-          .replace(/:\s*(string|number|boolean|any|void|object|unknown|never|React\.[A-Za-z0-9_]+)(\[\])?(\s*=[^;,\n)]+)?/g, '$3')
-          .replace(/interface\s+\w+\s*\{[^}]*\}/g, '')
-          .replace(/type\s+\w+\s*=\s*[^;]+;/g, '')
-          .replace(/<[A-Za-z0-9_,\s]+>(?=\s*\()/g, '');
+        return Babel.transform(prepared, {
+          filename: isReact ? 'lab.tsx' : 'lab.ts',
+          presets: isReact
+            ? [['typescript', { allExtensions: true, isTSX: true }], ['react', { runtime: 'classic' }]]
+            : [['typescript', {}]]
+        }).code;
       },
 
       wrap(userJs, react) {
