@@ -5292,10 +5292,24 @@ function App() {
       },
 
       refreshSettingsTab() {
-        const win = this.state.windows.get('settings');
+        const win = Object.values(WindowManager.windows).find(w => w.appKey === 'settings');
         if (win) {
-          const body = win.element.querySelector('.window-body');
-          if (body) this.apps.settings.render(body);
+          const body = document.getElementById(`body-${win.id}`);
+          if (body) {
+            this.apps.settings.render(body);
+            if (window.lucide && typeof lucide.createIcons === 'function') {
+              lucide.createIcons({ root: body });
+            }
+          }
+        } else {
+          const settingsMain = document.querySelector('.settings-main');
+          if (settingsMain && settingsMain.closest('.window-body')) {
+            const body = settingsMain.closest('.window-body');
+            this.apps.settings.render(body);
+            if (window.lucide && typeof lucide.createIcons === 'function') {
+              lucide.createIcons({ root: body });
+            }
+          }
         }
       },
 
@@ -5305,6 +5319,8 @@ function App() {
         SoundEngine.setVolume(num);
         const txt = document.getElementById('settings-vol-text');
         if (txt) txt.innerText = `${num}%`;
+        const ccTxt = document.getElementById('cc-volume-val');
+        if (ccTxt) ccTxt.innerText = `${num}%`;
         Store.save('settings', this.state.settings);
       },
 
