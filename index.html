@@ -2847,6 +2847,506 @@
         animation: none !important;
       }
     }
+    /* ==========================================================================
+       10.8 CIPHER VAULT APP (Cypher Mode)
+       ========================================================================== */
+    .cypher-layout {
+      display: flex;
+      height: 100%;
+      background: var(--bg-surface);
+      overflow: hidden;
+    }
+
+    .cypher-sidebar {
+      width: 186px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 14px 10px;
+      border-right: 1px solid var(--border-hairline);
+      background: var(--bg-glass);
+    }
+
+    .cypher-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 4px 8px 14px;
+      letter-spacing: 0.02em;
+    }
+
+    .cypher-brand svg {
+      width: 16px;
+      height: 16px;
+      color: #3ce08f;
+    }
+
+    .cypher-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .cypher-nav-item svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .cypher-nav-item:hover {
+      background: var(--card-hover);
+      color: var(--text-primary);
+    }
+
+    .cypher-nav-item.active {
+      background: var(--accent-subtle);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .cypher-footnote {
+      margin-top: auto;
+      padding: 8px;
+      font-size: 9.5px;
+      line-height: 1.6;
+      color: var(--text-tertiary);
+      font-family: var(--font-mono);
+    }
+
+    .cypher-main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 22px;
+      user-select: text;
+    }
+
+    .cypher-title {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .cypher-title svg {
+      width: 16px;
+      height: 16px;
+      color: #3ce08f;
+    }
+
+    .cypher-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .cypher-secure {
+      border-left: 3px solid #3ce08f;
+      background: rgba(60, 224, 143, 0.07);
+      border-radius: 6px;
+      padding: 7px 11px;
+      font-size: 10.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .cypher-warn {
+      border-left: 3px solid #e5983b;
+      background: rgba(229, 152, 59, 0.08);
+      border-radius: 6px;
+      padding: 7px 11px;
+      font-size: 10.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .cypher-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+
+    .cypher-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+    }
+
+    .cypher-input {
+      background: var(--input-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 12px;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .cypher-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .cypher-area {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.5;
+      resize: vertical;
+      min-height: 76px;
+    }
+
+    .cypher-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cypher-row label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .cypher-out-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0 5px;
+    }
+
+    .cypher-out-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+    }
+
+    .cypher-chip {
+      font-size: 9.5px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-subtle);
+      color: var(--accent);
+    }
+
+    .cypher-out {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      line-height: 1.55;
+      word-break: break-all;
+      white-space: pre-wrap;
+      background: var(--input-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: 10px;
+      padding: 10px 12px;
+      min-height: 42px;
+      color: var(--text-primary);
+    }
+
+    .cypher-out.big {
+      font-size: 15px;
+      letter-spacing: 0.05em;
+    }
+
+    .cypher-strength {
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background: var(--card-bg);
+      overflow: hidden;
+      margin: 10px 0 4px;
+    }
+
+    .cypher-strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: var(--radius-pill);
+      background: #3ce08f;
+      transition: width 0.25s var(--ease-flow), background 0.25s var(--ease-flow);
+    }
+
+    .cypher-range {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+
+    .cypher-note {
+      font-size: 10.5px;
+      color: var(--text-tertiary);
+      line-height: 1.5;
+    }
+
+    /* Cypher Tray Badge (menu bar) */
+    #cypher-tray-badge {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(60, 224, 143, 0.13);
+      border: 1px solid rgba(60, 224, 143, 0.38);
+      color: #3ce08f;
+      font-weight: 700;
+      font-size: 10.5px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      animation: cypherPulse 2.6s infinite;
+    }
+
+    #cypher-tray-badge svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    @keyframes cypherPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(60, 224, 143, 0.28); }
+      50% { box-shadow: 0 0 12px 2px rgba(60, 224, 143, 0.22); }
+    }
+
+    /* Cypher Mode ambient scanline overlay */
+    html.cypher-active body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1950;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(60, 224, 143, 0.03) 0px,
+        rgba(60, 224, 143, 0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: screen;
+    }
+
+    /* Files app: delete affordance */
+    .file-item {
+      position: relative;
+    }
+
+    .file-delete {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      opacity: 0;
+      transition: var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .file-delete svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .file-item:hover .file-delete {
+      opacity: 1;
+    }
+
+    .file-delete:hover {
+      background: rgba(255, 107, 107, 0.15);
+      color: #ff6b6b;
+    }
+    /* ==========================================================================
+       10.7 CODE LAB APP
+       ========================================================================== */
+    .codelab-layout {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: var(--bg-surface);
+      overflow: hidden;
+    }
+
+    .codelab-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-hairline);
+      background: var(--bg-glass);
+      flex-shrink: 0;
+    }
+
+    .codelab-lang-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .codelab-lang-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .codelab-lang-tab svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .codelab-lang-tab:hover {
+      background: var(--card-hover);
+      color: var(--text-primary);
+    }
+
+    .codelab-lang-tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .codelab-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .codelab-status {
+      font-size: 10.5px;
+      font-family: var(--font-mono);
+      color: var(--text-tertiary);
+      white-space: nowrap;
+    }
+
+    .codelab-kbd {
+      font-size: 9.5px;
+      opacity: 0.7;
+      margin-left: 4px;
+      font-family: var(--font-mono);
+    }
+
+    .codelab-split {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .codelab-editor-wrap {
+      flex: 3;
+      display: flex;
+      min-height: 0;
+      border-bottom: 1px solid var(--border-hairline);
+      background: var(--bg-glass-heavy);
+    }
+
+    .codelab-gutter {
+      width: 46px;
+      flex-shrink: 0;
+      padding: 12px 8px 12px 0;
+      text-align: right;
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: var(--text-tertiary);
+      overflow: hidden;
+      border-right: 1px solid var(--border-hairline);
+      user-select: none;
+      white-space: pre;
+    }
+
+    .codelab-editor {
+      flex: 1;
+      padding: 12px 14px;
+      font-size: 11.5px;
+      line-height: 1.55;
+      font-family: var(--font-mono);
+      resize: none;
+      background: transparent;
+      color: var(--text-primary);
+      white-space: pre;
+      overflow: auto;
+      tab-size: 2;
+      border: none;
+      outline: none;
+    }
+
+    .codelab-output-wrap {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: var(--bg-glass-heavy);
+    }
+
+    .codelab-output {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 10px 14px;
+      font-size: 11px;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+      user-select: text;
+    }
+
+    .codelab-output:empty::after {
+      content: 'Console output appears here - press Run (Ctrl/Cmd + Enter)';
+      color: var(--text-tertiary);
+    }
+
+    .codelab-log {
+      white-space: pre-wrap;
+      word-break: break-word;
+      padding: 2px 0;
+      border-bottom: 1px dashed var(--border-hairline);
+      color: var(--text-secondary);
+    }
+
+    .codelab-log-warn { color: #e5983b; }
+    .codelab-log-error { color: #ff6b6b; }
+    .codelab-log-info { color: var(--accent); }
+
+    .codelab-preview {
+      display: none;
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      border: none;
+      background: #ffffff;
+    }
+
+    .codelab-output-wrap.mode-html .codelab-output { display: none; }
+    .codelab-output-wrap.mode-html .codelab-preview { display: block; }
+    .codelab-output-wrap.mode-react .codelab-output { flex: 0 0 44%; }
+    .codelab-output-wrap.mode-react .codelab-preview { display: block; }
   </style>
 </head>
 
@@ -2961,6 +3461,23 @@
           </div>
         </div>
       </div>
+
+      <!-- Cypher Menu -->
+      <div class="menu-item" id="menu-cypher-btn" onclick="FlowOS.toggleMenu('cypher-dropdown', event)">
+        <span>Cypher</span>
+        <div class="dropdown-menu" id="cypher-dropdown">
+          <div class="dropdown-item" onclick="FlowOS.toggleCypherMode()">
+            <div class="dropdown-item-left"><i data-lucide="shield"></i> Toggle Cypher Mode</div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item" onclick="FlowOS.openApp('cypher')">
+            <div class="dropdown-item-left"><i data-lucide="lock"></i> Cipher Vault...</div>
+          </div>
+          <div class="dropdown-item" onclick="FlowOS.openApp('codelab')">
+            <div class="dropdown-item-left"><i data-lucide="code"></i> Code Lab...</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Right Section: Flow Timer, Status & Control Center -->
@@ -2973,6 +3490,12 @@
 
       <!-- Focus Mode Pill -->
       <div id="focus-mode-badge">Deep Work</div>
+
+      <!-- Cypher Armed Badge -->
+      <div id="cypher-tray-badge" onclick="FlowOS.openApp('cypher')" title="Cypher Mode active - open Cipher Vault">
+        <i data-lucide="lock"></i>
+        <span>CYPHER</span>
+      </div>
 
       <!-- Wi-Fi Status -->
       <div class="tray-btn" id="wifi-tray-btn" title="Wi-Fi Connected" onclick="FlowOS.toggleTile('wifi')">
@@ -3051,7 +3574,21 @@
         <div class="dock-tooltip">Calculator</div>
       </div>
 
+      <!-- 7. Code Lab -->
+      <div class="dock-item" data-app="codelab" title="Code Lab - JS / TypeScript / React / HTML">
+        <div class="dock-icon-wrapper"><i data-lucide="code"></i></div>
+        <div class="dock-dot"></div>
+        <div class="dock-tooltip">Code Lab</div>
+      </div>
+
       <div class="dock-divider"></div>
+
+      <!-- 8. Cipher Vault -->
+      <div class="dock-item" data-app="cypher" title="Cipher Vault - encryption &amp; hashing tools">
+        <div class="dock-icon-wrapper"><i data-lucide="lock"></i></div>
+        <div class="dock-dot"></div>
+        <div class="dock-tooltip">Cipher Vault</div>
+      </div>
 
       <!-- 7. Settings -->
       <div class="dock-item" data-app="settings" title="System Settings">
@@ -3120,6 +3657,14 @@
         <div class="cc-tile-text">
           <span class="cc-tile-title">Do Not Disturb</span>
           <span class="cc-tile-desc" id="cc-dnd-desc">Off</span>
+        </div>
+      </div>
+
+      <div class="cc-tile" id="cc-cypher-tile" onclick="FlowOS.toggleCypherMode()">
+        <div class="cc-tile-icon"><i data-lucide="lock"></i></div>
+        <div class="cc-tile-text">
+          <span class="cc-tile-title">Cypher Mode</span>
+          <span class="cc-tile-desc" id="cc-cypher-desc">Off</span>
         </div>
       </div>
     </div>
@@ -3320,6 +3865,12 @@
     <div class="dropdown-item" onclick="FlowOS.openApp('tasks')">
       <div class="dropdown-item-left"><i data-lucide="check-square"></i> New Task</div>
     </div>
+    <div class="dropdown-item" onclick="FlowOS.openApp('codelab')">
+      <div class="dropdown-item-left"><i data-lucide="code"></i> Open Code Lab</div>
+    </div>
+    <div class="dropdown-item" onclick="FlowOS.toggleCypherMode()">
+      <div class="dropdown-item-left"><i data-lucide="shield"></i> Toggle Cypher Mode</div>
+    </div>
     <div class="dropdown-divider"></div>
     <div class="dropdown-item" onclick="FlowOS.cycleWallpaper()">
       <div class="dropdown-item-left"><i data-lucide="image"></i> Next Wallpaper</div>
@@ -3360,7 +3911,9 @@
           wifi: true,
           bluetooth: true,
           soundEffects: true,
-          lastRitualDate: null
+          lastRitualDate: null,
+          cypherMode: false,
+          cypherPrevWallpaper: null
         },
         notes: [
           {
@@ -3387,7 +3940,104 @@
           { id: 's1', date: Date.now() - 86400000 * 2, minutes: 50, task: 'Refactor audio synthesis', endedEarly: false, interruptions: 0 },
           { id: 's2', date: Date.now() - 86400000 * 1, minutes: 25, task: 'Canvas particle physics', endedEarly: false, interruptions: 1 },
           { id: 's3', date: Date.now() - 3600000 * 4, minutes: 50, task: 'Window manager snapping', endedEarly: false, interruptions: 0 }
-        ]
+        ],
+        files: [
+          { id: 'fd_docs', name: 'Documents', type: 'folder', parent: 'root', date: 1720000000000 },
+          { id: 'fd_proj', name: 'Projects', type: 'folder', parent: 'root', date: 1720000000001 },
+          { id: 'fd_dl', name: 'Downloads', type: 'folder', parent: 'root', date: 1720000000002 },
+          { id: 'fd_pic', name: 'Pictures', type: 'folder', parent: 'root', date: 1720000000003 },
+          { id: 'fl_1', name: 'Deep Work.md', type: 'file', parent: 'fd_docs', date: 1720000000004, content: '# The 4 Rules of Flow\n\n1. Work deeply.\n2. Embrace boredom.\n3. Quit social friction.\n4. Drain the shallows.' },
+          { id: 'fl_2', name: 'kernel.js', type: 'file', parent: 'fd_proj', date: 1720000000005, content: '// Flow OS kernel entry point\nconsole.log("WebKernel online");' },
+          { id: 'fl_3', name: 'hello.tsx', type: 'file', parent: 'fd_proj', date: 1720000000006, content: '// Open Code Lab to run React components!' }
+        ],
+        codelab: {
+          activeLang: 'js',
+          sources: {
+            js: `// Flow OS Code Lab - plain JavaScript
+// Console output streams to the panel below. Press Ctrl/Cmd + Enter to run.
+
+const fib = (n) => (n <= 1 ? n : fib(n - 1) + fib(n - 2));
+
+console.log('Hello from Flow OS Code Lab!');
+console.log('fib 1..10:', Array.from({ length: 10 }, (_, i) => fib(i + 1)));
+
+const user = { name: 'Ada', role: 'focus engineer', os: 'Flow OS' };
+console.info('User:', user);
+
+console.warn('Warnings show in amber...');
+console.error('...and errors show in red.');`,
+            ts: `// Flow OS Code Lab - TypeScript (transpiled in your browser via Babel)
+
+interface Task {
+  id: number;
+  title: string;
+  done: boolean;
+  priority: 'low' | 'high';
+}
+
+const tasks: Task[] = [
+  { id: 1, title: 'Transpile TS in the browser', done: true, priority: 'high' },
+  { id: 2, title: 'Ship Flow OS 3.0', done: false, priority: 'high' }
+];
+
+function summary(items: Task[]): string {
+  return items
+    .map(t => (t.done ? '[x] ' : '[ ] ') + '(' + t.priority + ') ' + t.title)
+    .join('\\n');
+}
+
+console.log(summary(tasks));
+console.log('Open tasks:', tasks.filter(t => !t.done).length);`,
+            react: `// Flow OS Code Lab - React 18 with TSX
+// Define a component named "App" and it auto-mounts in the preview pane.
+
+const btn = {
+  padding: '8px 16px',
+  marginRight: '8px',
+  borderRadius: '10px',
+  border: 'none',
+  background: '#14161a',
+  color: '#fff',
+  cursor: 'pointer'
+};
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log('count changed ->', count);
+  }, [count]);
+
+  return (
+    <div style={{ fontFamily: 'system-ui' }}>
+      <h2 style={{ margin: '0 0 8px' }}>Counter</h2>
+      <p style={{ color: '#555', margin: '0 0 12px' }}>{count} clicks</p>
+      <button style={btn} onClick={() => setCount(c => c + 1)}>Increment</button>
+      <button style={{ ...btn, background: '#eee', color: '#111' }} onClick={() => setCount(0)}>
+        Reset
+      </button>
+    </div>
+  );
+}`,
+            html: `<!-- Flow OS Code Lab - live HTML / CSS / JS preview -->
+<div class="card">
+  <h1>Hello, builder</h1>
+  <p>Edit this file, press Run, and the preview re-renders.</p>
+  <button id="go">Click me</button>
+  <p id="out"></p>
+</div>
+<style>
+  body { font-family: system-ui; background: #f4f1ea; display: grid; place-items: center; height: 100vh; margin: 0; }
+  .card { background: #fff; padding: 28px 32px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.12); text-align: center; }
+  button { padding: 8px 18px; border: none; border-radius: 10px; background: #ff7849; color: #fff; cursor: pointer; font-size: 14px; }
+</style>
+<script>
+  document.getElementById('go').onclick = function () {
+    document.getElementById('out').innerText = 'Clicked at ' + new Date().toLocaleTimeString();
+  };
+<\/script>`
+          }
+        },
       },
 
       load(key) {
@@ -3680,6 +4330,10 @@
         ember: {
           dark: ['rgba(220, 75, 40, 0.45)', 'rgba(180, 100, 30, 0.4)', 'rgba(120, 40, 90, 0.35)', 'rgba(50, 30, 50, 0.5)'],
           light: ['rgba(240, 130, 90, 0.5)', 'rgba(210, 150, 70, 0.45)', 'rgba(180, 110, 150, 0.4)', 'rgba(150, 100, 120, 0.45)']
+        },
+        matrix: {
+          dark: ['rgba(0, 224, 130, 0.36)', 'rgba(0, 170, 100, 0.40)', 'rgba(20, 120, 80, 0.34)', 'rgba(0, 70, 50, 0.50)'],
+          light: ['rgba(60, 210, 150, 0.45)', 'rgba(30, 180, 120, 0.40)', 'rgba(90, 200, 160, 0.35)', 'rgba(130, 215, 180, 0.40)']
         }
       },
 
@@ -4199,6 +4853,8 @@
         notes: Store.load('notes'),
         tasks: Store.load('tasks'),
         sessions: Store.load('sessions'),
+        files: Store.load('files'),
+        codelab: Store.load('codelab'),
         notifications: [
           { id: 'notif_1', app: 'Flow OS', title: 'Welcome to Flow OS', message: 'An authored operating system engineered for deep work.', time: 'Just now' }
         ],
@@ -4218,6 +4874,8 @@
       init() {
         this.applyTheme(this.state.settings.theme);
         this.applyAccent(this.state.settings.accent);
+        this.initCypherState();
+        this.initCodelabBridge();
         WallpaperEngine.init();
         this.initDockMagnification();
         this.initClock();
@@ -4352,6 +5010,65 @@
           wave.classList.add('soundscape-playing');
           SoundEngine.startSoundscape(type);
         }
+      },
+
+      /* === CYPHER MODE - system-wide cryptography workstation state === */
+      toggleCypherMode(force) {
+        const target = typeof force === 'boolean' ? force : !this.state.settings.cypherMode;
+        this.state.settings.cypherMode = target;
+        if (target) {
+          this.state.settings.cypherPrevWallpaper = this.state.settings.wallpaperPreset;
+          this.state.settings.wallpaperPreset = 'matrix';
+        } else {
+          this.state.settings.wallpaperPreset = this.state.settings.cypherPrevWallpaper || 'dawn';
+        }
+        Store.save('settings', this.state.settings);
+
+        document.documentElement.classList.toggle('cypher-active', target);
+        const badge = document.getElementById('cypher-tray-badge');
+        if (badge) badge.style.display = target ? 'flex' : 'none';
+        const tile = document.getElementById('cc-cypher-tile');
+        if (tile) tile.classList.toggle('active', target);
+        const desc = document.getElementById('cc-cypher-desc');
+        if (desc) desc.innerText = target ? 'Armed' : 'Off';
+
+        if (WallpaperEngine.ctx) WallpaperEngine.createBlobs();
+
+        if (target) {
+          this.showToast('Cypher Mode Armed', 'Encryption toolkit online. Cipher Vault is ready.', 'shield');
+        } else {
+          this.showToast('Cypher Mode Disarmed', 'Workspace restored to calm defaults.', 'shield-off');
+        }
+      },
+
+      initCypherState() {
+        if (!this.state.settings.cypherMode) return;
+        document.documentElement.classList.add('cypher-active');
+        this.state.settings.wallpaperPreset = 'matrix';
+        const badge = document.getElementById('cypher-tray-badge');
+        if (badge) badge.style.display = 'flex';
+        const tile = document.getElementById('cc-cypher-tile');
+        if (tile) tile.classList.add('active');
+        const desc = document.getElementById('cc-cypher-desc');
+        if (desc) desc.innerText = 'Armed';
+      },
+
+      /* === CODE LAB - console bridge for the sandboxed runtime iframe === */
+      initCodelabBridge() {
+        window.addEventListener('message', (e) => {
+          if (!e.data || e.data.__flowosCodelab !== true) return;
+          this.appendCodelabOutput(e.data.level, e.data.text);
+        });
+      },
+
+      appendCodelabOutput(level, text) {
+        const out = document.getElementById('codelab-output');
+        if (!out) return;
+        const line = document.createElement('div');
+        line.className = 'codelab-log' + (level && level !== 'log' ? ' codelab-log-' + level : '');
+        line.textContent = text;
+        out.appendChild(line);
+        out.scrollTop = out.scrollHeight;
       },
 
       toggleTile(tile) {
@@ -4832,6 +5549,9 @@
           { type: 'App', title: 'Terminal', desc: 'aura-sh shell with system utilities', icon: 'terminal', action: () => this.openApp('terminal') },
           { type: 'App', title: 'Calculator', desc: 'Standard & scientific keyboard calculator', icon: 'calculator', action: () => this.openApp('calculator') },
           { type: 'App', title: 'Settings', desc: 'Themes, soundscapes and storage management', icon: 'settings', action: () => this.openApp('settings') },
+          { type: 'App', title: 'Code Lab', desc: 'Write and run JavaScript, TypeScript, React and HTML', icon: 'code', action: () => this.openApp('codelab') },
+          { type: 'App', title: 'Cipher Vault', desc: 'AES encryption, SHA hashing, Base64, ciphers, passwords', icon: 'lock', action: () => this.openApp('cypher') },
+          { type: 'Action', title: 'Toggle Cypher Mode', desc: 'Arm the offline cryptography workstation', icon: 'shield', action: () => this.toggleCypherMode() },
           { type: 'Action', title: 'Start 25m Pomodoro Sprint', desc: 'Launch focused flow session', icon: 'flame', action: () => this.startFlowSession(25) },
           { type: 'Action', title: 'Toggle Dark / Light Theme', desc: 'Switch system appearance', icon: 'moon', action: () => this.toggleTheme() },
           { type: 'Action', title: 'Play Rain Soundscape', desc: 'Synthesized ambient rain generator', icon: 'volume-2', action: () => this.setSoundscape('rain') },
@@ -4977,60 +5697,311 @@
        8. BUILT-IN CORE APPLICATIONS IMPLEMENTATION
        Files, Notes, Tasks, Flow Analytics, Terminal, Calculator, Settings, About
        -------------------------------------------------------------------------- */
+    /* --------------------------------------------------------------------------
+       7.5 CODE LAB RUNTIME - sandboxed TS / React / JS / HTML execution engine
+       Transpiles TypeScript & JSX in-browser via Babel standalone (lazy-loaded
+       from unpkg), then evaluates the code inside a fresh sandboxed iframe
+       with a console bridge that streams output back to the OS.
+       -------------------------------------------------------------------------- */
+    const CodelabRuntime = {
+      babelPromise: null,
+
+      ensureBabel() {
+        if (window.Babel) return Promise.resolve();
+        if (!this.babelPromise) {
+          this.babelPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/@babel/standalone@7.24.7/babel.min.js';
+            script.onload = () => resolve();
+            script.onerror = () => {
+              this.babelPromise = null;
+              reject(new Error('Babel compiler failed to load'));
+            };
+            document.head.appendChild(script);
+          });
+        }
+        return this.babelPromise;
+      },
+
+      transpile(code, lang) {
+        const isReact = lang === 'react';
+        return Babel.transform(code, {
+          filename: isReact ? 'lab.tsx' : 'lab.ts',
+          presets: isReact
+            ? [['typescript', { allExtensions: true, isTSX: true }], ['react', { runtime: 'classic' }]]
+            : [['typescript', {}]]
+        }).code;
+      },
+
+      wrap(userJs, react) {
+        const reactSetup = react
+          ? `<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"><\/script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"><\/script>`
+          : '';
+        const hooks = react
+          ? 'const { useState, useEffect, useRef, useMemo, useCallback, useReducer, useContext, Fragment } = React;'
+          : '';
+        const mount = react
+          ? `if (typeof App !== 'undefined' && App) {
+  try {
+    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+    console.info('App component mounted into the preview pane.');
+  } catch (e) {
+    console.error('React mount error: ' + (e && e.message ? e.message : String(e)));
+  }
+} else {
+  console.warn('Tip: define a component named App to see it rendered in the preview pane.');
+}`
+          : '';
+
+        return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+${reactSetup}
+<style>
+  html, body { margin: 0; height: 100%; background: #ffffff; }
+  #root { min-height: 100%; box-sizing: border-box; padding: 16px; font-family: system-ui, sans-serif; color: #14161a; }
+</style>
+<script>
+  (function () {
+    var send = function (level, text) {
+      try { parent.postMessage({ __flowosCodelab: true, level: level, text: String(text) }, '*'); } catch (err) {}
+    };
+    var fmt = function (v) {
+      if (typeof v === 'string') return v;
+      if (v instanceof Error) return v.stack || v.message;
+      if (typeof v === 'function') return v.toString();
+      if (typeof v === 'undefined') return 'undefined';
+      if (v === null) return 'null';
+      try { return JSON.stringify(v, null, 2); } catch (err) { return String(v); }
+    };
+    ['log', 'info', 'warn', 'error', 'debug'].forEach(function (m) {
+      var orig = console[m] ? console[m].bind(console) : function () {};
+      console[m] = function () {
+        var args = Array.prototype.slice.call(arguments);
+        send(m === 'debug' ? 'log' : m, args.map(fmt).join(' '));
+        orig.apply(null, args);
+      };
+    });
+    window.addEventListener('error', function (e) {
+      send('error', e.message + (e.lineno ? '  (line ' + e.lineno + ')' : ''));
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      send('error', 'Unhandled promise rejection: ' + fmt(e.reason));
+    });
+  })();
+<\/script>
+</head>
+<body>
+<div id="root"></div>
+<script>
+try {
+${hooks}
+${userJs}
+;
+${mount}
+} catch (err) { console.error(err && err.stack ? err.stack : String(err)); }
+<\/script>
+</body>
+</html>`;
+      }
+    };
+
     FlowOS.apps = {
-      /* 8.1 FILES APP */
+      /* 8.1 FILES APP - real hierarchical virtual filesystem (folders, files, upload) */
       files: {
         title: 'Files',
         icon: 'folder',
-        width: 760,
-        height: 480,
+        width: 780,
+        height: 500,
         render(container) {
+          const uid = () => 'f_' + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36);
+          const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+          const getNode = (id) => FlowOS.state.files.find(n => n.id === id);
+          const childrenOf = (id) => FlowOS.state.files.filter(n => n.parent === id);
+          const iconFor = (n) => n.type === 'folder'
+            ? 'folder'
+            : /\.(png|jpe?g|gif|svg|webp)$/i.test(n.name) ? 'image'
+            : /\.(js|ts|tsx|jsx|json|html|css|md|txt|sh)$/i.test(n.name) ? 'file-code'
+            : 'file';
+
+          let path = [];
+
           container.innerHTML = `
             <div class="files-layout">
               <div class="files-sidebar">
-                <div class="files-nav-item active"><i data-lucide="home"></i> Home</div>
-                <div class="files-nav-item"><i data-lucide="file-text"></i> Documents</div>
-                <div class="files-nav-item"><i data-lucide="image"></i> Pictures</div>
-                <div class="files-nav-item"><i data-lucide="code"></i> Projects</div>
-                <div class="files-nav-item"><i data-lucide="download"></i> Downloads</div>
-                <div class="files-nav-item"><i data-lucide="trash-2"></i> Trash</div>
+                <div class="files-nav-item active" data-nav="root"><i data-lucide="home"></i> Home</div>
+                <div id="files-quick-nav"></div>
+                <div style="padding: 8px; border-top: 1px solid var(--border-hairline);">
+                  <button class="btn-secondary" style="width: 100%; font-size: 11px; padding: 5px;" id="files-upload-btn">
+                    <i data-lucide="upload"></i> Upload
+                  </button>
+                  <input type="file" id="files-upload-input" multiple style="display: none;" />
+                </div>
               </div>
-              <div class="files-main">
+              <div class="files-main" style="position: relative;">
                 <div class="files-toolbar">
-                  <div class="files-breadcrumbs">
-                    <span>Home</span> <i data-lucide="chevron-right" style="width:12px;"></i> <span>Documents</span>
-                  </div>
+                  <div class="files-breadcrumbs" id="files-breadcrumbs"></div>
                   <div style="display: flex; gap: 6px;">
-                    <button class="btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="FlowOS.showToast('Files', 'Created new folder', 'folder-plus')">
+                    <button class="btn-secondary" style="padding: 4px 10px; font-size: 11px;" id="files-newfile-btn">
+                      <i data-lucide="file-plus"></i> New File
+                    </button>
+                    <button class="btn-secondary" style="padding: 4px 10px; font-size: 11px;" id="files-newfolder-btn">
                       <i data-lucide="folder-plus"></i> New Folder
                     </button>
                   </div>
                 </div>
-                <div class="files-grid">
-                  <div class="file-item" ondblclick="FlowOS.openApp('notes')">
-                    <div class="file-icon"><i data-lucide="file-text"></i></div>
-                    <span class="file-name">Deep Work.md</span>
+                <div class="files-grid" id="files-grid"></div>
+                <div id="files-preview" style="display: none; position: absolute; inset: 0; z-index: 5; flex-direction: column; background: var(--bg-glass-heavy); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border-hairline);">
+                    <span id="files-preview-title" style="font-weight: 600; font-size: 12.5px;"></span>
+                    <button class="btn-secondary" style="padding: 3px 10px; font-size: 11px;" id="files-preview-close"><i data-lucide="x"></i> Close</button>
                   </div>
-                  <div class="file-item">
-                    <div class="file-icon"><i data-lucide="folder"></i></div>
-                    <span class="file-name">Architecture</span>
-                  </div>
-                  <div class="file-item">
-                    <div class="file-icon"><i data-lucide="image"></i></div>
-                    <span class="file-name">FlowDiagram.svg</span>
-                  </div>
-                  <div class="file-item">
-                    <div class="file-icon"><i data-lucide="code"></i></div>
-                    <span class="file-name">kernel.js</span>
-                  </div>
-                  <div class="file-item">
-                    <div class="file-icon"><i data-lucide="file"></i></div>
-                    <span class="file-name">manifest.json</span>
-                  </div>
+                  <pre id="files-preview-body" style="flex: 1; overflow: auto; margin: 0; padding: 14px 16px; font-family: var(--font-mono); font-size: 11px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; user-select: text; color: var(--text-primary);"></pre>
                 </div>
               </div>
             </div>
           `;
+
+          const grid = container.querySelector('#files-grid');
+          const crumbs = container.querySelector('#files-breadcrumbs');
+          const preview = container.querySelector('#files-preview');
+
+          const renderCrumbs = () => {
+            crumbs.innerHTML = '';
+            const mk = (label, depth) => {
+              const s = document.createElement('span');
+              s.textContent = label;
+              s.style.cursor = 'pointer';
+              s.onclick = () => { path = path.slice(0, depth); renderAll(); };
+              crumbs.appendChild(s);
+            };
+            mk('Home', 0);
+            path.forEach((id, i) => {
+              const arrow = document.createElement('i');
+              arrow.setAttribute('data-lucide', 'chevron-right');
+              arrow.style.cssText = 'width: 12px; height: 12px;';
+              crumbs.appendChild(arrow);
+              const n = getNode(id);
+              mk(n ? n.name : '?', i + 1);
+            });
+          };
+
+          const renderQuick = () => {
+            const host = container.querySelector('#files-quick-nav');
+            host.innerHTML = '';
+            childrenOf('root').filter(n => n.type === 'folder').forEach(f => {
+              const el = document.createElement('div');
+              el.className = 'files-nav-item';
+              el.innerHTML = '<i data-lucide="' + iconFor(f) + '"></i> ' + esc(f.name);
+              el.onclick = () => { path = [f.id]; renderAll(); };
+              host.appendChild(el);
+            });
+          };
+
+          const openPreview = (n) => {
+            container.querySelector('#files-preview-title').textContent = n.name;
+            container.querySelector('#files-preview-body').textContent = n.content || '(empty file)';
+            preview.style.display = 'flex';
+          };
+          container.querySelector('#files-preview-close').onclick = () => { preview.style.display = 'none'; };
+
+          const renderGrid = () => {
+            const current = path.length ? path[path.length - 1] : 'root';
+            const items = childrenOf(current).sort((a, b) =>
+              a.type === b.type ? a.name.localeCompare(b.name) : (a.type === 'folder' ? -1 : 1));
+            grid.innerHTML = '';
+            if (!items.length) {
+              const empty = document.createElement('div');
+              empty.style.cssText = 'grid-column: 1 / -1; padding: 34px 20px; text-align: center; color: var(--text-tertiary); font-size: 12px;';
+              empty.textContent = 'This folder is empty. Use New Folder or New File above.';
+              grid.appendChild(empty);
+            }
+            items.forEach(n => {
+              const item = document.createElement('div');
+              item.className = 'file-item';
+              item.innerHTML = `
+                <div class="file-icon"><i data-lucide="${iconFor(n)}"></i></div>
+                <span class="file-name">${esc(n.name)}</span>
+                <div class="file-delete" title="Delete"><i data-lucide="trash-2"></i></div>
+              `;
+              item.ondblclick = () => {
+                if (n.type === 'folder') { path.push(n.id); renderAll(); }
+                else openPreview(n);
+              };
+              item.querySelector('.file-delete').onclick = (e) => {
+                e.stopPropagation();
+                if (!confirm('Delete "' + n.name + '"' + (n.type === 'folder' ? ' and everything inside it' : '') + '?')) return;
+                const doomed = [n.id];
+                while (doomed.length) {
+                  const id = doomed.pop();
+                  childrenOf(id).forEach(c => doomed.push(c.id));
+                  const idx = FlowOS.state.files.findIndex(x => x.id === id);
+                  if (idx > -1) FlowOS.state.files.splice(idx, 1);
+                }
+                Store.save('files', FlowOS.state.files);
+                renderAll();
+                FlowOS.showToast('Deleted', n.name, 'trash-2');
+              };
+              grid.appendChild(item);
+            });
+          };
+
+          const markNav = () => {
+            container.querySelectorAll('.files-nav-item').forEach(el => el.classList.remove('active'));
+            if (!path.length) {
+              const rootEl = container.querySelector('[data-nav="root"]');
+              if (rootEl) rootEl.classList.add('active');
+            }
+          };
+
+          const renderAll = () => { renderCrumbs(); renderQuick(); markNav(); renderGrid(); if (window.lucide) lucide.createIcons(); };
+
+          const currentParent = () => (path.length ? path[path.length - 1] : 'root');
+
+          container.querySelector('#files-newfolder-btn').onclick = () => {
+            const name = (prompt('Folder name:', 'New Folder') || '').trim();
+            if (!name) return;
+            FlowOS.state.files.push({ id: uid(), name: name, type: 'folder', parent: currentParent(), date: Date.now() });
+            Store.save('files', FlowOS.state.files);
+            renderAll();
+            FlowOS.showToast('Folder Created', name, 'folder-plus');
+          };
+
+          container.querySelector('#files-newfile-btn').onclick = () => {
+            const name = (prompt('File name (tip: end with .txt .md .js .ts .html):', 'untitled.txt') || '').trim();
+            if (!name) return;
+            FlowOS.state.files.push({ id: uid(), name: name, type: 'file', parent: currentParent(), content: '', date: Date.now() });
+            Store.save('files', FlowOS.state.files);
+            renderAll();
+            FlowOS.showToast('File Created', name, 'file-plus');
+          };
+
+          const uploadInput = container.querySelector('#files-upload-input');
+          container.querySelector('#files-upload-btn').onclick = () => uploadInput.click();
+          uploadInput.onchange = () => {
+            const list = Array.from(uploadInput.files || []);
+            if (!list.length) return;
+            const parent = currentParent();
+            let done = 0;
+            list.forEach(f => {
+              const reader = new FileReader();
+              reader.onload = () => {
+                FlowOS.state.files.push({ id: uid(), name: f.name, type: 'file', parent: parent, content: String(reader.result || ''), date: Date.now() });
+                Store.save('files', FlowOS.state.files);
+                done++;
+                if (done === list.length) {
+                  renderAll();
+                  FlowOS.showToast('Upload Complete', done + ' file(s) imported', 'upload');
+                }
+              };
+              reader.readAsText(f);
+            });
+            uploadInput.value = '';
+          };
+
+          renderAll();
         }
       },
 
@@ -5353,7 +6324,7 @@
         }
       },
 
-      executeTermCmd(cmd, print) {
+      async executeTermCmd(cmd, print) {
         const parts = cmd.split(' ');
         const c = parts[0].toLowerCase();
         const arg = parts[1];
@@ -5361,6 +6332,9 @@
         switch (c) {
           case 'help':
             print('Available commands: help, neofetch, theme, wallpaper, flow, soundscape, ls, clear, date, whoami, uname');
+            print('Code Lab:   codelab - open the JS / TypeScript / React / HTML playground');
+            print('Cypher:     cypher <on|off|status> - arm the cryptography workstation');
+            print('Crypto ops: hash <text> - sha256 digest | b64 <encode|decode> <text> | randpass [len]');
             break;
           case 'neofetch':
             print(`
@@ -5377,6 +6351,7 @@
   <b>Kernel:</b> WebKernel 2026.8 (Deep Work)
   <b>Uptime:</b> ${Math.floor(FlowOS.state.uptimeSeconds / 60)} mins
   <b>Shell:</b> aura-sh (vanilla JS)
+  <b>CodeLab:</b> TypeScript / React / JS / HTML runtime
   <b>Memory:</b> ~48.2 MB
   <b>Theme:</b> ${FlowOS.state.settings.theme} (${FlowOS.state.settings.accent})
             `);
@@ -5418,9 +6393,11 @@
               print('Usage: soundscape <rain|brown|cafe|wind|none>');
             }
             break;
-          case 'ls':
-            print('Documents/  Projects/  Downloads/  Pictures/  kernel.js  manifest.json  Deep\\ Work.md  FlowDiagram.svg');
+          case 'ls': {
+            const kids = FlowOS.state.files.filter(n => n.parent === 'root');
+            print(kids.map(n => (n.type === 'folder' ? n.name + '/' : n.name)).join('  ') || '(empty)');
             break;
+          }
           case 'clear':
             document.getElementById('term-history').innerHTML = '';
             break;
@@ -5433,6 +6410,55 @@
           case 'date':
             print(new Date().toString());
             break;
+          case 'codelab':
+            FlowOS.openApp('codelab');
+            print('Code Lab launched - JS / TypeScript / React / HTML');
+            break;
+          case 'cypher':
+            if (arg === 'on') {
+              FlowOS.toggleCypherMode(true);
+              print('CYPHER MODE ARMED. Cipher Vault online.');
+            } else if (arg === 'off') {
+              FlowOS.toggleCypherMode(false);
+              print('Cypher mode disarmed. Workspace restored.');
+            } else if (arg === 'status') {
+              print('Cypher Mode: ' + (FlowOS.state.settings.cypherMode ? 'ARMED' : 'off'));
+              print('Tools: cypher on|off, hash, b64, randpass - full suite in Cipher Vault app.');
+            } else {
+              print('Usage: cypher <on|off|status>');
+            }
+            break;
+          case 'hash': {
+            const text = parts.slice(1).join(' ');
+            if (!text) { print('Usage: hash <text to digest>'); break; }
+            if (!(window.crypto && crypto.subtle)) { print('WebCrypto unavailable in this context.'); break; }
+            const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+            print('[sha256] ' + Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join(''));
+            break;
+          }
+          case 'b64': {
+            const mode = arg;
+            const text = parts.slice(2).join(' ');
+            if (!mode || !text || !['encode', 'decode'].includes(mode)) { print('Usage: b64 <encode|decode> <text>'); break; }
+            try {
+              if (mode === 'encode') {
+                print(btoa(String.fromCharCode(...new TextEncoder().encode(text))));
+              } else {
+                print(new TextDecoder().decode(Uint8Array.from(atob(text), ch => ch.charCodeAt(0))));
+              }
+            } catch (err) {
+              print('b64: invalid input (' + err.message + ')');
+            }
+            break;
+          }
+          case 'randpass': {
+            const plen = Math.min(64, Math.max(8, parseInt(arg, 10) || 20));
+            const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+';
+            const rnd = new Uint32Array(plen);
+            crypto.getRandomValues(rnd);
+            print('[password] ' + Array.from(rnd, r => pool[r % pool.length]).join('') + '  (' + plen + ' chars)');
+            break;
+          }
           default:
             print(`aura-sh: command not found: ${c}`);
         }
@@ -5524,6 +6550,549 @@
         }
       },
 
+      /* 8.6.6 CODE LAB APP - JavaScript / TypeScript / React / HTML playground */
+      codelab: {
+        title: 'Code Lab',
+        icon: 'code',
+        width: 880,
+        height: 580,
+        render(container) {
+          const LANGS = [
+            { id: 'js', label: 'JavaScript', icon: 'braces', mode: '' },
+            { id: 'ts', label: 'TypeScript', icon: 'file-code', mode: '' },
+            { id: 'react', label: 'React TSX', icon: 'atom', mode: 'mode-react' },
+            { id: 'html', label: 'HTML Live', icon: 'layout-template', mode: 'mode-html' }
+          ];
+          const cl = FlowOS.state.codelab;
+          if (!cl.sources) cl.sources = {};
+          if (!LANGS.some(l => l.id === cl.activeLang)) cl.activeLang = 'js';
+          let activeLang = cl.activeLang;
+
+          container.innerHTML = `
+            <div class="codelab-layout">
+              <div class="codelab-toolbar">
+                <div class="codelab-lang-tabs">
+                  ${LANGS.map(l => `
+                    <div class="codelab-lang-tab${l.id === activeLang ? ' active' : ''}" data-lang="${l.id}">
+                      <i data-lucide="${l.icon}"></i> ${l.label}
+                    </div>`).join('')}
+                </div>
+                <div class="codelab-toolbar-right">
+                  <span class="codelab-status" id="codelab-status">Ready</span>
+                  <button class="btn-secondary" id="codelab-clear" style="padding: 4px 10px; font-size: 11px;">
+                    <i data-lucide="eraser"></i> Clear
+                  </button>
+                  <button class="btn-primary" id="codelab-run" style="padding: 5px 14px; font-size: 11.5px;">
+                    <i data-lucide="play"></i> Run<span class="codelab-kbd">Ctrl&#8629;</span>
+                  </button>
+                </div>
+              </div>
+              <div class="codelab-split">
+                <div class="codelab-editor-wrap">
+                  <div class="codelab-gutter mono" id="codelab-gutter">1</div>
+                  <textarea class="codelab-editor" id="codelab-editor" spellcheck="false" autocomplete="off"></textarea>
+                </div>
+                <div class="codelab-output-wrap ${LANGS.find(l => l.id === activeLang).mode}" id="codelab-output-wrap">
+                  <div class="codelab-output" id="codelab-output"></div>
+                  <iframe class="codelab-preview" id="codelab-frame" sandbox="allow-scripts allow-modals"></iframe>
+                </div>
+              </div>
+            </div>
+          `;
+
+          const editor = container.querySelector('#codelab-editor');
+          const gutter = container.querySelector('#codelab-gutter');
+          const output = container.querySelector('#codelab-output');
+          const outputWrap = container.querySelector('#codelab-output-wrap');
+          const frame = container.querySelector('#codelab-frame');
+          const statusEl = container.querySelector('#codelab-status');
+
+          editor.value = cl.sources[activeLang] || '';
+
+          const updateGutter = () => {
+            const lines = editor.value.split('\n').length;
+            gutter.textContent = Array.from({ length: lines }, (_, i) => i + 1).join('\n');
+            gutter.scrollTop = editor.scrollTop;
+          };
+
+          const persist = () => {
+            cl.activeLang = activeLang;
+            cl.sources[activeLang] = editor.value;
+            Store.save('codelab', cl);
+          };
+
+          const setMode = () => {
+            const conf = LANGS.find(l => l.id === activeLang);
+            outputWrap.className = 'codelab-output-wrap ' + conf.mode;
+          };
+
+          const launch = (doc) => {
+            frame.srcdoc = doc;
+          };
+
+          const run = () => {
+            persist();
+            output.innerHTML = '';
+            const code = editor.value;
+
+            if (activeLang === 'html') {
+              setMode();
+              frame.srcdoc = code;
+              statusEl.textContent = 'Preview live';
+              return;
+            }
+
+            setMode();
+
+            if (activeLang === 'js') {
+              statusEl.textContent = 'Running...';
+              launch(CodelabRuntime.wrap(code, false));
+              return;
+            }
+
+            statusEl.textContent = 'Loading compiler... (first run fetches Babel from unpkg)';
+            CodelabRuntime.ensureBabel().then(() => {
+              try {
+                const js = CodelabRuntime.transpile(code, activeLang);
+                statusEl.textContent = 'Running...';
+                launch(CodelabRuntime.wrap(js, activeLang === 'react'));
+              } catch (err) {
+                FlowOS.appendCodelabOutput('error', 'Compile error: ' + err.message);
+                statusEl.textContent = 'Compile failed';
+              }
+            }).catch((err) => {
+              FlowOS.appendCodelabOutput('error', err.message + ' - TypeScript and React need one-time CDN access to unpkg.com. JavaScript and HTML modes work fully offline.');
+              statusEl.textContent = 'Compiler unavailable';
+            });
+          };
+
+          container.querySelectorAll('.codelab-lang-tab').forEach(tab => {
+            tab.onclick = () => {
+              activeLang = tab.dataset.lang;
+              container.querySelectorAll('.codelab-lang-tab').forEach(t => t.classList.toggle('active', t === tab));
+              editor.value = cl.sources[activeLang] || '';
+              output.innerHTML = '';
+              setMode();
+              frame.srcdoc = '';
+              statusEl.textContent = 'Ready';
+              updateGutter();
+              persist();
+              editor.focus();
+            };
+          });
+
+          container.querySelector('#codelab-run').onclick = run;
+          container.querySelector('#codelab-clear').onclick = () => { output.innerHTML = ''; if (activeLang === 'html') run(); };
+
+          editor.addEventListener('input', () => { updateGutter(); persist(); });
+          editor.addEventListener('scroll', () => { gutter.scrollTop = editor.scrollTop; });
+          editor.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+              e.preventDefault();
+              const start = editor.selectionStart;
+              const end = editor.selectionEnd;
+              editor.value = editor.value.slice(0, start) + '  ' + editor.value.slice(end);
+              editor.selectionStart = editor.selectionEnd = start + 2;
+              persist();
+            }
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+              e.preventDefault();
+              run();
+            }
+          });
+
+          updateGutter();
+          editor.focus();
+        }
+      },
+
+      /* 8.6.8 CIPHER VAULT APP - Cypher Mode toolkit (AES, hashing, Base64, ciphers, passwords) */
+      cypher: {
+        title: 'Cipher Vault',
+        icon: 'lock',
+        width: 800,
+        height: 540,
+        render(container) {
+          container.innerHTML = `
+            <div class="cypher-layout">
+              <div class="cypher-sidebar">
+                <div class="cypher-brand"><i data-lucide="lock"></i> Cipher Vault</div>
+                <div class="cypher-nav-item active" data-tool="aes"><i data-lucide="key-round"></i> AES Encrypt</div>
+                <div class="cypher-nav-item" data-tool="hash"><i data-lucide="fingerprint"></i> Hashing</div>
+                <div class="cypher-nav-item" data-tool="b64"><i data-lucide="file-binary"></i> Base64</div>
+                <div class="cypher-nav-item" data-tool="classic"><i data-lucide="scroll-text"></i> Classic Ciphers</div>
+                <div class="cypher-nav-item" data-tool="gen"><i data-lucide="dices"></i> Password Forge</div>
+                <div class="cypher-footnote">100% offline WebCrypto.<br>Keys never leave this device.</div>
+              </div>
+              <div class="cypher-main" id="cypher-tool-host"></div>
+            </div>
+          `;
+
+          const host = container.querySelector('#cypher-tool-host');
+          const enc = new TextEncoder();
+          const dec = new TextDecoder();
+          const subtleOK = !!(window.crypto && window.crypto.subtle);
+
+          const bytesToB64 = (bytes) => {
+            let s = '';
+            for (let i = 0; i < bytes.length; i += 0x8000) {
+              s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+            }
+            return btoa(s);
+          };
+          const b64ToBytes = (str) => {
+            const s = atob(String(str).trim().replace(/\s+/g, ''));
+            const bytes = new Uint8Array(s.length);
+            for (let i = 0; i < s.length; i++) bytes[i] = s.charCodeAt(i);
+            return bytes;
+          };
+          const toHex = (bytes) => Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+
+          const copyText = (text) => {
+            const done = () => FlowOS.showToast('Copied', 'Output copied to clipboard', 'copy');
+            const fallback = () => {
+              const ta = document.createElement('textarea');
+              ta.value = text;
+              document.body.appendChild(ta);
+              ta.select();
+              try { document.execCommand('copy'); done(); } catch (err) {}
+              ta.remove();
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done).catch(fallback);
+            } else fallback();
+          };
+
+          const copyBtn = (targetId) =>
+            `<button class="btn-secondary" style="padding:4px 12px; font-size:11px;" data-copy="${targetId}"><i data-lucide="copy"></i> Copy</button>`;
+
+          host.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-copy]');
+            if (!btn) return;
+            const el = document.getElementById(btn.dataset.copy);
+            if (el && el.textContent) copyText(el.textContent);
+          });
+
+          const renderTool = {
+            /* ---------- AES-GCM ---------- */
+            aes() {
+              host.innerHTML = `
+                <div class="cypher-title"><i data-lucide="key-round"></i> AES-256-GCM Vault</div>
+                <div class="cypher-sub">Authenticated symmetric encryption. PBKDF2 key derivation (150,000 rounds), random salt + IV per message.</div>
+                ${subtleOK
+                  ? `<div class="cypher-secure">Payload format: <b>FV1.&lt;base64(salt | iv | ciphertext)&gt;</b> - decrypt with the same password on any Flow OS.</div>`
+                  : `<div class="cypher-warn">WebCrypto is unavailable in this context. Serve Flow OS over http(s) to enable encryption.</div>`}
+                <div class="cypher-field">
+                  <span class="cypher-label">Password</span>
+                  <input type="password" class="cypher-input" id="cv-pass" placeholder="Encryption password (never stored anywhere)" />
+                </div>
+                <div class="cypher-field">
+                  <span class="cypher-label">Plaintext / Ciphertext (FV1)</span>
+                  <textarea class="cypher-input cypher-area" id="cv-aes-in" placeholder="Type a secret to encrypt, or paste an FV1... payload to decrypt"></textarea>
+                </div>
+                <div class="cypher-row">
+                  <button class="btn-primary" style="padding:6px 16px; font-size:11.5px;" id="cv-enc-btn"><i data-lucide="lock"></i> Encrypt</button>
+                  <button class="btn-primary" style="padding:6px 16px; font-size:11.5px;" id="cv-dec-btn"><i data-lucide="shield-off"></i> Decrypt</button>
+                </div>
+                <div class="cypher-out-label">
+                  <span class="cypher-out-title">Output</span>
+                  <span class="cypher-chip" id="cv-aes-chip" style="display:none;"></span>
+                </div>
+                <div class="cypher-out" id="cv-aes-out">Awaiting operation...</div>
+                <div class="cypher-row" style="margin-top:8px;">${copyBtn('cv-aes-out')}</div>
+              `;
+
+              const deriveKey = async (password, salt) => {
+                const keyMat = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+                return crypto.subtle.deriveKey(
+                  { name: 'PBKDF2', salt: salt, iterations: 150000, hash: 'SHA-256' },
+                  keyMat,
+                  { name: 'AES-GCM', length: 256 },
+                  false,
+                  ['encrypt', 'decrypt']
+                );
+              };
+
+              const out = host.querySelector('#cv-aes-out');
+              const chip = host.querySelector('#cv-aes-chip');
+              const setOut = (text, label) => {
+                out.textContent = text;
+                chip.textContent = label || '';
+                chip.style.display = label ? 'inline-block' : 'none';
+              };
+
+              host.querySelector('#cv-enc-btn').onclick = async () => {
+                if (!subtleOK) return setOut('WebCrypto unavailable - see notice above.', 'blocked');
+                const password = host.querySelector('#cv-pass').value;
+                const text = host.querySelector('#cv-aes-in').value;
+                if (!password) return setOut('Enter a password first.', 'hint');
+                if (!text) return setOut('Enter plaintext to encrypt.', 'hint');
+                try {
+                  const salt = crypto.getRandomValues(new Uint8Array(16));
+                  const iv = crypto.getRandomValues(new Uint8Array(12));
+                  const key = await deriveKey(password, salt);
+                  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, enc.encode(text)));
+                  const payload = new Uint8Array(salt.length + iv.length + ct.length);
+                  payload.set(salt, 0);
+                  payload.set(iv, salt.length);
+                  payload.set(ct, salt.length + iv.length);
+                  setOut('FV1.' + bytesToB64(payload), 'encrypted');
+                  FlowOS.showToast('Encrypted', 'AES-256-GCM payload ready', 'lock');
+                } catch (err) {
+                  setOut('Encryption failed: ' + err.message, 'error');
+                }
+              };
+
+              host.querySelector('#cv-dec-btn').onclick = async () => {
+                if (!subtleOK) return setOut('WebCrypto unavailable - see notice above.', 'blocked');
+                const password = host.querySelector('#cv-pass').value;
+                const text = host.querySelector('#cv-aes-in').value.trim();
+                if (!password) return setOut('Enter the password first.', 'hint');
+                if (!text.startsWith('FV1.')) return setOut('Not a valid payload - it must start with FV1.', 'hint');
+                try {
+                  const raw = b64ToBytes(text.slice(4));
+                  const salt = raw.slice(0, 16);
+                  const iv = raw.slice(16, 28);
+                  const ct = raw.slice(28);
+                  const key = await deriveKey(password, salt);
+                  const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ct);
+                  setOut(dec.decode(plain), 'decrypted');
+                } catch (err) {
+                  setOut('Decryption failed - wrong password or corrupted payload.', 'error');
+                }
+              };
+            },
+
+            /* ---------- Hashing ---------- */
+            hash() {
+              host.innerHTML = `
+                <div class="cypher-title"><i data-lucide="fingerprint"></i> Digest Suite</div>
+                <div class="cypher-sub">All four SHA family digests computed at once via WebCrypto. Type to hash - input is never stored.</div>
+                <div class="cypher-field">
+                  <span class="cypher-label">Input</span>
+                  <textarea class="cypher-input cypher-area" id="cv-hash-in" placeholder="Text to hash..."></textarea>
+                </div>
+                ${['sha1', 'sha256', 'sha384', 'sha512'].map(a => `
+                  <div class="cypher-out-label">
+                    <span class="cypher-out-title">${a.toUpperCase()}</span>
+                  </div>
+                  <div class="cypher-out" id="cv-${a}">-</div>
+                  <div class="cypher-row" style="margin-top:6px; margin-bottom:10px;">${copyBtn('cv-' + a)}</div>
+                `).join('')}
+              `;
+              const input = host.querySelector('#cv-hash-in');
+              const compute = async () => {
+                const text = input.value;
+                if (!subtleOK) {
+                  ['sha1', 'sha256', 'sha384', 'sha512'].forEach(a => {
+                    host.querySelector('#cv-' + a).textContent = 'WebCrypto unavailable in this context.';
+                  });
+                  return;
+                }
+                for (const algo of ['SHA-1', 'SHA-256', 'SHA-384', 'SHA-512']) {
+                  const el = host.querySelector('#cv-' + algo.toLowerCase().replace('-', ''));
+                  if (!text) { el.textContent = '-'; continue; }
+                  const digest = new Uint8Array(await crypto.subtle.digest(algo, enc.encode(text)));
+                  el.textContent = toHex(digest);
+                }
+              };
+              input.addEventListener('input', compute);
+              compute();
+            },
+
+            /* ---------- Base64 ---------- */
+            b64() {
+              host.innerHTML = `
+                <div class="cypher-title"><i data-lucide="file-binary"></i> Base64 Studio</div>
+                <div class="cypher-sub">UTF-8 safe encode / decode. Handles emoji and international text correctly.</div>
+                <div class="cypher-row">
+                  <button class="btn-primary" style="padding:6px 16px; font-size:11.5px;" id="cv-b64-enc">Encode &gt;</button>
+                  <button class="btn-primary" style="padding:6px 16px; font-size:11.5px;" id="cv-b64-dec">&lt; Decode</button>
+                </div>
+                <div class="cypher-field">
+                  <span class="cypher-label">Input</span>
+                  <textarea class="cypher-input cypher-area" id="cv-b64-in" placeholder="Text or base64..."></textarea>
+                </div>
+                <div class="cypher-out-label">
+                  <span class="cypher-out-title">Output</span>
+                  <span class="cypher-chip" id="cv-b64-chip" style="display:none;"></span>
+                </div>
+                <div class="cypher-out" id="cv-b64-out">Awaiting operation...</div>
+                <div class="cypher-row" style="margin-top:8px;">${copyBtn('cv-b64-out')}</div>
+              `;
+              const input = host.querySelector('#cv-b64-in');
+              const out = host.querySelector('#cv-b64-out');
+              const chip = host.querySelector('#cv-b64-chip');
+              const setOut = (text, label) => {
+                out.textContent = text;
+                chip.textContent = label || '';
+                chip.style.display = label ? 'inline-block' : 'none';
+              };
+              host.querySelector('#cv-b64-enc').onclick = () => {
+                try { setOut(bytesToB64(enc.encode(input.value)), 'base64'); }
+                catch (err) { setOut('Encode failed: ' + err.message, 'error'); }
+              };
+              host.querySelector('#cv-b64-dec').onclick = () => {
+                try { setOut(dec.decode(b64ToBytes(input.value)), 'decoded'); }
+                catch (err) { setOut('Invalid base64 input.', 'error'); }
+              };
+            },
+
+            /* ---------- Classical ciphers ---------- */
+            classic() {
+              host.innerHTML = `
+                <div class="cypher-title"><i data-lucide="scroll-text"></i> Classical Ciphers</div>
+                <div class="cypher-sub">Caesar, ROT13, Vigenere and Atbash - the ciphers that guarded secrets for two thousand years.</div>
+                <div class="cypher-field">
+                  <span class="cypher-label">Message</span>
+                  <textarea class="cypher-input cypher-area" id="cv-cl-in" placeholder="Attack at dawn"></textarea>
+                </div>
+                <div class="cypher-out-label">
+                  <span class="cypher-out-title">Caesar shift</span>
+                  <span class="cypher-chip" id="cv-shift-chip">13 (ROT13)</span>
+                </div>
+                <div class="cypher-row" style="margin-bottom:4px;">
+                  <input type="range" min="1" max="25" value="13" class="cypher-range" id="cv-shift" />
+                </div>
+                <div class="cypher-out" id="cv-caesar">-</div>
+                <div class="cypher-out-label"><span class="cypher-out-title">Vigenere (key)</span></div>
+                <div class="cypher-row">
+                  <input type="text" class="cypher-input" id="cv-vig-key" placeholder="KEY" style="width: 140px;" value="FLOW" />
+                </div>
+                <div class="cypher-out" id="cv-vig">-</div>
+                <div class="cypher-out-label"><span class="cypher-out-title">Atbash</span></div>
+                <div class="cypher-out" id="cv-atbash">-</div>
+              `;
+              const input = host.querySelector('#cv-cl-in');
+              const shift = host.querySelector('#cv-shift');
+              const shiftChip = host.querySelector('#cv-shift-chip');
+              const key = host.querySelector('#cv-vig-key');
+              const caesarOut = host.querySelector('#cv-caesar');
+              const vigOut = host.querySelector('#cv-vig');
+              const atbashOut = host.querySelector('#cv-atbash');
+
+              const caesar = (text, k) => text.replace(/[a-z]/gi, (ch) => {
+                const base = ch <= 'Z' ? 65 : 97;
+                return String.fromCharCode((ch.charCodeAt(0) - base + k) % 26 + base);
+              });
+              const vigenere = (text, rawKey) => {
+                const k = rawKey.toUpperCase().replace(/[^A-Z]/g, '');
+                if (!k) return '(enter a key above)';
+                let i = 0;
+                return text.replace(/[a-z]/gi, (ch) => {
+                  const base = ch <= 'Z' ? 65 : 97;
+                  const s = k.charCodeAt(i % k.length) - 65;
+                  i++;
+                  return String.fromCharCode((ch.charCodeAt(0) - base + s) % 26 + base);
+                });
+              };
+              const atbash = (text) => text.replace(/[a-z]/gi, (ch) => {
+                const base = ch <= 'Z' ? 65 : 97;
+                return String.fromCharCode(base + 25 - (ch.charCodeAt(0) - base));
+              });
+
+              const update = () => {
+                const text = input.value;
+                const k = parseInt(shift.value, 10);
+                shiftChip.textContent = k === 13 ? k + ' (ROT13)' : String(k);
+                caesarOut.textContent = text ? caesar(text, k) : '-';
+                vigOut.textContent = text ? vigenere(text, key.value) : '-';
+                atbashOut.textContent = text ? atbash(text) : '-';
+              };
+              input.addEventListener('input', update);
+              shift.addEventListener('input', update);
+              key.addEventListener('input', update);
+              update();
+            },
+
+            /* ---------- Password forge ---------- */
+            gen() {
+              host.innerHTML = `
+                <div class="cypher-title"><i data-lucide="dices"></i> Password Forge</div>
+                <div class="cypher-sub">Generated with crypto.getRandomValues - cryptographically secure, computed locally.</div>
+                <div class="cypher-row" style="margin-bottom:6px;">
+                  <span class="cypher-label" style="margin: 0;">Length</span>
+                  <input type="range" min="8" max="64" value="20" class="cypher-range" id="cv-len" />
+                  <span class="cypher-chip" id="cv-len-chip">20</span>
+                </div>
+                <div class="cypher-row">
+                  <label><input type="checkbox" id="cv-up" checked /> A-Z</label>
+                  <label><input type="checkbox" id="cv-low" checked /> a-z</label>
+                  <label><input type="checkbox" id="cv-num" checked /> 0-9</label>
+                  <label><input type="checkbox" id="cv-sym" checked /> !@#$%</label>
+                  <label><input type="checkbox" id="cv-amb" checked /> Exclude look-alikes (O0Il1)</label>
+                </div>
+                <div class="cypher-out big" id="cv-pass-out">...</div>
+                <div class="cypher-strength"><div class="cypher-strength-fill" id="cv-strength"></div></div>
+                <div class="cypher-row" style="margin-top:8px; justify-content: space-between;">
+                  <span class="cypher-note" id="cv-entropy">-</span>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="btn-secondary" style="padding:4px 12px; font-size:11px;" id="cv-regen"><i data-lucide="refresh-cw"></i> New</button>
+                    ${copyBtn('cv-pass-out')}
+                  </div>
+                </div>
+              `;
+              const len = host.querySelector('#cv-len');
+              const lenChip = host.querySelector('#cv-len-chip');
+              const boxes = {
+                up: host.querySelector('#cv-up'),
+                low: host.querySelector('#cv-low'),
+                num: host.querySelector('#cv-num'),
+                sym: host.querySelector('#cv-sym'),
+                amb: host.querySelector('#cv-amb')
+              };
+              const out = host.querySelector('#cv-pass-out');
+              const fill = host.querySelector('#cv-strength');
+              const entropyEl = host.querySelector('#cv-entropy');
+
+              const generate = () => {
+                let pool = '';
+                if (boxes.up.checked) pool += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                if (boxes.low.checked) pool += 'abcdefghijklmnopqrstuvwxyz';
+                if (boxes.num.checked) pool += '0123456789';
+                if (boxes.sym.checked) pool += '!@#$%^&*()-_=+[]{};:,.<>?';
+                if (boxes.amb.checked) pool = pool.replace(/[O0oIl1|]/g, '');
+                const n = parseInt(len.value, 10);
+                lenChip.textContent = String(n);
+                if (!pool) {
+                  out.textContent = '(select at least one character set)';
+                  fill.style.width = '0%';
+                  entropyEl.textContent = '-';
+                  return;
+                }
+                const rnd = new Uint32Array(n);
+                crypto.getRandomValues(rnd);
+                const pass = Array.from(rnd, r => pool[r % pool.length]).join('');
+                out.textContent = pass;
+                const bits = Math.round(n * Math.log2(pool.length));
+                entropyEl.textContent = '~' + bits + ' bits of entropy - ' + (bits < 60 ? 'weak' : bits < 90 ? 'good' : bits < 128 ? 'strong' : 'fortress grade');
+                fill.style.width = Math.min(100, (bits / 160) * 100) + '%';
+                fill.style.background = bits < 60 ? '#e56565' : bits < 90 ? '#e5983b' : '#3ce08f';
+              };
+
+              len.addEventListener('input', generate);
+              Object.keys(boxes).forEach(k => boxes[k].addEventListener('change', generate));
+              host.querySelector('#cv-regen').onclick = generate;
+              generate();
+            }
+          };
+
+          const showTool = (name) => {
+            renderTool[name]();
+            if (window.lucide) lucide.createIcons();
+          };
+
+          container.querySelectorAll('.cypher-nav-item').forEach(item => {
+            item.onclick = () => {
+              container.querySelectorAll('.cypher-nav-item').forEach(i => i.classList.toggle('active', i === item));
+              showTool(item.dataset.tool);
+            };
+          });
+
+          showTool('aes');
+        }
+      },
+
       /* 8.7 SETTINGS APP */
       settings: {
         title: 'Settings',
@@ -5583,7 +7152,25 @@
                       <canvas class="wp-mini-canvas" id="mini-wp-ember"></canvas>
                       <span class="wp-preview-label">Night Ember</span>
                     </div>
+                    <div class="wp-preview-card ${FlowOS.state.settings.wallpaperPreset === 'matrix' ? 'active' : ''}" onclick="FlowOS.setWallpaperPreset('matrix')">
+                      <canvas class="wp-mini-canvas" id="mini-wp-matrix"></canvas>
+                      <span class="wp-preview-label">Cypher Matrix</span>
+                    </div>
                   </div>
+                </div>
+
+                <!-- Cypher Mode -->
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; margin-top: 14px; background: var(--card-bg); border: 1px solid var(--border-hairline); border-radius: 12px;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <i data-lucide="lock" style="width: 16px; color: var(--text-secondary);"></i>
+                    <div>
+                      <div style="font-weight: 600; font-size: 12.5px;">Cypher Mode</div>
+                      <div style="font-size: 11px; color: var(--text-secondary);">Arm the offline cryptography workstation &amp; matrix aesthetic</div>
+                    </div>
+                  </div>
+                  <button class="btn-secondary" style="padding: 5px 14px; font-size: 11px;" onclick="FlowOS.toggleCypherMode()">
+                    <i data-lucide="shield"></i> Toggle
+                  </button>
                 </div>
 
                 <!-- Reset Data -->
@@ -5600,6 +7187,7 @@
             WallpaperEngine.renderMini(document.getElementById('mini-wp-dawn'), 'dawn');
             WallpaperEngine.renderMini(document.getElementById('mini-wp-water'), 'water');
             WallpaperEngine.renderMini(document.getElementById('mini-wp-ember'), 'ember');
+            WallpaperEngine.renderMini(document.getElementById('mini-wp-matrix'), 'matrix');
           }, 50);
         }
       },
@@ -5639,6 +7227,8 @@
                 <div class="nc-stats-row"><span class="nc-stats-label">Audio:</span><span class="nc-stats-val">WebAudio Synthesizer</span></div>
                 <div class="nc-stats-row"><span class="nc-stats-label">Graphics:</span><span class="nc-stats-val">HTML5 Canvas Shader</span></div>
                 <div class="nc-stats-row"><span class="nc-stats-label">Persistence:</span><span class="nc-stats-val">LocalStorage Engine</span></div>
+                <div class="nc-stats-row"><span class="nc-stats-label">Code Lab:</span><span class="nc-stats-val">TS / React / JS / HTML Runtime</span></div>
+                <div class="nc-stats-row"><span class="nc-stats-label">Crypto:</span><span class="nc-stats-val">WebCrypto Cipher Vault</span></div>
               </div>
             </div>
           `;

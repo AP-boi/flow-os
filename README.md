@@ -106,11 +106,13 @@ All audio is mathematically generated in real-time using the WebAudio API:
 
 | Application | Description | Features |
 |---|---|---|
+| **Code Lab** | Multi-Language Playground | Write and run **JavaScript, TypeScript, React (TSX)** and live HTML in a sandboxed runtime with console capture; Ctrl/Cmd + Enter to run |
+| **Cipher Vault** | Offline Cryptography Suite | AES-256-GCM encrypt/decrypt (PBKDF2), SHA-1/256/384/512, UTF-8-safe Base64, Caesar/Vigenere/Atbash, crypto-secure password forge |
 | **📁 Files** | Virtual Hierarchical Filesystem | Breadcrumb navigation, quick sidebar, new folder, upload, file previews |
 | **📝 Notes** | Distraction-Free Markdown Editor | Multi-note list, live search, autosave to `flow.notes`, timestamps |
 | **✅ Tasks** | Today Intention Manager | Checkbox strike-through, priority tags, "Set as Flow Focus" binding |
 | **🔥 Flow** | Focus Engine & Analytics | Circular SVG progress ring timer, duration presets, 7-day canvas chart |
-| **💻 Terminal** | `aura-sh` System Shell | `help`, `neofetch`, `theme`, `wallpaper`, `flow`, `soundscape`, `clear` |
+| **💻 Terminal** | `aura-sh` System Shell | `help`, `neofetch`, `theme`, `wallpaper`, `flow`, `soundscape`, `clear`, `codelab`, `cypher`, `hash`, `b64`, `randpass` |
 | **🔢 Calculator** | Standard & Scientific | Full keyboard support, calculation history tape, error recovery |
 | **⚙️ Settings** | System Preferences | Dark/Light themes, accent color palette, live running mini canvas wallpapers, data reset |
 | **ℹ️ About** | Hardware Specification Card | WebKernel build, memory footprint, browser environment details |
@@ -174,9 +176,47 @@ Flow OS runs **100% client-side**.
   - `flow.notes`
   - `flow.tasks`
   - `flow.sessions`
+  - `flow.codelab`
+  - `flow.files`
 
 ---
 
 ## 📄 License
 
 MIT License © 2026 Flow OS Contributors. Authored for deep work and human focus.
+
+---
+
+## Code Lab - Write & Run Real Code (NEW)
+
+Open **Code Lab** from the dock (or Spotlight -> "Code Lab", or type `codelab` in the Terminal):
+
+- **JavaScript** - instant execution in a sandboxed iframe with a live console bridge
+- **TypeScript** - transpiled in your browser via Babel standalone (lazy-loaded from unpkg on first run)
+- **React 18 (TSX)** - React UMD injected into the sandbox; define a component named `App` and it auto-mounts in the split preview pane
+- **HTML Live** - instant visual preview of your HTML / CSS / JS
+- Line-numbered editor, Tab indentation, `Ctrl/Cmd + Enter` to run, per-language sources autosaved to `flow.codelab`
+
+## Cypher Mode - Offline Cryptography Workstation (NEW)
+
+Arm it from the new **Cypher** menu in the menu bar, the Control Center tile, Settings, Spotlight, or type `cypher on` in the Terminal:
+
+- System-wide state shift: green **matrix** wallpaper preset, ambient scanline overlay, glowing CYPHER tray badge (fully restored on disarm)
+- **Cipher Vault** app (dock + Spotlight):
+  - **AES-256-GCM** encrypt/decrypt with PBKDF2 (150,000 rounds) - payloads are portable `FV1.<base64>` strings
+  - **SHA-1 / SHA-256 / SHA-384 / SHA-512** digests computed live as you type
+  - **Base64** studio, UTF-8 safe
+  - **Classical ciphers**: Caesar (shift slider incl. ROT13), Vigenere, Atbash
+  - **Password Forge**: `crypto.getRandomValues` entropy, live strength meter, look-alike exclusion
+- Terminal ops: `cypher on|off|status`, `hash <text>`, `b64 <encode|decode> <text>`, `randpass [len]`
+- 100% offline: keys and plaintext never leave the device (WebCrypto only)
+
+## Real Filesystem in Files (NEW)
+
+The Files app now has a working hierarchical filesystem persisted to `flow.files`:
+
+- **New Folder** and **New File** create real items in the current folder
+- Double-click folders to navigate; breadcrumb and sidebar quick navigation
+- Double-click files for an in-window text preview; hover an item for delete (folders delete recursively, with confirm)
+- **Upload** imports local text files into the virtual disk
+- Terminal `ls` now lists the real Home folder
