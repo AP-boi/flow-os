@@ -4207,7 +4207,12 @@ function App() {
       load(key) {
         try {
           const raw = localStorage.getItem(`flow.${key}`);
-          return raw ? JSON.parse(raw) : this.defaults[key];
+          if (!raw) return this.defaults[key];
+          const parsed = JSON.parse(raw);
+          if (this.defaults[key] && typeof this.defaults[key] === 'object' && !Array.isArray(this.defaults[key])) {
+            return Object.assign({}, this.defaults[key], parsed);
+          }
+          return parsed;
         } catch (e) {
           console.warn(`Storage load failed for flow.${key}`, e);
           return this.defaults[key];
@@ -4515,9 +4520,10 @@ function App() {
       },
 
       createBlobs() {
-        const theme = FlowOS.state.settings.theme;
-        const presetKey = FlowOS.state.settings.wallpaperPreset || 'dawn';
-        const colors = this.presets[presetKey][theme];
+        const theme = (FlowOS.state && FlowOS.state.settings && FlowOS.state.settings.theme) || 'dark';
+        const presetKey = (FlowOS.state && FlowOS.state.settings && FlowOS.state.settings.wallpaperPreset) || 'dawn';
+        const preset = this.presets[presetKey] || this.presets['dawn'];
+        const colors = preset[theme] || preset['dark'] || this.presets.dawn.dark;
         this.blobs = [];
 
         colors.forEach((color, i) => {
@@ -4714,7 +4720,7 @@ function App() {
           win.contentRenderer(bodyEl, win);
         }
 
-        lucide.createIcons();
+        if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
       },
 
       focusWindow(id) {
@@ -5095,17 +5101,23 @@ function App() {
       },
 
       init() {
-        this.applyTheme(this.state.settings.theme);
-        this.applyAccent(this.state.settings.accent);
-        this.initCypherState();
-        this.initCodelabBridge();
-        WallpaperEngine.init();
-        this.initDockMagnification();
-        this.initClock();
-        this.initKeyboardShortcuts();
-        this.initDesktopContextMenu();
-        this.updateSystemStats();
-        this.startBootSequence();
+        try { if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons(); } catch (e) {}
+        try { this.applyTheme((this.state.settings && this.state.settings.theme) || 'dark'); } catch (e) { console.warn(e); }
+        try { this.applyAccent((this.state.settings && this.state.settings.accent) || '#ff7849'); } catch (e) { console.warn(e); }
+        try { this.initCypherState(); } catch (e) { console.warn(e); }
+        try { this.initCodelabBridge(); } catch (e) { console.warn(e); }
+        try { WallpaperEngine.init(); } catch (e) { console.warn(e); }
+        try { this.initDockMagnification(); } catch (e) { console.warn(e); }
+        try { this.initClock(); } catch (e) { console.warn(e); }
+        try { this.initKeyboardShortcuts(); } catch (e) { console.warn(e); }
+        try { this.initDesktopContextMenu(); } catch (e) { console.warn(e); }
+        try { this.updateSystemStats(); } catch (e) { console.warn(e); }
+        try {
+          this.startBootSequence();
+        } catch (e) {
+          const screen = document.getElementById('boot-screen');
+          if (screen) screen.classList.add('hidden');
+        }
       },
 
       // Boot animation
@@ -5113,6 +5125,13 @@ function App() {
         const fill = document.getElementById('boot-progress-fill');
         const caption = document.getElementById('boot-caption');
         const screen = document.getElementById('boot-screen');
+
+        if (!screen) return;
+
+        // Allow click to immediately dismiss boot overlay
+        screen.onclick = () => {
+          screen.classList.add('hidden');
+        };
 
         const steps = [
           { p: 25, t: 'Initializing window manager...' },
@@ -5124,19 +5143,26 @@ function App() {
         let i = 0;
         const interval = setInterval(() => {
           if (i < steps.length) {
-            fill.style.width = `${steps[i].p}%`;
-            caption.innerText = steps[i].t;
+            if (fill) fill.style.width = `${steps[i].p}%`;
+            if (caption) caption.innerText = steps[i].t;
             i++;
           } else {
             clearInterval(interval);
             setTimeout(() => {
-              screen.classList.add('hidden');
-              SoundEngine.playNotification();
+              if (screen) screen.classList.add('hidden');
+              try { SoundEngine.playNotification(); } catch (e) {}
               this.showToast('Flow OS Ready', 'Press ⌘K or Ctrl+K anytime for Spotlight search.', 'sparkles');
               this.checkDailyRitual();
-            }, 500);
+            }, 250);
           }
-        }, 320);
+        }, 180);
+
+        // Fail-safe: guarantee boot screen disappears within 2.5s
+        setTimeout(() => {
+          if (screen && !screen.classList.contains('hidden')) {
+            screen.classList.add('hidden');
+          }
+        }, 2200);
       },
 
       checkDailyRitual() {
@@ -5182,16 +5208,17 @@ function App() {
       },
 
       applyAccent(color) {
-        document.documentElement.style.setProperty('--accent', color);
+        const c = color || '#ff7849';
+        document.documentElement.style.setProperty('--accent', c);
         // compute RGB
-        const hex = color.replace('#', '');
-        const r = parseInt(hex.substring(0, 2), 16);
-        const g = parseInt(hex.substring(2, 4), 16);
-        const b = parseInt(hex.substring(4, 6), 16);
+        const hex = c.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16) || 255;
+        const g = parseInt(hex.substring(2, 4), 16) || 120;
+        const b = parseInt(hex.substring(4, 6), 16) || 73;
         document.documentElement.style.setProperty('--accent-rgb', `${r}, ${g}, ${b}`);
         document.documentElement.style.setProperty('--accent-subtle', `rgba(${r}, ${g}, ${b}, 0.14)`);
         document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.3)`);
-        this.state.settings.accent = color;
+        this.state.settings.accent = c;
         Store.save('settings', this.state.settings);
       },
 
@@ -5614,7 +5641,7 @@ function App() {
           <div class="toast-close" onclick="this.parentElement.remove()"><i data-lucide="x"></i></div>
         `;
         container.appendChild(toast);
-        lucide.createIcons();
+        if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
 
         setTimeout(() => {
           toast.classList.add('dismissing');
@@ -5653,7 +5680,7 @@ function App() {
           `;
           list.appendChild(card);
         });
-        lucide.createIcons();
+        if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
       },
 
       clearAllNotifications() {
@@ -5862,7 +5889,7 @@ function App() {
           list.appendChild(row);
         });
 
-        lucide.createIcons();
+        if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
       },
 
       highlightMatch(text, query) {
@@ -6410,7 +6437,7 @@ ${mount}
                 </div>
               </div>
             `;
-            lucide.createIcons();
+            if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
 
             const input = container.querySelector('#new-task-input');
             const addBtn = container.querySelector('#add-task-btn');
