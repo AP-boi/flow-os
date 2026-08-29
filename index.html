@@ -524,35 +524,32 @@
     .dock-icon-wrapper {
       width: 100%;
       height: 100%;
-      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all var(--transition-fast);
+      background: transparent;
+      border: none;
+      box-shadow: none;
       position: relative;
-      overflow: hidden;
     }
 
     .dock-icon-img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      border-radius: 12px;
+      object-fit: contain;
       display: block;
       pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.32));
       transition: transform var(--transition-fast), filter var(--transition-fast);
     }
 
     .dock-item:hover .dock-icon-img {
-      transform: scale(1.08);
-      filter: brightness(1.06);
+      transform: scale(1.12);
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45));
     }
 
     .dock-item:active .dock-icon-img {
-      transform: scale(0.95);
+      transform: scale(0.94);
     }
 
     .dock-item:active svg {
@@ -3636,45 +3633,45 @@
   <div id="dock-container">
     <div id="dock">
       <!-- 1. Files -->
-      <div class="dock-item" data-app="files" title="File Explorer">
+      <div class="dock-item" data-app="files" title="Finder">
         <div class="dock-icon-wrapper">
-          <img class="dock-icon-img" src="assets/icons/files.jpg" alt="Files" />
+          <img class="dock-icon-img" src="assets/icons/files.svg" alt="Finder" />
         </div>
         <div class="dock-dot"></div>
-        <div class="dock-tooltip">File Explorer</div>
+        <div class="dock-tooltip">Finder</div>
       </div>
 
       <!-- 2. Notes -->
-      <div class="dock-item" data-app="notes" title="Notepad">
+      <div class="dock-item" data-app="notes" title="Notes">
         <div class="dock-icon-wrapper">
-          <img class="dock-icon-img" src="assets/icons/notes.jpg" alt="Notes" />
+          <img class="dock-icon-img" src="assets/icons/notes.svg" alt="Notes" />
         </div>
         <div class="dock-dot"></div>
-        <div class="dock-tooltip">Notepad</div>
+        <div class="dock-tooltip">Notes</div>
       </div>
 
       <!-- 3. Tasks -->
-      <div class="dock-item" data-app="tasks" title="Microsoft To Do">
+      <div class="dock-item" data-app="tasks" title="Reminders">
         <div class="dock-icon-wrapper">
-          <img class="dock-icon-img" src="assets/icons/tasks.jpg" alt="Tasks" />
+          <img class="dock-icon-img" src="assets/icons/tasks.svg" alt="Reminders" />
         </div>
         <div class="dock-dot"></div>
-        <div class="dock-tooltip">To Do</div>
+        <div class="dock-tooltip">Reminders</div>
       </div>
 
       <!-- 4. Flow & Analytics (The Deep Work Core) -->
-      <div class="dock-item" data-app="flow" title="Focus Sessions">
+      <div class="dock-item" data-app="flow" title="Focus">
         <div class="dock-icon-wrapper">
-          <img class="dock-icon-img" src="assets/icons/flow.jpg" alt="Flow" />
+          <img class="dock-icon-img" src="assets/icons/flow.svg" alt="Focus" />
         </div>
         <div class="dock-dot"></div>
-        <div class="dock-tooltip">Focus Sessions</div>
+        <div class="dock-tooltip">Focus</div>
       </div>
 
       <!-- 5. Terminal -->
-      <div class="dock-item" data-app="terminal" title="Windows Terminal">
+      <div class="dock-item" data-app="terminal" title="Terminal">
         <div class="dock-icon-wrapper">
-          <img class="dock-icon-img" src="assets/icons/terminal.jpg" alt="Terminal" />
+          <img class="dock-icon-img" src="assets/icons/terminal.svg" alt="Terminal" />
         </div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Terminal</div>
@@ -3683,48 +3680,48 @@
       <!-- 6. Calculator -->
       <div class="dock-item" data-app="calculator" title="Calculator">
         <div class="dock-icon-wrapper">
-          <img class="dock-icon-img" src="assets/icons/calculator.jpg" alt="Calculator" />
+          <img class="dock-icon-img" src="assets/icons/calculator.svg" alt="Calculator" />
         </div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Calculator</div>
       </div>
 
       <!-- 7. Code Lab -->
-      <div class="dock-item" data-app="codelab" title="Visual Studio Code Lab">
+      <div class="dock-item" data-app="codelab" title="Xcode Lab">
         <div class="dock-icon-wrapper">
-          <img class="dock-icon-img" src="assets/icons/codelab.jpg" alt="Code Lab" />
+          <img class="dock-icon-img" src="assets/icons/codelab.svg" alt="Xcode Lab" />
         </div>
         <div class="dock-dot"></div>
-        <div class="dock-tooltip">Code Lab</div>
+        <div class="dock-tooltip">Xcode Lab</div>
       </div>
 
       <div class="dock-divider"></div>
 
       <!-- 8. Cipher Vault -->
-      <div class="dock-item" data-app="cypher" title="Windows Security &amp; Cipher Vault">
+      <div class="dock-item" data-app="cypher" title="Keychain &amp; Cipher Vault">
         <div class="dock-icon-wrapper">
-          <img class="dock-icon-img" src="assets/icons/cypher.jpg" alt="Cipher Vault" />
+          <img class="dock-icon-img" src="assets/icons/cypher.svg" alt="Cipher Vault" />
         </div>
         <div class="dock-dot"></div>
         <div class="dock-tooltip">Cipher Vault</div>
       </div>
 
       <!-- 9. Settings -->
-      <div class="dock-item" data-app="settings" title="Settings">
+      <div class="dock-item" data-app="settings" title="System Settings">
         <div class="dock-icon-wrapper">
-          <img class="dock-icon-img" src="assets/icons/settings.jpg" alt="Settings" />
+          <img class="dock-icon-img" src="assets/icons/settings.svg" alt="System Settings" />
         </div>
         <div class="dock-dot"></div>
-        <div class="dock-tooltip">Settings</div>
+        <div class="dock-tooltip">System Settings</div>
       </div>
 
       <!-- 10. Trash -->
-      <div class="dock-item" data-app="trash" title="Recycle Bin">
+      <div class="dock-item" data-app="trash" title="Trash">
         <div class="dock-icon-wrapper">
-          <img class="dock-icon-img" src="assets/icons/trash.jpg" alt="Recycle Bin" />
+          <img class="dock-icon-img" src="assets/icons/trash.svg" alt="Trash" />
         </div>
         <div class="dock-dot"></div>
-        <div class="dock-tooltip">Recycle Bin</div>
+        <div class="dock-tooltip">Trash</div>
       </div>
     </div>
   </div>

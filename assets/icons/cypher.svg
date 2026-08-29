@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="key-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#34c759"/>
+      <stop offset="100%" stop-color="#1b873a"/>
+    </linearGradient>
+    <filter id="mac-sh" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#key-bg)" filter="url(#mac-sh)"/>
+  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.2"/>
+  <!-- Lock Shackle and Body -->
+  <path d="M44 54V38c0-11 9-20 20-20s20 9 20 20v16" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <rect x="36" y="52" width="56" height="46" rx="10" fill="#ffffff"/>
+  <circle cx="64" cy="72" r="6" fill="#1b873a"/>
+  <path d="M62 76h4l2 12h-8z" fill="#1b873a"/>
+</svg>

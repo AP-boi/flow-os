@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="xcode-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#147efb"/>
+      <stop offset="100%" stop-color="#054cb8"/>
+    </linearGradient>
+    <filter id="mac-sh" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#xcode-bg)" filter="url(#mac-sh)"/>
+  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+  <!-- Blueprint Grid Lines -->
+  <line x1="8" y1="44" x2="120" y2="44" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <line x1="8" y1="84" x2="120" y2="84" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <line x1="44" y1="8" x2="44" y2="120" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <line x1="84" y1="8" x2="84" y2="120" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <!-- Hammer / Code Glyph -->
+  <g transform="translate(64,64) rotate(-45) translate(-64,-64)">
+    <rect x="58" y="38" width="12" height="54" rx="3" fill="#e5e5ea"/>
+    <rect x="42" y="30" width="44" height="16" rx="4" fill="#8e8e93"/>
+    <rect x="50" y="24" width="28" height="8" rx="2" fill="#c7c7cc"/>
+  </g>
+</svg>

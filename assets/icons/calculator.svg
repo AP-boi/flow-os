@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="calc-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3a3a3c"/>
+      <stop offset="100%" stop-color="#1c1c1e"/>
+    </linearGradient>
+    <linearGradient id="orange-btn" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff9f0a"/>
+      <stop offset="100%" stop-color="#e08400"/>
+    </linearGradient>
+    <filter id="mac-sh" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#calc-bg)" filter="url(#mac-sh)"/>
+  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
+  <!-- Keypad Buttons -->
+  <circle cx="36" cy="42" r="14" fill="#505054"/>
+  <text x="36" y="47" font-family="-apple-system, sans-serif" font-size="14" font-weight="600" fill="#fff" text-anchor="middle">AC</text>
+  
+  <circle cx="70" cy="42" r="14" fill="#505054"/>
+  <text x="70" y="47" font-family="-apple-system, sans-serif" font-size="14" font-weight="600" fill="#fff" text-anchor="middle">+/-</text>
+  
+  <circle cx="98" cy="42" r="14" fill="url(#orange-btn)"/>
+  <text x="98" y="48" font-family="-apple-system, sans-serif" font-size="18" font-weight="600" fill="#fff" text-anchor="middle">÷</text>
+
+  <circle cx="36" cy="80" r="14" fill="#636366"/>
+  <text x="36" y="85" font-family="-apple-system, sans-serif" font-size="15" font-weight="600" fill="#fff" text-anchor="middle">7</text>
+
+  <circle cx="70" cy="80" r="14" fill="#636366"/>
+  <text x="70" y="85" font-family="-apple-system, sans-serif" font-size="15" font-weight="600" fill="#fff" text-anchor="middle">8</text>
+
+  <circle cx="98" cy="80" r="14" fill="url(#orange-btn)"/>
+  <text x="98" y="86" font-family="-apple-system, sans-serif" font-size="16" font-weight="600" fill="#fff" text-anchor="middle">=</text>
+</svg>

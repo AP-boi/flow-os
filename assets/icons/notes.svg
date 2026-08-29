@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="notes-paper" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f5f4ef"/>
+    </linearGradient>
+    <linearGradient id="notes-header" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffcc00"/>
+      <stop offset="100%" stop-color="#e6b400"/>
+    </linearGradient>
+    <filter id="mac-sh" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#notes-paper)" filter="url(#mac-sh)"/>
+  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>
+  <path d="M8 34h112V24c0-8.8-7.2-16-16-16H24C15.2 8 8 15.2 8 24v10z" fill="url(#notes-header)"/>
+  <line x1="20" y1="52" x2="108" y2="52" stroke="#e0ded6" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="20" y1="70" x2="108" y2="70" stroke="#e0ded6" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="20" y1="88" x2="108" y2="88" stroke="#e0ded6" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="20" y1="104" x2="80" y2="104" stroke="#e0ded6" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Pen accent -->
+  <g transform="translate(68, 44) rotate(-35)">
+    <rect x="0" y="0" width="10" height="52" rx="4" fill="#d4af37"/>
+    <polygon points="0,52 10,52 5,66" fill="#4a4a4a"/>
+    <polygon points="3,60 7,60 5,66" fill="#111"/>
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="flow-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7300"/>
+      <stop offset="50%" stop-color="#fe3843"/>
+      <stop offset="100%" stop-color="#af0d78"/>
+    </linearGradient>
+    <linearGradient id="flame-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ffe4cc"/>
+    </linearGradient>
+    <filter id="mac-sh" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#flow-bg)" filter="url(#mac-sh)"/>
+  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+  <!-- Flame / Timer geometry -->
+  <g transform="translate(32, 28)">
+    <path d="M32 4c5 16 20 22 20 38 0 14-11 26-25 26S2 56 2 42C2 28 20 18 32 4z" fill="url(#flame-grad)"/>
+    <path d="M32 30c3 8 11 12 11 20 0 7-6 13-13 13s-13-6-13-13c0-7 8-12 15-20z" fill="#ff7300"/>
+  </g>
+</svg>
