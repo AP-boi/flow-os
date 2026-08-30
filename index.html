@@ -1,242 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VesperOS</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flow OS</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header id="topBar">
-    <div class="topbar-left">
-      <div class="topbar-tab active" onclick="openWindow('dossierWindow')">
-        <span class="status-dot"></span>
-        <span>vesper.os</span>
-      </div>
-      <div class="topbar-tab" onclick="openWindow('evidenceWindow')">evidence://vault</div>
-      <div class="topbar-tab" onclick="openWindow('synthWindow')">audio://freq</div>
-      <div class="topbar-tab" onclick="openWindow('mainframeWindow')">terminal://auth</div>
-    </div>
-    <div class="topbar-right">
-      <span>SYS_MEM: 64.2%</span>
-      <span>NET: SECURE</span>
-      <span id="timeElement">00:00:00</span>
-    </div>
-  </header>
+<div id="desktop">
+  <div id="iconField"></div>
 
-  <main id="desktopSurface">
-    <div id="appLauncherWindow">
-      <div class="launcher-card">
-        <div class="launcher-header">
-          <div>APP ICONS</div>
-          <div class="launcher-dots">...</div>
-        </div>
+  <section class="window" id="win-welcome" data-title="Welcome">
+    <header class="windowheader"><span class="wintitle">Welcome</span></header>
+    <div class="winbody welcome-body">
+      <div class="brandglyph"></div>
+      <h1>Flow OS</h1>
+      <p class="tagline">Windows 10 discipline, hacker temperament.</p>
+      <hr>
+      <p class="bio">
+        I'm <mark class="placeholder">[your name]</mark> —
+        <mark class="placeholder">[one-line bio goes here]</mark>.
+        This desktop is where I keep the tools I actually use.
+      </p>
+      <p class="links">
+        <a class="placeholder" href="#">[github]</a>
+        <a class="placeholder" href="#">[twitter]</a>
+        <a class="placeholder" href="#">[site]</a>
+      </p>
+    </div>
+  </section>
 
-        <div class="launcher-grid">
-          <div class="launcher-btn selected" onclick="openWindow('dossierWindow')">
-            <div class="launcher-icon">📄</div>
-            <span class="launcher-label">The Dossier</span>
-          </div>
-          <div class="launcher-btn" onclick="openWindow('evidenceWindow')">
-            <div class="launcher-icon">📁</div>
-            <span class="launcher-label">Evidence</span>
-          </div>
-          <div class="launcher-btn" onclick="openWindow('imageViewerWindow')">
-            <div class="launcher-icon">🖼️</div>
-            <span class="launcher-label">Img_242</span>
-          </div>
-          <div class="launcher-btn" onclick="openWindow('synthWindow')">
-            <div class="launcher-icon">📼</div>
-            <span class="launcher-label">Audio Synth</span>
-          </div>
-          <div class="launcher-btn" onclick="openWindow('mainframeWindow')">
-            <div class="launcher-icon">&gt;_</div>
-            <span class="launcher-label">Terminal</span>
-          </div>
-          <div class="launcher-btn" onclick="openWindow('settingsWindow')">
-            <div class="launcher-icon">⚙️</div>
-            <span class="launcher-label">Settings</span>
-          </div>
+  <section class="window" id="win-cipher" data-title="Cipher Lab">
+    <header class="windowheader"><span class="wintitle">Cipher Lab</span></header>
+    <div class="winbody cipher-layout">
+      <nav id="cipherList" aria-label="Ciphers"></nav>
+      <div class="cipher-pane">
+        <h2 id="cipherName"></h2>
+        <label for="cipherInput">input</label>
+        <textarea id="cipherInput" spellcheck="false" placeholder="type something"></textarea>
+        <div class="cipher-actions">
+          <button id="cipherEncode" class="ctabtn">Encode</button>
+          <button id="cipherDecode" class="ctabtn">Decode</button>
         </div>
+        <label for="cipherOutput">output</label>
+        <textarea id="cipherOutput" spellcheck="false" readonly placeholder="result"></textarea>
       </div>
     </div>
-  </main>
+  </section>
 
-  <!-- dossier -->
-  <div class="window active-window" id="dossierWindow" style="top: 50px; left: 260px; width: 440px; height: 480px;">
-    <div class="windowheader">
-      <span class="headertext">THE DOSSIER // SUBJECT PROFILE</span>
-      <div class="window-controls">
-        <span class="ctrl-btn" onclick="toggleMaximize('dossierWindow')">⤢</span>
-        <span class="ctrl-btn close" onclick="closeWindow('dossierWindow')">✕</span>
+  <section class="window" id="win-sysmon" data-title="System Monitor">
+    <header class="windowheader"><span class="wintitle">System Monitor</span></header>
+    <div class="winbody sysmon-body">
+      <div class="gauge">
+        <label>CPU <span id="cpuValue"></span></label>
+        <canvas id="cpuCanvas"></canvas>
       </div>
-    </div>
-    <div class="window-body">
-      <div class="dossier-grid">
-        <div class="dossier-classified-badge">
-          <span>CLASSIFICATION: RESTRICTED</span>
-          <span>LEVEL-4</span>
-        </div>
-
-        <div style="font-size: 11.5px; color: var(--text-secondary); line-height: 1.6;">
-          Subject: <strong style="color: var(--neon-green);">Lead Full-Stack Systems Architect</strong><br/>
-          Affiliation: <span class="classified-redact" title="Click to unredact">TACTICAL DIVISION</span><br/>
-          Status: Operational // Building tactile web operating systems and WebAudio engines.
-        </div>
-
-        <div style="margin-top: 6px;">
-          <div class="chat-bubble">
-            <div class="chat-avatar">🦅</div>
-            <div>
-              <div class="chat-meta"><span class="chat-agent">CANARY</span> 05:52 AM</div>
-              <div class="chat-text">I cannot stress enough how imperative it is that we maintain zero-dependency local runtime ownership.</div>
-            </div>
-          </div>
-          <div class="chat-bubble">
-            <div class="chat-avatar">🟣</div>
-            <div>
-              <div class="chat-meta"><span class="chat-agent">MELODY</span> 05:56 AM</div>
-              <div class="chat-text">All window managers, audio synthesis nodes, and state stores must run client-side.</div>
-            </div>
-          </div>
-          <div class="chat-bubble">
-            <div class="chat-avatar">🕵️</div>
-            <div>
-              <div class="chat-meta"><span class="chat-agent">STUART</span> 06:01 AM</div>
-              <div class="chat-text">Time to deploy the cybernetic workstation.</div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div style="font-size: 10.5px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase;">Direct Intelligence Uplinks:</div>
-          <div class="pill-links-grid">
-            <a href="https://github.com" target="_blank" rel="noreferrer" class="tactical-btn">
-              <span>[ GitHub ]</span>
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" class="tactical-btn">
-              <span>[ Twitter ]</span>
-            </a>
-            <button class="tactical-btn primary" onclick="openWindow('evidenceWindow')">
-              <span>[ Open Evidence ]</span>
-            </button>
-            <button class="tactical-btn primary" onclick="openWindow('synthWindow')">
-              <span>[ Audio Synth ]</span>
-            </button>
-          </div>
-        </div>
+      <div class="gauge">
+        <label>NET <span id="netValue"></span></label>
+        <canvas id="netCanvas"></canvas>
       </div>
+      <p class="sysmon-note">every number here is simulated — this window is decoration.</p>
     </div>
+  </section>
+
+  <section class="window" id="win-terminal" data-title="rootshell">
+    <header class="windowheader"><span class="wintitle">rootshell</span></header>
+    <div class="winbody term-body">
+      <div id="termScreen"></div>
+    </div>
+  </section>
+
+  <div id="startMenu" hidden>
+    <div id="startApps"></div>
+    <button id="switchUser"></button>
   </div>
 
-  <!-- evidence vault -->
-  <div class="window" id="evidenceWindow" style="top: 50px; left: 720px; width: 560px; height: 480px;">
-    <div class="windowheader">
-      <span class="headertext">EVIDENCE // MEDIA VAULT</span>
-      <div class="window-controls">
-        <span class="ctrl-btn" onclick="toggleMaximize('evidenceWindow')">⤢</span>
-        <span class="ctrl-btn close" onclick="closeWindow('evidenceWindow')">✕</span>
-      </div>
-    </div>
-    <div class="window-body" style="padding: 10px;">
-      <div class="evidence-split">
-        <div class="evidence-tree" id="evidenceTree"></div>
-        <div class="evidence-preview" id="evidencePreview"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- surveillance feed -->
-  <div class="window" id="imageViewerWindow" style="top: 260px; left: 320px; width: 480px; height: 320px; display: none;">
-    <div class="windowheader">
-      <span class="headertext">IMG_242 // SURVEILLANCE FEED</span>
-      <div class="window-controls">
-        <span class="ctrl-btn" onclick="toggleMaximize('imageViewerWindow')">⤢</span>
-        <span class="ctrl-btn close" onclick="closeWindow('imageViewerWindow')">✕</span>
-      </div>
-    </div>
-    <div class="window-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #030608;">
-      <div style="width: 100%; height: 100%; border: 1px dashed var(--border-base); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--neon-green);">
-        <div style="font-size: 36px;">🛰️</div>
-        <div style="font-size: 11px; letter-spacing: 2px; font-weight: 700;">OPTICAL RECON FEED ACTIVE</div>
-        <div style="font-size: 10px; color: var(--text-muted);">COORDINATES: 37°46'N 122°25'W // RES: 4K</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- terminal -->
-  <div class="window" id="mainframeWindow" style="top: 100px; left: 540px; width: 380px; height: 340px; display: none;">
-    <div class="windowheader">
-      <span class="headertext">TERMINAL // AUTH MAINFRAME</span>
-      <div class="window-controls">
-        <span class="ctrl-btn" onclick="toggleMaximize('mainframeWindow')">⤢</span>
-        <span class="ctrl-btn close" onclick="closeWindow('mainframeWindow')">✕</span>
-      </div>
-    </div>
-    <div class="window-body">
-      <div class="terminal-body">
-        <div class="terminal-logo-box">⬡</div>
-        <div>
-          <div style="font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: 1px;">ENTER PASSWORD</div>
-          <div style="font-size: 10.5px; color: var(--text-muted); margin-top: 2px;">Get access to the VesperOS mainframe</div>
-        </div>
-        <div class="terminal-input-wrap">
-          <span style="color: var(--text-muted);">🔒</span>
-          <input type="password" id="mainframePassInput" placeholder="••••••••" value="echelon" />
-        </div>
-        <button class="tactical-btn primary" style="width: 240px; justify-content: center; padding: 8px;" onclick="unlockMainframe()">
-          LOGIN TO MAINFRAME
-        </button>
-        <div id="mainframeStatus" style="font-size: 10.5px; color: var(--text-muted); min-height: 14px;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- synth -->
-  <div class="window" id="synthWindow" style="top: 160px; left: 400px; width: 520px; height: 350px; display: none;">
-    <div class="windowheader">
-      <span class="headertext">AUDIO SYNTH // TACTICAL FREQUENCIES</span>
-      <div class="window-controls">
-        <span class="ctrl-btn" onclick="toggleMaximize('synthWindow')">⤢</span>
-        <span class="ctrl-btn close" onclick="closeWindow('synthWindow')">✕</span>
-      </div>
-    </div>
-    <div class="window-body">
-      <div class="synth-grid">
-        <div class="synth-hud-bar">
-          <div>
-            <span>WAVE: </span>
-            <select id="synthWave">
-              <option value="sawtooth" selected>SAWTOOTH (TACTICAL)</option>
-              <option value="square">SQUARE (8-BIT)</option>
-              <option value="triangle">TRIANGLE (WARM)</option>
-              <option value="sine">SINE (PURE)</option>
-            </select>
-          </div>
-          <div>
-            <span>CUTOFF: </span>
-            <input type="range" id="synthCutoff" min="200" max="5000" value="2200" />
-          </div>
-        </div>
-        <canvas class="synth-canvas" id="synthCanvas" width="480" height="64"></canvas>
-        <div class="synth-pads-row" id="synthPadsRow"></div>
-      </div>
-    </div>
-  </div>
-
-  <footer id="bottomTicker">
-    <div class="ticker-bar-wrap">
-      <div class="ticker-progress">
-        <div class="ticker-fill"></div>
-      </div>
-      <span style="color: var(--neon-green); font-size: 10px; font-weight: 700;">BUFFER 100%</span>
-    </div>
-    <div style="font-size: 10.5px; color: var(--text-muted);">
-      Press <strong style="color: var(--neon-green);">[Alt+1]</strong> Dossier ; <strong style="color: var(--neon-green);">[Alt+2]</strong> Evidence ; <strong style="color: var(--neon-green);">[Alt+3]</strong> Synth ; <strong style="color: var(--neon-green);">[Alt+4]</strong> Terminal
-    </div>
+  <footer id="taskbar">
+    <button id="startButton" aria-label="Start"></button>
+    <div id="taskItems"></div>
+    <div id="tray"><span id="timeElement"></span></div>
   </footer>
 
-  <script src="script.js"></script>
+  <canvas id="matrixCanvas"></canvas>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
