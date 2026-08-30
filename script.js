@@ -39,6 +39,8 @@ const APPS = [
   { id: 'sysmon', title: 'System Monitor', icon: 'pulse' },
 ];
 
+const PINNED_APP_IDS = ['cipher', 'coderunner', 'terminal', 'files', 'calc', 'notepad', 'vault', 'stego', 'media', 'settings'];
+
 const HACKER_LABELS = {
   welcome: 'readme.txt',
   cipher: 'crypt_suite.bin',
@@ -79,6 +81,9 @@ const ICON_PATHS = {
 
 const svgIcon = name =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[name] ?? ICON_PATHS.flow}</svg>`;
+
+const escapeHtml = str =>
+  str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 /* ==========================================================================
    1. Window Manager Engine
@@ -248,7 +253,7 @@ function placeWindow(id) {
 const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
 
 /* ==========================================================================
-   2. Desktop Shell: Icons, Taskbar, Start Menu, Clock, Themes
+   2. Desktop Shell: Icons, Quick Access Dock, Taskbar, Start Menu, Clock, Themes
    ========================================================================== */
 
 function buildDesktopIcons() {
@@ -273,6 +278,55 @@ function buildDesktopIcons() {
       for (const other of field.children) other.classList.remove('selected');
     }
   });
+}
+
+function buildQuickLaunch() {
+  const bar = document.getElementById('quickLaunch');
+  if (!bar) return;
+  bar.replaceChildren();
+
+  for (const id of PINNED_APP_IDS) {
+    const app = APPS.find(a => a.id === id);
+    if (!app) continue;
+
+    const btn = document.createElement('button');
+    btn.className = 'quick-launch-btn';
+    btn.dataset.app = id;
+    btn.title = app.title;
+    btn.innerHTML = svgIcon(app.icon);
+
+    btn.addEventListener('click', () => {
+      const win = windows.get(id);
+      if (!win || !win.el.classList.contains('open')) {
+        openWindow(id);
+      } else if (win.minimized) {
+        win.minimized = false;
+        win.el.classList.remove('minimized');
+        focusWindow(id);
+      } else if (activeWindowId === id) {
+        minimizeWindow(id);
+      } else {
+        focusWindow(id);
+      }
+    });
+
+    bar.append(btn);
+  }
+}
+
+function syncQuickLaunch() {
+  const bar = document.getElementById('quickLaunch');
+  if (!bar) return;
+
+  for (const btn of bar.children) {
+    const id = btn.dataset.app;
+    const win = windows.get(id);
+    const isOpen = win && win.el.classList.contains('open') && !win.minimized;
+    const isActive = activeWindowId === id && isOpen;
+
+    btn.classList.toggle('open', Boolean(isOpen));
+    btn.classList.toggle('active', Boolean(isActive));
+  }
 }
 
 function getAppTitle(id) {
@@ -312,21 +366,36 @@ function syncTaskbar() {
     });
     container.append(btn);
   }
+
+  syncQuickLaunch();
 }
 
-function buildStartMenu() {
+function buildStartMenu(searchQuery = '') {
   const list = document.getElementById('startApps');
   list.replaceChildren();
 
-  for (const app of APPS) {
-    const item = document.createElement('button');
-    item.className = 'startItem';
-    item.innerHTML = `${svgIcon(app.icon)}<span>${getAppTitle(app.id)}</span>`;
-    item.addEventListener('click', () => openWindow(app.id));
-    list.append(item);
+  const query = searchQuery.toLowerCase().trim();
+  const filtered = query
+    ? APPS.filter(a => a.title.toLowerCase().includes(query) || (HACKER_LABELS[a.id] || '').toLowerCase().includes(query))
+    : APPS;
+
+  if (filtered.length === 0) {
+    const emptyDiv = document.createElement('div');
+    emptyDiv.style.padding = '8px';
+    emptyDiv.style.color = 'var(--text-muted)';
+    emptyDiv.style.fontSize = '11.5px';
+    emptyDiv.textContent = 'No matching applications found.';
+    list.append(emptyDiv);
+  } else {
+    for (const app of filtered) {
+      const item = document.createElement('button');
+      item.className = 'startItem';
+      item.innerHTML = `${svgIcon(app.icon)}<span>${getAppTitle(app.id)}</span>`;
+      item.addEventListener('click', () => openWindow(app.id));
+      list.append(item);
+    }
   }
 
-  // Update theme buttons active state
   document.querySelectorAll('.theme-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.theme === currentTheme);
   });
@@ -334,8 +403,15 @@ function buildStartMenu() {
 
 function toggleStartMenu() {
   const menu = document.getElementById('startMenu');
-  if (menu.hidden) buildStartMenu();
-  menu.hidden = !menu.hidden;
+  if (menu.hidden) {
+    const searchInput = document.getElementById('startSearchInput');
+    if (searchInput) searchInput.value = '';
+    buildStartMenu();
+    menu.hidden = false;
+    if (searchInput) setTimeout(() => searchInput.focus(), 50);
+  } else {
+    menu.hidden = true;
+  }
 }
 
 function closeStartMenu() {
@@ -749,6 +825,424 @@ async function decryptAesGcm(packetString, passphrase) {
 }
 
 /* ==========================================================================
+   3C. Cipher Suite Registry & UI Coordinator
+   ========================================================================== */
+
+const CIPHERS = [
+  { id: 'caesar', name: 'Caesar Shift', hasKey: false, hasShift: true, hasAux: true },
+  { id: 'rot13', name: 'ROT13', hasKey: false, hasShift: false },
+  { id: 'rot47', name: 'ROT47', hasKey: false, hasShift: false },
+  { id: 'base64', name: 'Base64 (UTF-8)', hasKey: false, hasShift: false },
+  { id: 'base32', name: 'Base32 (RFC 4648)', hasKey: false, hasShift: false },
+  { id: 'base58', name: 'Base58 (Bitcoin)', hasKey: false, hasShift: false },
+  { id: 'hex', name: 'Hexadecimal (Bytes)', hasKey: false, hasShift: false },
+  { id: 'binary', name: 'Binary ASCII (8-bit)', hasKey: false, hasShift: false },
+  { id: 'xor', name: 'XOR Stream Cipher', hasKey: true, hasShift: false, keyPlaceholder: 'Secret XOR Key...' },
+  { id: 'vigenere', name: 'Vigenère Polyalphabetic', hasKey: true, hasShift: false, keyPlaceholder: 'Alpha Passphrase...' },
+  { id: 'atbash', name: 'Atbash Substitution', hasKey: false, hasShift: false },
+  { id: 'morse', name: 'Morse Code', hasKey: false, hasShift: false },
+  { id: 'md5', name: 'MD5 Hash', isOneWay: true },
+  { id: 'sha256', name: 'SHA-256 Digest', isOneWay: true },
+  { id: 'sha512', name: 'SHA-512 Digest', isOneWay: true },
+  { id: 'jwt', name: 'JWT Token Inspector', isInspector: true }
+];
+
+let activeCipher = CIPHERS[0];
+
+function buildCipherSidebar() {
+  const list = document.getElementById('cipherList');
+  if (!list) return;
+  list.replaceChildren();
+
+  CIPHERS.forEach((c, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'cipherItem' + (idx === 0 ? ' selected' : '');
+    btn.textContent = c.name;
+    btn.addEventListener('click', () => selectCipher(btn, c));
+    list.append(btn);
+  });
+}
+
+function selectCipher(btn, cipher) {
+  activeCipher = cipher;
+  document.querySelectorAll('.cipherItem').forEach(b => b.classList.remove('selected'));
+  if (btn) btn.classList.add('selected');
+
+  document.getElementById('cipherName').textContent = cipher.name;
+  renderCipherParams(cipher);
+
+  const encodeBtn = document.getElementById('cipherEncode');
+  const decodeBtn = document.getElementById('cipherDecode');
+  if (cipher.isOneWay) {
+    encodeBtn.textContent = 'Compute Hash';
+    decodeBtn.classList.add('hidden');
+  } else if (cipher.isInspector) {
+    encodeBtn.textContent = 'Inspect Token';
+    decodeBtn.classList.add('hidden');
+  } else {
+    encodeBtn.textContent = 'Encode';
+    decodeBtn.textContent = 'Decode';
+    decodeBtn.classList.remove('hidden');
+  }
+
+  runActiveCipher();
+}
+
+function renderCipherParams(cipher) {
+  const paramsBar = document.getElementById('cipherParams');
+  paramsBar.replaceChildren();
+
+  if (cipher.hasShift) {
+    paramsBar.innerHTML = `
+      <label for="cipherShiftInput">Shift Offset (1-25):</label>
+      <input type="number" id="cipherShiftInput" class="param-input" min="0" max="25" value="3" style="width:60px;">
+      <input type="range" id="cipherShiftSlider" min="0" max="25" value="3" style="accent-color:var(--accent);">
+    `;
+    const num = document.getElementById('cipherShiftInput');
+    const range = document.getElementById('cipherShiftSlider');
+    num.addEventListener('input', () => { range.value = num.value; runActiveCipher(); });
+    range.addEventListener('input', () => { num.value = range.value; runActiveCipher(); });
+  } else if (cipher.hasKey) {
+    paramsBar.innerHTML = `
+      <label for="cipherKeyInput">Cipher Key / Pass:</label>
+      <input type="text" id="cipherKeyInput" class="param-input" placeholder="${cipher.keyPlaceholder || 'Secret key...'}" value="SECRETKEY" style="flex:1;">
+    `;
+    document.getElementById('cipherKeyInput').addEventListener('input', runActiveCipher);
+  } else if (cipher.id === 'hex') {
+    paramsBar.innerHTML = `
+      <label for="hexDelimiter">Delimiter:</label>
+      <select id="hexDelimiter" class="param-input">
+        <option value=" ">Space (0xAA 0xBB)</option>
+        <option value="">None (AABB)</option>
+        <option value=":">Colon (AA:BB)</option>
+        <option value="-">Hyphen (AA-BB)</option>
+      </select>
+    `;
+    document.getElementById('hexDelimiter').addEventListener('change', runActiveCipher);
+  } else {
+    paramsBar.innerHTML = `<span style="font-size:11.5px; color:var(--text-muted);">Standard parameters active.</span>`;
+  }
+}
+
+function updateIoStats() {
+  const inVal = document.getElementById('cipherInput')?.value || '';
+  const outVal = document.getElementById('cipherOutput')?.value || '';
+  const inStats = document.getElementById('inputStats');
+  const outStats = document.getElementById('outputStats');
+  if (inStats) inStats.textContent = `${inVal.length} chars`;
+  if (outStats) outStats.textContent = `${outVal.length} chars`;
+}
+
+async function runCipher(mode = 'encode') {
+  const input = document.getElementById('cipherInput')?.value || '';
+  const outEl = document.getElementById('cipherOutput');
+  const auxEl = document.getElementById('cipherAuxView');
+  if (!outEl) return;
+
+  try {
+    let result = '';
+    const id = activeCipher.id;
+
+    if (id === 'caesar') {
+      const shift = parseInt(document.getElementById('cipherShiftInput')?.value || '3', 10);
+      result = caesarTransform(input, mode === 'encode' ? shift : -shift);
+
+      if (auxEl) {
+        auxEl.hidden = false;
+        const matrix = caesarBruteForce(input);
+        let tableHtml = '<table class="aux-table"><thead><tr><th>Shift</th><th>Candidate Plaintext</th></tr></thead><tbody>';
+        matrix.forEach(r => {
+          tableHtml += `<tr><td class="aux-shift-val">ROT+${r.shift}</td><td>${escapeHtml(r.text)}</td></tr>`;
+        });
+        tableHtml += '</tbody></table>';
+        auxEl.innerHTML = tableHtml;
+      }
+    } else {
+      if (auxEl) auxEl.hidden = true;
+      if (id === 'rot13') result = rot13(input);
+      else if (id === 'rot47') result = rot47(input);
+      else if (id === 'base64') result = mode === 'encode' ? base64Encode(input) : base64Decode(input);
+      else if (id === 'base32') result = mode === 'encode' ? base32Encode(input) : base32Decode(input);
+      else if (id === 'base58') result = mode === 'encode' ? base58Encode(input) : base58Decode(input);
+      else if (id === 'hex') {
+        const delim = document.getElementById('hexDelimiter')?.value || ' ';
+        result = mode === 'encode' ? textToHex(input, delim) : hexToText(input);
+      } else if (id === 'binary') result = mode === 'encode' ? textToBinary(input) : binaryToText(input);
+      else if (id === 'xor') {
+        const key = document.getElementById('cipherKeyInput')?.value || '';
+        result = xorTransform(input, key);
+      } else if (id === 'vigenere') {
+        const key = document.getElementById('cipherKeyInput')?.value || '';
+        result = vigenereCipher(input, key, mode === 'decode');
+      } else if (id === 'atbash') result = atbash(input);
+      else if (id === 'morse') result = mode === 'encode' ? morseEncode(input) : morseDecode(input);
+      else if (id === 'md5') result = md5(input);
+      else if (id === 'sha256') result = await subtleDigest('SHA-256', input);
+      else if (id === 'sha512') result = await subtleDigest('SHA-512', input);
+      else if (id === 'jwt') result = parseJwt(input);
+    }
+
+    outEl.value = result;
+  } catch (err) {
+    outEl.value = `[Error: ${err.message}]`;
+  }
+  updateIoStats();
+}
+
+function runActiveCipher() {
+  const liveToggle = document.getElementById('cipherLiveToggle');
+  if (liveToggle && liveToggle.checked) runCipher('encode');
+  else updateIoStats();
+}
+
+/* ==========================================================================
+   3D. AES-256 Vault App Controller
+   ========================================================================== */
+
+function initVault() {
+  const passInput = document.getElementById('vaultPassphrase');
+  const togglePassBtn = document.getElementById('btnToggleVaultPass');
+  const plainArea = document.getElementById('vaultPlaintext');
+  const cipherArea = document.getElementById('vaultCiphertext');
+  const statusEl = document.getElementById('vaultStatusMessage');
+
+  togglePassBtn?.addEventListener('click', () => {
+    const isPass = passInput.type === 'password';
+    passInput.type = isPass ? 'text' : 'password';
+    togglePassBtn.textContent = isPass ? 'Hide' : 'Show';
+  });
+
+  document.getElementById('btnVaultEncrypt')?.addEventListener('click', async () => {
+    const pass = passInput.value;
+    const plain = plainArea.value;
+    if (!pass) { statusEl.textContent = 'Error: Passphrase required.'; return; }
+    if (!plain) { statusEl.textContent = 'Error: Plaintext message cannot be empty.'; return; }
+    try {
+      statusEl.textContent = 'Deriving PBKDF2 key (100,000 rounds)...';
+      const packet = await encryptAesGcm(plain, pass);
+      cipherArea.value = packet;
+      statusEl.textContent = 'Payload encrypted with AES-256-GCM successfully.';
+    } catch (e) {
+      statusEl.textContent = `Encryption error: ${e.message}`;
+    }
+  });
+
+  document.getElementById('btnVaultDecrypt')?.addEventListener('click', async () => {
+    const pass = passInput.value;
+    const packet = cipherArea.value;
+    if (!pass) { statusEl.textContent = 'Error: Passphrase required.'; return; }
+    if (!packet) { statusEl.textContent = 'Error: Ciphertext packet cannot be empty.'; return; }
+    try {
+      statusEl.textContent = 'Authenticating and decrypting...';
+      const recovered = await decryptAesGcm(packet, pass);
+      plainArea.value = recovered;
+      statusEl.textContent = 'Decryption & authentication verified.';
+    } catch (e) {
+      statusEl.textContent = `Decryption failure: ${e.message}`;
+    }
+  });
+
+  document.getElementById('btnVaultCopyCipher')?.addEventListener('click', () => {
+    if (cipherArea && cipherArea.value) {
+      navigator.clipboard.writeText(cipherArea.value).then(() => {
+        statusEl.textContent = 'Armored packet copied to clipboard.';
+      });
+    }
+  });
+}
+
+/* ==========================================================================
+   3E. Steganography Lab Controller
+   ========================================================================== */
+
+function ensureStegoCarrier() {
+  const canvas = document.getElementById('stegoCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const imgData = ctx.createImageData(canvas.width, canvas.height);
+  const data = imgData.data;
+  for (let i = 0; i < data.length; i += 4) {
+    data[i] = Math.floor(20 + Math.random() * 40);
+    data[i + 1] = Math.floor(30 + Math.random() * 50);
+    data[i + 2] = Math.floor(40 + Math.random() * 70);
+    data[i + 3] = 255;
+  }
+  ctx.putImageData(imgData, 0, 0);
+  const prompt = document.getElementById('stegoDropPrompt');
+  if (prompt) prompt.style.display = 'none';
+}
+
+function initStego() {
+  document.querySelectorAll('.stego-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.stego-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.stego-tab-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const target = document.getElementById(`stego-tab-${btn.dataset.tab}`);
+      if (target) target.classList.add('active');
+    });
+  });
+
+  document.getElementById('btnGenerateCarrier')?.addEventListener('click', ensureStegoCarrier);
+
+  const dropZone = document.getElementById('stegoDropZone');
+  const fileInput = document.getElementById('stegoFileInput');
+  dropZone?.addEventListener('click', () => fileInput?.click());
+  fileInput?.addEventListener('change', e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.getElementById('stegoCanvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        document.getElementById('stegoDropPrompt').style.display = 'none';
+        const cap = Math.floor((img.width * img.height * 3) / 8) - 4;
+        document.getElementById('stegoImageStats').textContent = `Carrier: ${img.width}x${img.height} (Capacity: ~${(cap / 1024).toFixed(1)} KB)`;
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Embed payload
+  document.getElementById('btnStegoEncode')?.addEventListener('click', () => {
+    const canvas = document.getElementById('stegoCanvas');
+    const msg = document.getElementById('stegoPayloadInput').value;
+    const status = document.getElementById('stegoEncodeStatus');
+    const downloadBtn = document.getElementById('btnDownloadStego');
+    if (!msg) { status.textContent = 'Error: Message cannot be empty.'; return; }
+
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imgData.data;
+
+    const payloadBytes = new TextEncoder().encode(msg);
+    const len = payloadBytes.length;
+    const maxBytes = Math.floor((canvas.width * canvas.height * 3) / 8) - 4;
+    if (len > maxBytes) { status.textContent = `Payload too large for carrier (${len} > ${maxBytes} bytes).`; return; }
+
+    // 32-bit length header
+    const fullBytes = new Uint8Array(4 + len);
+    fullBytes[0] = (len >>> 24) & 255;
+    fullBytes[1] = (len >>> 16) & 255;
+    fullBytes[2] = (len >>> 8) & 255;
+    fullBytes[3] = len & 255;
+    fullBytes.set(payloadBytes, 4);
+
+    let byteIdx = 0, bitIdx = 0;
+    for (let i = 0; i < data.length && byteIdx < fullBytes.length; i++) {
+      if (i % 4 === 3) continue; // Skip alpha
+      const bit = (fullBytes[byteIdx] >>> (7 - bitIdx)) & 1;
+      data[i] = (data[i] & 0xFE) | bit;
+      bitIdx++;
+      if (bitIdx === 8) { bitIdx = 0; byteIdx++; }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+    downloadBtn.href = canvas.toDataURL('image/png');
+    downloadBtn.style.display = 'inline-flex';
+    status.textContent = `Successfully concealed ${len} bytes in LSB plane.`;
+  });
+
+  // Extract payload
+  const decodeDrop = document.getElementById('stegoDecodeDropZone');
+  const decodeFileInput = document.getElementById('stegoDecodeFileInput');
+  decodeDrop?.addEventListener('click', () => decodeFileInput?.click());
+  decodeFileInput?.addEventListener('change', e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.getElementById('stegoDecodeCanvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        document.getElementById('stegoDecodeDropPrompt').style.display = 'none';
+        document.getElementById('stegoDecodeStatus').textContent = `Carrier loaded (${img.width}x${img.height}). Ready to extract.`;
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('btnStegoDecode')?.addEventListener('click', () => {
+    const canvas = document.getElementById('stegoDecodeCanvas');
+    const ctx = canvas.getContext('2d');
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    const outArea = document.getElementById('stegoExtractedOutput');
+    const status = document.getElementById('stegoDecodeStatus');
+
+    let len = 0;
+    let byteVal = 0;
+    let bitIdx = 0;
+    let channelIdx = 0;
+
+    // Read 32-bit length header
+    for (; channelIdx < data.length && bitIdx < 32; channelIdx++) {
+      if (channelIdx % 4 === 3) continue;
+      const bit = data[channelIdx] & 1;
+      byteVal = (byteVal << 1) | bit;
+      bitIdx++;
+      if (bitIdx % 8 === 0) {
+        len = (len << 8) | byteVal;
+        byteVal = 0;
+      }
+    }
+
+    if (len <= 0 || len > (data.length / 4)) {
+      status.textContent = 'No valid LSB stego header detected in image.';
+      return;
+    }
+
+    const payload = new Uint8Array(len);
+    let pByteIdx = 0;
+    byteVal = 0;
+    bitIdx = 0;
+
+    for (; channelIdx < data.length && pByteIdx < len; channelIdx++) {
+      if (channelIdx % 4 === 3) continue;
+      const bit = data[channelIdx] & 1;
+      byteVal = (byteVal << 1) | bit;
+      bitIdx++;
+      if (bitIdx === 8) {
+        payload[pByteIdx++] = byteVal;
+        byteVal = 0;
+        bitIdx = 0;
+      }
+    }
+
+    try {
+      outArea.value = new TextDecoder().decode(payload);
+      status.textContent = `Extracted ${len} bytes plaintext successfully.`;
+    } catch (e) {
+      status.textContent = 'Decoded bytes are not valid UTF-8 text.';
+    }
+  });
+
+  // File Inspector
+  const fileInspectDrop = document.getElementById('fileInspectDropZone');
+  const fileInspectInput = document.getElementById('fileInspectInput');
+  fileInspectDrop?.addEventListener('click', () => fileInspectInput?.click());
+  fileInspectInput?.addEventListener('change', e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const meta = document.getElementById('fileInspectMeta');
+    const out = document.getElementById('fileInspectOutput');
+    meta.textContent = `Name: ${file.name} | Size: ${file.size} bytes | Type: ${file.type || 'application/octet-stream'}`;
+    const reader = new FileReader();
+    reader.onload = ev => { out.value = ev.target.result; };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ==========================================================================
    4. Multi-Language Code Playground / Runner
    ========================================================================== */
 
@@ -844,7 +1338,6 @@ function initCodeRunner() {
   document.getElementById('btnLoadTemplate')?.addEventListener('click', () => switchLanguage(langSelect.value));
   document.getElementById('btnClearConsole')?.addEventListener('click', () => { consoleEl.replaceChildren(); });
 
-  // Initial load
   switchLanguage('javascript');
 
   document.getElementById('btnRunCode')?.addEventListener('click', () => {
@@ -878,7 +1371,6 @@ function initCodeRunner() {
           consoleEl.append(retDiv);
         }
       } else if (lang === 'python') {
-        // Python-like evaluator: handles prints, defs, loops, and math
         runPythonLikeScript(code, consoleEl);
       } else if (lang === 'html') {
         iframeEl.srcdoc = code;
@@ -914,7 +1406,6 @@ function runPythonLikeScript(code, consoleEl) {
     consoleEl.append(div);
   };
 
-  // Convert Python-like syntax to JS execution safely
   let jsCode = '';
   lines.forEach(line => {
     let l = line.trim();
@@ -932,7 +1423,6 @@ function runPythonLikeScript(code, consoleEl) {
     }
   });
 
-  // Count open/close braces
   const openCount = (jsCode.match(/\{/g) || []).length;
   const closeCount = (jsCode.match(/\}/g) || []).length;
   jsCode += '}'.repeat(Math.max(0, openCount - closeCount));
@@ -968,7 +1458,6 @@ function runInMemorySql(sql, consoleEl) {
         const tbl = tables[match[2]];
         let results = tbl.rows;
         if (match[3]) {
-          // Simple where filter
           const whereParts = match[3].split(/\s*(=|>|<)\s*/);
           if (whereParts.length === 3) {
             const colIdx = tbl.cols.indexOf(whereParts[0]);
@@ -980,7 +1469,6 @@ function runInMemorySql(sql, consoleEl) {
           }
         }
 
-        // Render table
         let tableText = tbl.cols.map(c => c.padEnd(14)).join('| ') + '\n' + '-'.repeat(tbl.cols.length * 16) + '\n';
         results.forEach(r => {
           tableText += r.map(c => String(c).padEnd(14)).join('| ') + '\n';
@@ -1173,7 +1661,6 @@ function initFileExplorer() {
         if (item.type === 'dir') {
           renderDir(path === '/' ? `/${item.name}` : `${path}/${item.name}`);
         } else {
-          // Open in notepad
           openWindow('notepad');
           const noteArea = document.getElementById('notepadTextarea');
           const noteTitle = document.getElementById('notepadDocTitle');
@@ -1274,7 +1761,6 @@ function initSoundscape() {
     soundNodes.push(masterGain);
 
     if (trackName === 'rain') {
-      // Pink/White noise generator
       const bufferSize = audioCtx.sampleRate * 2;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -1297,7 +1783,6 @@ function initSoundscape() {
       noise.start();
       soundNodes.push(noise);
     } else if (trackName === 'neon' || trackName === 'terminal') {
-      // Detuned dual oscillators
       const osc1 = audioCtx.createOscillator();
       const osc2 = audioCtx.createOscillator();
       osc1.type = 'sawtooth';
@@ -1316,7 +1801,6 @@ function initSoundscape() {
       osc2.start();
       soundNodes.push(osc1, osc2);
     } else {
-      // Lo-fi pulse
       const osc = audioCtx.createOscillator();
       osc.type = 'sine';
       osc.frequency.value = 220;
@@ -1906,7 +2390,6 @@ function initKeyboardShortcuts() {
 
 function handleAltTabPress(direction) {
   const switcher = document.getElementById('appSwitcher');
-  const list = document.getElementById('appSwitcherList');
 
   if (!isAltTabActive) {
     isAltTabActive = true;
@@ -1964,6 +2447,7 @@ function boot() {
   for (const app of APPS) initializeWindow(app.id);
 
   buildDesktopIcons();
+  buildQuickLaunch();
   buildCipherSidebar();
   selectCipher(document.querySelector('.cipherItem'), CIPHERS[0]);
   initCodeRunner();
@@ -1981,6 +2465,9 @@ function boot() {
   document.getElementById('startButton')?.addEventListener('click', toggleStartMenu);
   const startBtn = document.getElementById('startButton');
   if (startBtn) startBtn.innerHTML = svgIcon('start');
+
+  const searchInput = document.getElementById('startSearchInput');
+  searchInput?.addEventListener('input', e => buildStartMenu(e.target.value));
 
   const brandGlyph = document.querySelector('.brandglyph');
   if (brandGlyph) brandGlyph.innerHTML = svgIcon('flow');

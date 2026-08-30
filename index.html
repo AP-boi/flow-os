@@ -533,7 +533,7 @@
         </div>
         <div class="detail-cell">
           <span class="d-label">Running Tasks</span>
-          <span id="sysmonTasksVal" class="d-val">12 Active Apps</span>
+          <span id="sysmonTasksVal" class="d-val">14 Pinned &amp; Ready</span>
         </div>
       </div>
       <p class="sysmon-note">Hardware telemetry and network flow rates are simulated in client memory.</p>
@@ -555,6 +555,9 @@
         <span class="user-avatar">&#x25C6;</span>
         <span class="user-handle">flow_user // root</span>
       </div>
+      <div class="start-search-wrap">
+        <input type="text" id="startSearchInput" placeholder="Type here to search apps..." autocomplete="off">
+      </div>
     </div>
     <div class="start-menu-section-title">Applications</div>
     <div id="startApps" class="start-apps-list"></div>
@@ -570,9 +573,11 @@
     </div>
   </div>
 
-  <!-- Taskbar -->
+  <!-- Taskbar with Quick Access Pinned Apps -->
   <footer id="taskbar">
     <button id="startButton" class="start-btn" aria-label="Start"></button>
+    <div id="quickLaunch" class="quick-launch-bar" aria-label="Quick Access Pinned Apps"></div>
+    <div class="taskbar-divider"></div>
     <div id="taskItems" class="task-items-container"></div>
     <div id="tray">
       <span id="themeIndicator" class="tray-pill">Obsidian</span>
