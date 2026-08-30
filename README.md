@@ -27,9 +27,10 @@ Flow OS avoids bundling heavy Node/npm runtimes in the browser. Instead, all fun
   - In-memory SQL relational query engine supporting `CREATE TABLE`, `INSERT INTO`, and `SELECT ... WHERE` conditions.
   - Complete 30,000-cell Brainfuck bytecode interpreter.
 
-- **Desktop Productivity Suite**:
+- **Desktop Productivity Suite & Session Security**:
   - Programmer Calculator featuring synchronized 4-base conversion (Hex, Dec, Oct, grouped 16-bit Bin) alongside bitwise ALUs (`AND`, `OR`, `XOR`, `NOT`, `LSH`, `RSH`, `MOD`).
   - Virtual File Explorer managing a hierarchical tree in localStorage (`/home/user`, `/documents`, `/crypto_keys`, `/scripts`, `/root`).
+  - Session Security & Power Management: biometric-style lock screen with passphrase authentication, kernel boot sequence reboot, and halted state shutdown.
   - Web Audio API procedural soundboard generating pink noise rain, dual detuned sawtooth neon drones, and 60Hz mainframe hums.
   - Multi-wallpaper engine supporting geometric grid mesh, PCB CAD blueprint, matrix rain streams, interactive canvas starfield, CRT phosphor scanlines, and custom image uploads.
 
@@ -53,6 +54,7 @@ npx serve .
 ### Keyboard Shortcuts
 | Shortcut | Action |
 |---|---|
+| `Win + L` or `Ctrl + Alt + L` | Lock session screen |
 | `Alt + Tab` | Window switcher HUD |
 | `Win` or `Ctrl + Space` | Toggle Start Menu |
 | `Ctrl + Alt + T` or `Ctrl + \`` | Open RootShell Terminal |

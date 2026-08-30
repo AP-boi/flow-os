@@ -577,6 +577,10 @@
     <div class="context-item" data-action="calc">Open Calculator</div>
     <div class="context-divider"></div>
     <div class="context-item" data-action="settings">System Settings</div>
+    <div class="context-divider"></div>
+    <div class="context-item" data-action="lock">Lock Session</div>
+    <div class="context-item" data-action="restart">Restart</div>
+    <div class="context-item" data-action="shutdown">Shut Down</div>
   </div>
 
   <!-- Alt+Tab App Switcher Overlay -->
@@ -584,6 +588,36 @@
     <div class="app-switcher-modal">
       <div class="app-switcher-title">Switch Applications (Alt + Tab)</div>
       <div id="appSwitcherList" class="app-switcher-list"></div>
+    </div>
+  </div>
+
+  <!-- Lock Screen Overlay -->
+  <div id="lockScreen" class="lock-screen-overlay" hidden>
+    <div class="lock-content">
+      <div class="lock-clock" id="lockClock">00:00</div>
+      <div class="lock-date" id="lockDate">Monday, August 31</div>
+      <div class="lock-card">
+        <div class="lock-avatar">&#x25C6;</div>
+        <div class="lock-user">flow_user // root</div>
+        <form id="lockForm" class="lock-form">
+          <input type="password" id="lockPassInput" placeholder="Passphrase (press Enter)..." autocomplete="off">
+          <button type="submit" id="btnUnlock" class="lock-btn">Unlock</button>
+        </form>
+        <div id="lockErrorMsg" class="lock-error" style="display: none;">Passphrase required or enter "flow"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Power / Reboot / Shutdown Screen Overlay -->
+  <div id="powerScreen" class="power-screen-overlay" hidden>
+    <div id="powerConsole" class="power-console" style="display: none;"></div>
+    <div id="powerOffDisplay" class="power-off-display" style="display: none;">
+      <div class="power-off-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/></svg>
+      </div>
+      <h2>System Halted</h2>
+      <p>Virtual memory unmounted. Click below to power on.</p>
+      <button id="btnPowerOn" class="ctabtn">Power On Workstation</button>
     </div>
   </div>
 
@@ -608,7 +642,21 @@
       <button class="theme-btn" data-theme="cobalt" title="Cobalt Deep">Cobalt</button>
     </div>
     <div class="start-menu-footer">
-      <button id="switchUser" class="switch-user-btn">Toggle Hacker Persona</button>
+      <button id="switchUser" class="switch-user-btn">Toggle Persona</button>
+      <div class="start-power-row">
+        <button id="btnPowerLock" class="power-action-btn" title="Lock Screen (Win+L)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Lock</span>
+        </button>
+        <button id="btnPowerRestart" class="power-action-btn" title="Restart Workstation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l6.67-6.67"/></svg>
+          <span>Restart</span>
+        </button>
+        <button id="btnPowerShutdown" class="power-action-btn danger" title="Shut Down Workstation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/></svg>
+          <span>Shut Down</span>
+        </button>
+      </div>
     </div>
   </div>
 

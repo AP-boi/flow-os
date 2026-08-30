@@ -110,13 +110,16 @@ textarea:focus-visible {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, .2);
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, .14);
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, .24);
 }
@@ -294,6 +297,7 @@ body.matrix-active #matrixCanvas {
     opacity: 0;
     transform: scale(.98) translateY(3px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -371,20 +375,75 @@ body.matrix-active #matrixCanvas {
 }
 
 /* Window Default Dimensions */
-#win-welcome { width: 560px; height: 480px; }
-#win-cipher { width: 840px; height: 560px; }
-#win-coderunner { width: 880px; height: 580px; }
-#win-calc { width: 440px; height: 540px; }
-#win-files { width: 720px; height: 480px; }
-#win-notepad { width: 620px; height: 480px; }
-#win-media { width: 540px; height: 380px; }
-#win-settings { width: 560px; height: 520px; }
-#win-vault { width: 660px; height: 480px; }
-#win-stego { width: 780px; height: 560px; }
-#win-terminal { width: 680px; height: 440px; }
-#win-hexdump { width: 720px; height: 490px; }
-#win-devpad { width: 740px; height: 500px; }
-#win-sysmon { width: 560px; height: 430px; }
+#win-welcome {
+  width: 560px;
+  height: 480px;
+}
+
+#win-cipher {
+  width: 840px;
+  height: 560px;
+}
+
+#win-coderunner {
+  width: 880px;
+  height: 580px;
+}
+
+#win-calc {
+  width: 440px;
+  height: 540px;
+}
+
+#win-files {
+  width: 720px;
+  height: 480px;
+}
+
+#win-notepad {
+  width: 620px;
+  height: 480px;
+}
+
+#win-media {
+  width: 540px;
+  height: 380px;
+}
+
+#win-settings {
+  width: 560px;
+  height: 520px;
+}
+
+#win-vault {
+  width: 660px;
+  height: 480px;
+}
+
+#win-stego {
+  width: 780px;
+  height: 560px;
+}
+
+#win-terminal {
+  width: 680px;
+  height: 440px;
+}
+
+#win-hexdump {
+  width: 720px;
+  height: 490px;
+}
+
+#win-devpad {
+  width: 740px;
+  height: 500px;
+}
+
+#win-sysmon {
+  width: 560px;
+  height: 430px;
+}
 
 /* ---------- Common UI Widgets & Buttons ---------- */
 
@@ -865,10 +924,21 @@ body.matrix-active #matrixCanvas {
   display: block;
 }
 
-.console-entry.log { color: #dbe1f1; }
-.console-entry.return { color: var(--accent); }
-.console-entry.error { color: var(--danger); }
-.console-entry.info { color: var(--focus); }
+.console-entry.log {
+  color: #dbe1f1;
+}
+
+.console-entry.return {
+  color: var(--accent);
+}
+
+.console-entry.error {
+  color: var(--danger);
+}
+
+.console-entry.info {
+  color: var(--focus);
+}
 
 .web-preview-frame {
   flex: 1;
@@ -1755,8 +1825,13 @@ body.matrix-active #matrixCanvas {
   color: #39ff6a;
 }
 
-body.theme-amber .term-body { color: #ffb432; }
-body.theme-cobalt .term-body { color: #7cb3ff; }
+body.theme-amber .term-body {
+  color: #ffb432;
+}
+
+body.theme-cobalt .term-body {
+  color: #7cb3ff;
+}
 
 .term-screen {
   flex: 1;
@@ -2024,8 +2099,14 @@ body.theme-cobalt .term-body { color: #7cb3ff; }
   outline: none;
 }
 
-#regexPattern { flex: 1; }
-#regexFlags { width: 60px; color: var(--text-dim); }
+#regexPattern {
+  flex: 1;
+}
+
+#regexFlags {
+  width: 60px;
+  color: var(--text-dim);
+}
 
 .regex-split {
   display: grid;
@@ -2165,8 +2246,15 @@ body.theme-cobalt .term-body { color: #7cb3ff; }
 }
 
 @keyframes switcherFade {
-  from { opacity: 0; transform: scale(.98); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .app-switcher-modal {
@@ -2268,6 +2356,7 @@ body.theme-cobalt .term-body { color: #7cb3ff; }
     opacity: 0;
     transform: translateY(8px) scale(.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);

@@ -575,6 +575,9 @@ function initDesktopContextMenu() {
       else if (action === 'terminal') openWindow('terminal');
       else if (action === 'calc') openWindow('calc');
       else if (action === 'newnote') openWindow('notepad');
+      else if (action === 'lock') lockSession();
+      else if (action === 'restart') rebootWorkstation();
+      else if (action === 'shutdown') shutdownWorkstation();
     });
   });
 }
@@ -2174,6 +2177,24 @@ async function executeCliCommand(cmdLine) {
       } else printTermLine('Usage: theme <obsidian|hacker|amber|cobalt>', 'term-error');
       break;
 
+    case 'lock':
+      printTermLine('Locking workstation session...', 'term-accent');
+      setTimeout(lockSession, 200);
+      break;
+
+    case 'reboot':
+    case 'restart':
+      printTermLine('Initiating warm reboot sequence...', 'term-accent');
+      setTimeout(rebootWorkstation, 200);
+      break;
+
+    case 'shutdown':
+    case 'poweroff':
+    case 'halt':
+      printTermLine('Halting system virtual memory...', 'term-accent');
+      setTimeout(shutdownWorkstation, 200);
+      break;
+
     case 'neofetch':
       printTermLine('        /\\        OS: Flow OS Coder Edition x86_64', 'term-accent');
       printTermLine('       /  \\       Host: Browser WebWorker Sandbox', 'term-accent');
@@ -2505,6 +2526,11 @@ function initKeyboardShortcuts() {
       handleAltTabPress(e.shiftKey ? -1 : 1);
       return;
     }
+    if ((e.key.toLowerCase() === 'l' && e.altKey && e.ctrlKey) || (e.key.toLowerCase() === 'l' && e.metaKey)) {
+      e.preventDefault();
+      lockSession();
+      return;
+    }
     if (e.key === 'Meta' || (e.ctrlKey && e.code === 'Space')) {
       e.preventDefault();
       toggleStartMenu();
@@ -2583,7 +2609,130 @@ function commitAltTabSelection() {
 }
 
 /* ==========================================================================
-   16. System Boot Sequence
+   16. Session Security & Power Management (Lock, Restart, Shutdown)
+   ========================================================================== */
+
+function lockSession() {
+  const lock = document.getElementById('lockScreen');
+  const pass = document.getElementById('lockPassInput');
+  const err = document.getElementById('lockErrorMsg');
+  if (!lock) return;
+  closeStartMenu();
+  if (err) err.style.display = 'none';
+  if (pass) pass.value = '';
+  updateLockClock();
+  lock.hidden = false;
+  sessionStorage.setItem('flow_os_locked', 'true');
+  if (pass) setTimeout(() => pass.focus(), 50);
+}
+
+function unlockSession() {
+  const lock = document.getElementById('lockScreen');
+  const pass = document.getElementById('lockPassInput');
+  const err = document.getElementById('lockErrorMsg');
+  const val = pass?.value.trim() || '';
+
+  const storedVaultPass = document.getElementById('vaultPassphrase')?.value.trim();
+  const isValid = val === '' || val === 'flow' || (storedVaultPass && val === storedVaultPass) || val === 'root';
+
+  if (isValid) {
+    if (lock) lock.hidden = true;
+    if (err) err.style.display = 'none';
+    sessionStorage.removeItem('flow_os_locked');
+  } else {
+    if (err) err.style.display = 'block';
+  }
+}
+
+function updateLockClock() {
+  const clock = document.getElementById('lockClock');
+  const dateEl = document.getElementById('lockDate');
+  const now = new Date();
+  if (clock) clock.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (dateEl) {
+    dateEl.textContent = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+  }
+}
+
+function rebootWorkstation() {
+  closeStartMenu();
+  const overlay = document.getElementById('powerScreen');
+  const consoleEl = document.getElementById('powerConsole');
+  const offEl = document.getElementById('powerOffDisplay');
+  if (!overlay || !consoleEl) return;
+
+  offEl.style.display = 'none';
+  consoleEl.style.display = 'flex';
+  consoleEl.replaceChildren();
+  overlay.hidden = false;
+
+  const logs = [
+    '[  OK  ] Unmounting virtual storage volumes (/home/user, /root)...',
+    '[  OK  ] Flushing in-memory cryptographic buffers...',
+    '[  OK  ] Terminating WebCrypto worker pools...',
+    '[  OK  ] Stopping audio DSP synthesizer nodes...',
+    '[  OK  ] Halting desktop window compositor...',
+    '[  OK  ] Syncing dirty cache blocks to local disk...',
+    'Flow OS Bootloader v3.0.0 (x86_64)',
+    'Loading kernel: webcrypto.ko vfs_layer.ko compositor.ko',
+    'Initializing hardware acceleration & memory pools...',
+    'Mounting root filesystem at /...',
+    'Starting graphical user interface...'
+  ];
+
+  let idx = 0;
+  const interval = setInterval(() => {
+    if (idx < logs.length) {
+      const line = document.createElement('div');
+      line.textContent = logs[idx];
+      consoleEl.append(line);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+      idx++;
+    } else {
+      clearInterval(interval);
+      setTimeout(() => {
+        overlay.hidden = true;
+        consoleEl.style.display = 'none';
+      }, 400);
+    }
+  }, 130);
+}
+
+function shutdownWorkstation() {
+  closeStartMenu();
+  const overlay = document.getElementById('powerScreen');
+  const consoleEl = document.getElementById('powerConsole');
+  const offEl = document.getElementById('powerOffDisplay');
+  if (!overlay || !offEl) return;
+
+  consoleEl.style.display = 'none';
+  offEl.style.display = 'flex';
+  overlay.hidden = false;
+}
+
+function powerOnWorkstation() {
+  const overlay = document.getElementById('powerScreen');
+  if (overlay) overlay.hidden = true;
+}
+
+function initPowerAndSession() {
+  document.getElementById('btnPowerLock')?.addEventListener('click', lockSession);
+  document.getElementById('btnPowerRestart')?.addEventListener('click', rebootWorkstation);
+  document.getElementById('btnPowerShutdown')?.addEventListener('click', shutdownWorkstation);
+  document.getElementById('btnPowerOn')?.addEventListener('click', powerOnWorkstation);
+
+  document.getElementById('lockForm')?.addEventListener('submit', e => {
+    e.preventDefault();
+    unlockSession();
+  });
+
+  if (sessionStorage.getItem('flow_os_locked') === 'true') {
+    lockSession();
+  }
+}
+
+/* ==========================================================================
+   17. System Boot Sequence
    ========================================================================== */
 
 function boot() {
@@ -2605,6 +2754,7 @@ function boot() {
   initDevPad();
   initKeyboardShortcuts();
   initDesktopContextMenu();
+  initPowerAndSession();
 
   // Restore saved wallpaper & theme
   const savedWallpaper = localStorage.getItem('flow_os_wallpaper') || 'mesh';
@@ -2677,8 +2827,10 @@ function boot() {
 
   updateClock();
   setInterval(updateClock, CLOCK_TICK_MS);
+  setInterval(updateLockClock, CLOCK_TICK_MS);
 
   openWindow('welcome');
 }
 
 document.addEventListener('DOMContentLoaded', boot);
+
