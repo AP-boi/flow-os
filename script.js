@@ -2,8 +2,8 @@
 
 /**
  * Flow OS — Coder & Crypter Workstation
- * Client-side cryptographic suite, multi-language code runner, everyday utilities, and desktop WM.
- * Dependency-free: all routines operate directly in client memory.
+ * Client-side cryptographic suite, multi-language code runner, desktop WM, and wallpaper engine.
+ * Zero-dependency: all routines operate directly in client memory without external network calls.
  */
 
 const TASKBAR_HEIGHT = 46;
@@ -17,13 +17,17 @@ const windows = new Map();
 let biggestIndex = Z_WINDOW_BASE;
 let activeWindowId = null;
 let currentTheme = 'obsidian';
+let currentWallpaper = 'mesh';
+
 let matrixLoop = null;
 let matrixResize = null;
+let starfieldLoop = null;
+let starfieldResize = null;
 let sysmonTimer = null;
 
 // Desktop application registry
 const APPS = [
-  { id: 'welcome', title: 'Welcome', icon: 'flow' },
+  { id: 'welcome', title: 'Flow OS Overview', icon: 'flow' },
   { id: 'cipher', title: 'Cipher Lab', icon: 'key' },
   { id: 'coderunner', title: 'Code Runner', icon: 'play' },
   { id: 'calc', title: 'Calculator', icon: 'calc' },
@@ -34,7 +38,7 @@ const APPS = [
   { id: 'terminal', title: 'rootshell', icon: 'terminal' },
   { id: 'hexdump', title: 'Hex & Entropy', icon: 'binary' },
   { id: 'devpad', title: 'DevPad', icon: 'code' },
-  { id: 'media', title: 'Soundscape', icon: 'music' },
+  { id: 'media', title: 'Focus Audio', icon: 'music' },
   { id: 'settings', title: 'Settings', icon: 'settings' },
   { id: 'sysmon', title: 'System Monitor', icon: 'pulse' },
 ];
@@ -42,7 +46,7 @@ const APPS = [
 const PINNED_APP_IDS = ['cipher', 'coderunner', 'terminal', 'files', 'calc', 'notepad', 'vault', 'stego', 'media', 'settings'];
 
 const HACKER_LABELS = {
-  welcome: 'readme.txt',
+  welcome: 'overview.man',
   cipher: 'crypt_suite.bin',
   coderunner: 'exec_sandbox.elf',
   calc: 'bitwise_math.asm',
@@ -425,21 +429,106 @@ function updateClock() {
   }
 }
 
+/* ==========================================================================
+   2B. Wallpaper Engine (Mesh, Blueprint, Matrix, Starfield, CRT, Slate)
+   ========================================================================== */
+
+function setWallpaper(name, customUrl = '') {
+  currentWallpaper = name;
+  const desktop = document.getElementById('desktop');
+
+  // Remove existing wallpaper classes
+  const classes = [...document.body.classList].filter(c => !c.startsWith('wallpaper-'));
+  document.body.className = classes.join(' ');
+  document.body.classList.add(`wallpaper-${name}`);
+
+  stopStarfield();
+  if (name !== 'matrix') stopMatrix();
+
+  if (name === 'custom' && customUrl) {
+    desktop.style.backgroundImage = `url("${customUrl}")`;
+    desktop.style.backgroundSize = 'cover';
+  } else {
+    desktop.style.backgroundImage = '';
+    desktop.style.backgroundSize = '';
+  }
+
+  if (name === 'starfield') startStarfield();
+  if (name === 'matrix') startMatrix();
+
+  document.querySelectorAll('.wallpaper-card').forEach(card => {
+    card.classList.toggle('active', card.dataset.wallpaper === name);
+  });
+
+  localStorage.setItem('flow_os_wallpaper', name);
+  if (customUrl) localStorage.setItem('flow_os_wallpaper_custom', customUrl);
+}
+
+function startStarfield() {
+  const canvas = document.getElementById('wallpaperCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  starfieldResize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = Array.from({ length: 90 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.5,
+      alpha: Math.random() * 0.7 + 0.3,
+      dx: (Math.random() - 0.5) * 0.15,
+      dy: (Math.random() - 0.5) * 0.15,
+    }));
+  };
+
+  starfieldResize();
+  window.addEventListener('resize', starfieldResize);
+
+  const loop = () => {
+    starfieldLoop = requestAnimationFrame(loop);
+    ctx.fillStyle = '#060a12';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#dbe1f1';
+    stars.forEach(s => {
+      s.x = (s.x + s.dx + canvas.width) % canvas.width;
+      s.y = (s.y + s.dy + canvas.height) % canvas.height;
+      ctx.globalAlpha = s.alpha;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+  };
+  starfieldLoop = requestAnimationFrame(loop);
+}
+
+function stopStarfield() {
+  if (starfieldLoop) {
+    cancelAnimationFrame(starfieldLoop);
+    starfieldLoop = null;
+  }
+  if (starfieldResize) {
+    window.removeEventListener('resize', starfieldResize);
+    starfieldResize = null;
+  }
+  const canvas = document.getElementById('wallpaperCanvas');
+  if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
 function setTheme(themeName) {
   currentTheme = themeName;
-  document.body.className = '';
+  const bodyClasses = [...document.body.classList].filter(c => c.startsWith('wallpaper-'));
+  document.body.className = bodyClasses.join(' ');
 
   if (themeName === 'hacker') {
     document.body.classList.add('hacker');
-    startMatrix();
   } else if (themeName === 'amber') {
     document.body.classList.add('theme-amber');
-    stopMatrix();
   } else if (themeName === 'cobalt') {
     document.body.classList.add('theme-cobalt');
-    stopMatrix();
-  } else {
-    stopMatrix();
   }
 
   const indicator = document.getElementById('themeIndicator');
@@ -454,6 +543,39 @@ function setTheme(themeName) {
   relabelIcons();
   syncTaskbar();
   buildStartMenu();
+}
+
+/* ==========================================================================
+   2C. Desktop Context Menu
+   ========================================================================== */
+
+function initDesktopContextMenu() {
+  const menu = document.getElementById('desktopContextMenu');
+  const desktop = document.getElementById('desktop');
+  if (!menu || !desktop) return;
+
+  desktop.addEventListener('contextmenu', e => {
+    if (e.target.closest('.window') || e.target.closest('#taskbar') || e.target.closest('#startMenu')) return;
+    e.preventDefault();
+    menu.style.left = `${Math.min(e.clientX, window.innerWidth - 180)}px`;
+    menu.style.top = `${Math.min(e.clientY, window.innerHeight - 180)}px`;
+    menu.hidden = false;
+  });
+
+  document.addEventListener('pointerdown', e => {
+    if (!e.target.closest('#desktopContextMenu')) menu.hidden = true;
+  });
+
+  menu.querySelectorAll('.context-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const action = item.dataset.action;
+      menu.hidden = true;
+      if (action === 'wallpaper' || action === 'settings') openWindow('settings');
+      else if (action === 'terminal') openWindow('terminal');
+      else if (action === 'calc') openWindow('calc');
+      else if (action === 'newnote') openWindow('notepad');
+    });
+  });
 }
 
 /* ==========================================================================
@@ -735,7 +857,7 @@ async function subtleDigest(algorithm, text) {
 
 function parseJwt(token) {
   const parts = token.trim().split('.');
-  if (parts.length < 2) throw new Error('JWT must contain at least Header and Payload separated by dot.');
+  if (parts.length < 2) throw new Error('JWT must contain Header and Payload segments.');
   const decodeSegment = seg => {
     let base64 = seg.replace(/-/g, '+').replace(/_/g, '/');
     while (base64.length % 4) base64 += '=';
@@ -1109,7 +1231,6 @@ function initStego() {
     reader.readAsDataURL(file);
   });
 
-  // Embed payload
   document.getElementById('btnStegoEncode')?.addEventListener('click', () => {
     const canvas = document.getElementById('stegoCanvas');
     const msg = document.getElementById('stegoPayloadInput').value;
@@ -1126,7 +1247,6 @@ function initStego() {
     const maxBytes = Math.floor((canvas.width * canvas.height * 3) / 8) - 4;
     if (len > maxBytes) { status.textContent = `Payload too large for carrier (${len} > ${maxBytes} bytes).`; return; }
 
-    // 32-bit length header
     const fullBytes = new Uint8Array(4 + len);
     fullBytes[0] = (len >>> 24) & 255;
     fullBytes[1] = (len >>> 16) & 255;
@@ -1136,7 +1256,7 @@ function initStego() {
 
     let byteIdx = 0, bitIdx = 0;
     for (let i = 0; i < data.length && byteIdx < fullBytes.length; i++) {
-      if (i % 4 === 3) continue; // Skip alpha
+      if (i % 4 === 3) continue;
       const bit = (fullBytes[byteIdx] >>> (7 - bitIdx)) & 1;
       data[i] = (data[i] & 0xFE) | bit;
       bitIdx++;
@@ -1146,10 +1266,9 @@ function initStego() {
     ctx.putImageData(imgData, 0, 0);
     downloadBtn.href = canvas.toDataURL('image/png');
     downloadBtn.style.display = 'inline-flex';
-    status.textContent = `Successfully concealed ${len} bytes in LSB plane.`;
+    status.textContent = `Concealed ${len} bytes in LSB planes.`;
   });
 
-  // Extract payload
   const decodeDrop = document.getElementById('stegoDecodeDropZone');
   const decodeFileInput = document.getElementById('stegoDecodeFileInput');
   decodeDrop?.addEventListener('click', () => decodeFileInput?.click());
@@ -1184,7 +1303,6 @@ function initStego() {
     let bitIdx = 0;
     let channelIdx = 0;
 
-    // Read 32-bit length header
     for (; channelIdx < data.length && bitIdx < 32; channelIdx++) {
       if (channelIdx % 4 === 3) continue;
       const bit = data[channelIdx] & 1;
@@ -1226,7 +1344,6 @@ function initStego() {
     }
   });
 
-  // File Inspector
   const fileInspectDrop = document.getElementById('fileInspectDropZone');
   const fileInspectInput = document.getElementById('fileInspectInput');
   fileInspectDrop?.addEventListener('click', () => fileInspectInput?.click());
@@ -1248,7 +1365,7 @@ function initStego() {
 
 const CODE_TEMPLATES = {
   javascript: `// JavaScript ES2024 Sandbox
-console.log("Welcome to Flow OS Code Runner!");
+console.log("Flow OS Code Runner initialized.");
 
 function findPrimes(max) {
   const primes = [];
@@ -1262,7 +1379,7 @@ const primes = findPrimes(50);
 console.log("Primes up to 50:", primes);
 return { totalPrimes: primes.length, largest: primes.at(-1) };`,
 
-  python: `# Python-like script runner
+  python: `# Python-like script evaluator
 def fibonacci(n):
     a, b = 0, 1
     seq = []
@@ -1271,9 +1388,9 @@ def fibonacci(n):
         a, b = b, a + b
     return seq
 
-print("Generating Fibonacci sequence:")
+print("Generating Fibonacci numbers:")
 result = fibonacci(10)
-print("Fibonacci(10):", result)
+print("Result:", result)
 `,
 
   html: `<!DOCTYPE html>
@@ -1281,14 +1398,14 @@ print("Fibonacci(10):", result)
 <head>
   <style>
     body { background: #0c101d; color: #39ff6a; font-family: monospace; padding: 20px; }
-    .neon-box { border: 2px solid #39ff6a; padding: 15px; border-radius: 8px; box-shadow: 0 0 15px rgba(57,255,106,0.4); }
+    .neon-box { border: 1px solid #39ff6a; padding: 15px; border-radius: 4px; box-shadow: 0 0 15px rgba(57,255,106,0.25); }
   </style>
 </head>
 <body>
   <div class="neon-box">
     <h2>Flow OS Web Sandbox</h2>
-    <p>Live HTML/CSS/JS Canvas rendering inside sandboxed iframe.</p>
-    <button onclick="alert('Hello from Flow OS!')">Click Interactive</button>
+    <p>Live sandboxed HTML/CSS/JS canvas preview.</p>
+    <button onclick="alert('Sandbox alert dispatch')">Click Interactive</button>
   </div>
 </body>
 </html>`,
@@ -1740,7 +1857,7 @@ function initNotepad() {
 }
 
 /* ==========================================================================
-   8. Web Audio Procedural Cyber Soundscape
+   8. Web Audio Procedural Focus Soundscapes
    ========================================================================== */
 
 let audioCtx = null;
@@ -1837,20 +1954,37 @@ function initSoundscape() {
 }
 
 /* ==========================================================================
-   9. System Settings Controller
+   9. System Settings Controller & Wallpaper Picker
    ========================================================================== */
 
 function initSettings() {
+  document.querySelectorAll('.wallpaper-card').forEach(card => {
+    card.addEventListener('click', () => {
+      setWallpaper(card.dataset.wallpaper);
+    });
+  });
+
   document.querySelectorAll('.theme-card').forEach(card => {
     card.addEventListener('click', () => {
       setTheme(card.dataset.theme);
     });
   });
 
-  document.getElementById('settingMatrixToggle')?.addEventListener('change', e => {
-    document.body.classList.toggle('matrix-active', e.target.checked);
-    if (e.target.checked) startMatrix();
-    else stopMatrix();
+  const uploadBtn = document.getElementById('btnUploadWallpaper');
+  const fileInput = document.getElementById('wallpaperFileInput');
+  uploadBtn?.addEventListener('click', () => fileInput?.click());
+  fileInput?.addEventListener('change', e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      setWallpaper('custom', ev.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('btnResetWallpaper')?.addEventListener('click', () => {
+    setWallpaper('mesh');
   });
 
   document.getElementById('btnResetLocalStorage')?.addEventListener('click', () => {
@@ -1939,6 +2073,7 @@ async function executeCliCommand(cmdLine) {
       printTermLine('  jwt <token>            : Decode JWT header & payload');
       printTermLine('  entropy <text>         : Calculate Shannon Entropy score');
       printTermLine('  eval <js-code>         : Evaluate client-side JS expression');
+      printTermLine('  wallpaper <name>       : mesh | blueprint | matrix | starfield | crt | slate');
       printTermLine('  theme <name>           : obsidian | hacker | amber | cobalt');
       printTermLine('  neofetch               : System banner & specs');
       printTermLine('  clear / cls            : Clear terminal buffer');
@@ -2022,6 +2157,13 @@ async function executeCliCommand(cmdLine) {
           printTermLine(String(window.eval(text)), 'term-success');
         } catch (e) { printTermLine(`Error: ${e.message}`, 'term-error'); }
       }
+      break;
+
+    case 'wallpaper':
+      if (['mesh', 'blueprint', 'matrix', 'starfield', 'crt', 'slate'].includes(args[0]?.toLowerCase())) {
+        setWallpaper(args[0].toLowerCase());
+        printTermLine(`Wallpaper switched to "${args[0]}".`, 'term-success');
+      } else printTermLine('Usage: wallpaper <mesh|blueprint|matrix|starfield|crt|slate>', 'term-error');
       break;
 
     case 'theme':
@@ -2461,6 +2603,12 @@ function boot() {
   initTerminal();
   initDevPad();
   initKeyboardShortcuts();
+  initDesktopContextMenu();
+
+  // Restore saved wallpaper & theme
+  const savedWallpaper = localStorage.getItem('flow_os_wallpaper') || 'mesh';
+  const savedCustomUrl = localStorage.getItem('flow_os_wallpaper_custom') || '';
+  setWallpaper(savedWallpaper, savedCustomUrl);
 
   document.getElementById('startButton')?.addEventListener('click', toggleStartMenu);
   const startBtn = document.getElementById('startButton');
@@ -2519,7 +2667,6 @@ function boot() {
 
   document.getElementById('hexSourceInput')?.addEventListener('input', triggerHexUpdate);
 
-  // Quick Launch Links on Welcome Screen
   document.getElementById('link-open-ciphers')?.addEventListener('click', e => { e.preventDefault(); openWindow('cipher'); });
   document.getElementById('link-open-coderunner')?.addEventListener('click', e => { e.preventDefault(); openWindow('coderunner'); });
   document.getElementById('link-open-files')?.addEventListener('click', e => { e.preventDefault(); openWindow('files'); });

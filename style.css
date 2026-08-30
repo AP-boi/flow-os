@@ -3,14 +3,14 @@
 
 :root {
   --accent: #d4a72c;
-  --accent-soft: rgba(212, 167, 44, .14);
-  --accent-glow: rgba(212, 167, 44, .28);
+  --accent-soft: rgba(212, 167, 44, .12);
+  --accent-glow: rgba(212, 167, 44, .24);
   --focus: #6b5ce7;
-  --surface: rgba(13, 17, 30, .88);
+  --surface: rgba(13, 17, 30, .92);
   --surface-solid: #101422;
   --surface-alt: #161b2c;
   --surface-input: #0a0d17;
-  --stroke: rgba(255, 255, 255, .09);
+  --stroke: rgba(255, 255, 255, .08);
   --stroke-focused: rgba(212, 167, 44, .45);
   --text: #dbe1f1;
   --text-dim: #8b95b0;
@@ -24,47 +24,49 @@
   --taskbar-h: 46px;
   --mono-font: "JetBrains Mono", "Fira Code", "Cascadia Code", Menlo, Consolas, monospace;
   --sans-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --transition-fast: 140ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-normal: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 130ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --elevation-window: 0 12px 32px rgba(0, 0, 0, .65);
+  --elevation-focus: 0 16px 44px rgba(0, 0, 0, .85), 0 0 0 1px var(--stroke-focused);
 }
 
-/* ---------- Theme Overrides ---------- */
+/* ---------- Theme Colorways ---------- */
 
 body.hacker,
 body.theme-hacker {
   --accent: #22e565;
-  --accent-soft: rgba(34, 229, 101, .14);
-  --accent-glow: rgba(34, 229, 101, .32);
+  --accent-soft: rgba(34, 229, 101, .12);
+  --accent-glow: rgba(34, 229, 101, .28);
   --focus: #00d2ff;
-  --surface: rgba(8, 18, 12, .92);
+  --surface: rgba(8, 18, 12, .94);
   --surface-solid: #0b1710;
   --surface-alt: #102217;
   --surface-input: #050d08;
-  --stroke-focused: rgba(34, 229, 101, .5);
+  --stroke-focused: rgba(34, 229, 101, .45);
 }
 
 body.theme-amber {
   --accent: #ffb432;
-  --accent-soft: rgba(255, 180, 50, .14);
-  --accent-glow: rgba(255, 180, 50, .3);
+  --accent-soft: rgba(255, 180, 50, .12);
+  --accent-glow: rgba(255, 180, 50, .26);
   --focus: #ff6b35;
-  --surface: rgba(20, 15, 8, .92);
+  --surface: rgba(20, 15, 8, .94);
   --surface-solid: #171109;
   --surface-alt: #221a0e;
   --surface-input: #0d0a05;
-  --stroke-focused: rgba(255, 180, 50, .5);
+  --stroke-focused: rgba(255, 180, 50, .45);
 }
 
 body.theme-cobalt {
   --accent: #4e88ff;
-  --accent-soft: rgba(78, 136, 255, .14);
-  --accent-glow: rgba(78, 136, 255, .3);
+  --accent-soft: rgba(78, 136, 255, .12);
+  --accent-glow: rgba(78, 136, 255, .26);
   --focus: #9d4edd;
-  --surface: rgba(10, 16, 32, .92);
+  --surface: rgba(10, 16, 32, .94);
   --surface-solid: #0d152a;
   --surface-alt: #131e3b;
   --surface-input: #060a14;
-  --stroke-focused: rgba(78, 136, 255, .5);
+  --stroke-focused: rgba(78, 136, 255, .45);
 }
 
 /* ---------- Reset & Base ---------- */
@@ -104,7 +106,6 @@ textarea:focus-visible {
   outline-offset: 1px;
 }
 
-/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -113,33 +114,81 @@ textarea:focus-visible {
   background: rgba(0, 0, 0, .2);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, .15);
+  background: rgba(255, 255, 255, .14);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, .28);
+  background: rgba(255, 255, 255, .24);
 }
 
-/* ---------- Desktop Shell ---------- */
+/* ---------- Desktop Shell & Wallpaper Engine ---------- */
 
 #desktop {
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(circle at 80% 20%, rgba(212, 167, 44, .04), transparent 40%),
-    radial-gradient(circle at 20% 80%, rgba(107, 92, 231, .05), transparent 45%),
-    #080b14;
+  background-color: #080b14;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
 }
 
+/* Wallpaper 1: Cyber Grid Mesh */
+body.wallpaper-mesh #desktop {
+  background-image:
+    radial-gradient(circle at 80% 20%, rgba(212, 167, 44, .05), transparent 45%),
+    radial-gradient(circle at 20% 80%, rgba(107, 92, 231, .06), transparent 50%),
+    linear-gradient(rgba(255, 255, 255, .02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+}
+
+/* Wallpaper 2: PCB CAD Blueprint */
+body.wallpaper-blueprint #desktop {
+  background-color: #050d18;
+  background-image:
+    linear-gradient(rgba(78, 136, 255, .07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78, 136, 255, .07) 1px, transparent 1px),
+    linear-gradient(rgba(78, 136, 255, .02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78, 136, 255, .02) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+}
+
+/* Wallpaper 3: CRT Scanlines */
+body.wallpaper-crt #desktop {
+  background-color: #070e0a;
+  background-image:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, .4) 50%),
+    radial-gradient(circle at 50% 50%, rgba(34, 229, 101, .06), rgba(0, 0, 0, .9));
+  background-size: 100% 4px, 100% 100%;
+}
+
+/* Wallpaper 4: Minimal Slate */
+body.wallpaper-slate #desktop {
+  background-color: #0d1117;
+  background-image: radial-gradient(circle at 50% 50%, #131822 0%, #080b10 100%);
+}
+
+#wallpaperCanvas,
 #matrixCanvas {
-  display: none;
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
 }
 
-body.hacker #matrixCanvas,
+#wallpaperCanvas {
+  display: none;
+}
+
+body.wallpaper-starfield #wallpaperCanvas {
+  display: block;
+}
+
+#matrixCanvas {
+  display: none;
+}
+
+body.wallpaper-matrix #matrixCanvas,
 body.matrix-active #matrixCanvas {
   display: block;
 }
@@ -171,7 +220,7 @@ body.matrix-active #matrixCanvas {
 }
 
 .icon:hover {
-  background: rgba(255, 255, 255, .07);
+  background: rgba(255, 255, 255, .06);
   transform: translateY(-1px);
 }
 
@@ -217,11 +266,11 @@ body.matrix-active #matrixCanvas {
   min-width: 340px;
   min-height: 200px;
   background: var(--surface);
-  backdrop-filter: blur(24px) saturate(1.25);
-  -webkit-backdrop-filter: blur(24px) saturate(1.25);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
   border: 1px solid var(--stroke);
   border-radius: var(--radius);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, .65);
+  box-shadow: var(--elevation-window);
   overflow: hidden;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
@@ -237,13 +286,13 @@ body.matrix-active #matrixCanvas {
 
 .window.focused {
   border-color: var(--stroke-focused);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, .8), 0 0 0 1px var(--accent-soft);
+  box-shadow: var(--elevation-focus);
 }
 
 @keyframes windowIn {
   from {
     opacity: 0;
-    transform: scale(.97) translateY(4px);
+    transform: scale(.98) translateY(3px);
   }
   to {
     opacity: 1;
@@ -264,7 +313,7 @@ body.matrix-active #matrixCanvas {
 }
 
 .wintitle {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--text-dim);
   letter-spacing: .2px;
@@ -295,12 +344,12 @@ body.matrix-active #matrixCanvas {
 }
 
 .winbtn:hover {
-  background: rgba(255, 255, 255, .1);
+  background: rgba(255, 255, 255, .09);
   color: var(--text);
 }
 
 .winbtn:active {
-  background: rgba(255, 255, 255, .16);
+  background: rgba(255, 255, 255, .15);
 }
 
 .closebutton:hover {
@@ -321,7 +370,7 @@ body.matrix-active #matrixCanvas {
   border-right: 0;
 }
 
-/* Individual Window Default Dimensions */
+/* Window Default Dimensions */
 #win-welcome { width: 560px; height: 480px; }
 #win-cipher { width: 840px; height: 560px; }
 #win-coderunner { width: 880px; height: 580px; }
@@ -329,7 +378,7 @@ body.matrix-active #matrixCanvas {
 #win-files { width: 720px; height: 480px; }
 #win-notepad { width: 620px; height: 480px; }
 #win-media { width: 540px; height: 380px; }
-#win-settings { width: 540px; height: 440px; }
+#win-settings { width: 560px; height: 520px; }
 #win-vault { width: 660px; height: 480px; }
 #win-stego { width: 780px; height: 560px; }
 #win-terminal { width: 680px; height: 440px; }
@@ -361,8 +410,8 @@ body.matrix-active #matrixCanvas {
 }
 
 .toolbtn:hover {
-  background: rgba(255, 255, 255, .1);
-  border-color: rgba(255, 255, 255, .2);
+  background: rgba(255, 255, 255, .09);
+  border-color: rgba(255, 255, 255, .18);
 }
 
 .toolbtn:active {
@@ -379,7 +428,7 @@ body.matrix-active #matrixCanvas {
 
 .toolbtn-small:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, .12);
+  background: rgba(255, 255, 255, .11);
   border-color: var(--accent);
 }
 
@@ -403,8 +452,8 @@ body.matrix-active #matrixCanvas {
 }
 
 .ctabtn:hover {
-  filter: brightness(1.12);
-  box-shadow: 0 0 12px var(--accent-glow);
+  filter: brightness(1.1);
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .ctabtn:active {
@@ -435,16 +484,16 @@ body.matrix-active #matrixCanvas {
 }
 
 .welcome-body h1 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   color: var(--text);
-  letter-spacing: -.3px;
+  letter-spacing: -.2px;
 }
 
 .tagline {
   color: var(--accent);
   font-weight: 500;
-  font-size: 13px;
+  font-size: 12.5px;
 }
 
 .welcome-body hr {
@@ -478,9 +527,10 @@ body.matrix-active #matrixCanvas {
 }
 
 .feature-card h3 {
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--accent);
   margin-bottom: 4px;
+  font-weight: 600;
 }
 
 .feature-card p {
@@ -538,7 +588,7 @@ body.matrix-active #matrixCanvas {
 }
 
 .cipherItem:hover {
-  background: rgba(255, 255, 255, .06);
+  background: rgba(255, 255, 255, .05);
   color: var(--text);
 }
 
@@ -564,7 +614,7 @@ body.matrix-active #matrixCanvas {
 }
 
 #cipherName {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text);
 }
@@ -935,7 +985,7 @@ body.matrix-active #matrixCanvas {
 }
 
 .calc-btn:hover {
-  background: rgba(255, 255, 255, .1);
+  background: rgba(255, 255, 255, .09);
 }
 
 .calc-btn:active {
@@ -1064,7 +1114,7 @@ body.matrix-active #matrixCanvas {
 }
 
 .file-icon-glyph {
-  font-size: 26px;
+  font-size: 24px;
 }
 
 .file-name-label {
@@ -1127,7 +1177,7 @@ body.matrix-active #matrixCanvas {
   padding: 2px 4px;
 }
 
-/* ---------- Cyber Soundscape & Synth ---------- */
+/* ---------- Focus Audio Synthesizer ---------- */
 
 .media-body {
   display: flex;
@@ -1205,7 +1255,7 @@ body.matrix-active #matrixCanvas {
 }
 
 .track-icon {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .track-name {
@@ -1233,7 +1283,7 @@ body.matrix-active #matrixCanvas {
   width: 100px;
 }
 
-/* ---------- Settings & Customization ---------- */
+/* ---------- Wallpaper & Settings Customization ---------- */
 
 .settings-body {
   display: flex;
@@ -1254,10 +1304,89 @@ body.matrix-active #matrixCanvas {
 }
 
 .settings-section h3 {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: .6px;
+}
+
+.wallpaper-selection-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.wallpaper-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
+  background: var(--surface-alt);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text-dim);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.wallpaper-card:hover {
+  background: rgba(255, 255, 255, .06);
+  color: var(--text);
+}
+
+.wallpaper-card.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.wallpaper-thumb {
+  width: 100%;
+  height: 48px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, .08);
+}
+
+.thumb-mesh {
+  background: radial-gradient(circle, rgba(212, 167, 44, .25), #080b14);
+}
+
+.thumb-blueprint {
+  background: #050d18;
+  background-image: linear-gradient(rgba(78, 136, 255, .3) 1px, transparent 1px), linear-gradient(90deg, rgba(78, 136, 255, .3) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+.thumb-matrix {
+  background: #030804;
+  background-image: linear-gradient(rgba(34, 229, 101, .4) 1px, transparent 1px);
+  background-size: 100% 4px;
+}
+
+.thumb-starfield {
+  background: #020308;
+  background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.thumb-crt {
+  background: #070e0a;
+  background-image: linear-gradient(rgba(0, 0, 0, .6) 50%, rgba(34, 229, 101, .2) 50%);
+  background-size: 100% 4px;
+}
+
+.thumb-slate {
+  background: radial-gradient(circle, #1a2233 0%, #080b10 100%);
+}
+
+.wallpaper-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
 }
 
 .theme-selection-cards {
@@ -1309,6 +1438,48 @@ body.matrix-active #matrixCanvas {
 
 .setting-toggle-row input[type="checkbox"] {
   accent-color: var(--accent);
+}
+
+/* ---------- Desktop Right-Click Context Menu ---------- */
+
+.context-menu {
+  position: fixed;
+  z-index: 10000;
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--stroke-focused);
+  border-radius: var(--radius);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .85);
+  padding: 4px;
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.context-menu[hidden] {
+  display: none;
+}
+
+.context-item {
+  padding: 6px 10px;
+  font-size: 11.5px;
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.context-item:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.context-divider {
+  height: 1px;
+  background: var(--stroke);
+  margin: 3px 0;
 }
 
 /* ---------- AES-256 Vault App ---------- */
@@ -2254,7 +2425,7 @@ body.theme-cobalt .term-body { color: #7cb3ff; }
   left: 0;
   right: 0;
   height: var(--taskbar-h);
-  background: rgba(10, 13, 22, .88);
+  background: rgba(10, 13, 22, .92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--stroke);

@@ -3,42 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flow OS — Coder & Crypter Workstation</title>
+  <title>Flow OS — Coder &amp; Crypter Workstation</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="wallpaper-mesh">
 
 <div id="desktop">
+  <canvas id="wallpaperCanvas"></canvas>
+  <canvas id="matrixCanvas"></canvas>
   <div id="iconField"></div>
 
   <!-- Welcome / Quickstart Window -->
   <section class="window" id="win-welcome" data-title="Welcome">
-    <header class="windowheader"><span class="wintitle">Welcome</span></header>
+    <header class="windowheader"><span class="wintitle">Flow OS Overview</span></header>
     <div class="winbody welcome-body">
       <div class="brandglyph"></div>
       <h1>Flow OS</h1>
-      <p class="tagline">Coder workstation, cryptanalysis suite, and full-featured desktop environment.</p>
+      <p class="tagline">Coder workstation, cryptanalysis suite, and desktop environment.</p>
       <hr>
       <div class="welcome-content">
         <p class="bio">
-          Flow OS is an integrated browser-native operating system for coders and crypters. Built in zero-dependency client memory with developer playgrounds, cryptographic engines, and everyday desktop productivity utilities.
+          Flow OS is an integrated browser-native workstation for developers and cryptanalysts. It runs zero-dependency cryptographic engines, developer playgrounds, and everyday desktop productivity utilities in client memory.
         </p>
         <div class="feature-grid">
           <div class="feature-card">
-            <h3>Cipher Lab &amp; Vault</h3>
-            <p>Caesar brute-force, Base58/85/64, XOR, Vigen&egrave;re, AES-256-GCM authenticated vault, and LSB image steganography.</p>
+            <h3>Cipher Suite &amp; Vault</h3>
+            <p>Caesar brute-force matrix, Base58/32/64 codecs, XOR, Vigen&egrave;re, PBKDF2 authenticated AES-256-GCM vault, and LSB pixel steganography.</p>
           </div>
           <div class="feature-card">
             <h3>Code Runner</h3>
-            <p>Multi-language sandbox supporting JavaScript/TS, Python scripts, HTML/CSS live canvas preview, and in-memory SQL queries.</p>
+            <p>Multi-language sandbox supporting JavaScript ES2024, Python-like script evaluation, live HTML/CSS canvas rendering, and in-memory SQL.</p>
           </div>
           <div class="feature-card">
             <h3>Desktop Utilities</h3>
-            <p>Programmer Calculator (Hex/Dec/Bin/Bitwise), Virtual File Explorer, Markdown Notepad, and Cyber Ambient Soundboard.</p>
+            <p>Programmer Calculator with synchronized Hex/Dec/Oct/Bin bases, Virtual File Explorer, Markdown Notepad, and Synthesized Audio Focusscapes.</p>
           </div>
           <div class="feature-card">
-            <h3>RootShell &amp; Hex</h3>
-            <p>Interactive virtual shell, Shannon Entropy analysis, process manager, and system telemetry.</p>
+            <h3>RootShell &amp; Hex Analysis</h3>
+            <p>Interactive virtual shell, Shannon Entropy spectrum analysis ($0.000 \dots 8.000$), hardware simulation telemetry, and process monitors.</p>
           </div>
         </div>
       </div>
@@ -71,7 +73,6 @@
           </div>
         </div>
 
-        <!-- Dynamic Cipher Parameters (Shift slider, key input, hash options) -->
         <div id="cipherParams" class="cipher-params-bar"></div>
 
         <div class="cipher-io-grid">
@@ -100,7 +101,6 @@
           </div>
         </div>
 
-        <!-- Extra analysis view (e.g. Caesar 26 shifts, JWT breakdown, XOR brute force) -->
         <div id="cipherAuxView" class="cipher-aux-container" hidden></div>
       </div>
     </div>
@@ -148,7 +148,7 @@
   </section>
 
   <!-- Programmer & Standard Calculator -->
-  <section class="window" id="win-calc" data-title="Calculator (Programmer / Math)">
+  <section class="window" id="win-calc" data-title="Calculator">
     <header class="windowheader"><span class="wintitle">Calculator (Programmer / Math)</span></header>
     <div class="winbody calc-body">
       <div class="calc-mode-bar">
@@ -181,12 +181,12 @@
       </div>
       <div class="files-layout">
         <div class="files-sidebar">
-          <div class="sidebar-section-title">Quick Access</div>
-          <div class="files-nav-item active" data-path="/home/user">&#x1F4C1; Home</div>
-          <div class="files-nav-item" data-path="/home/user/documents">&#x1F4C4; Documents</div>
-          <div class="files-nav-item" data-path="/home/user/crypto_keys">&#x1F511; Crypto Keys</div>
-          <div class="files-nav-item" data-path="/home/user/scripts">&#x1F4BB; Scripts</div>
-          <div class="files-nav-item" data-path="/root">&#x1F5C4; System Root</div>
+          <div class="sidebar-section-title">Virtual Disk</div>
+          <div class="files-nav-item active" data-path="/home/user">Home</div>
+          <div class="files-nav-item" data-path="/home/user/documents">Documents</div>
+          <div class="files-nav-item" data-path="/home/user/crypto_keys">Crypto Keys</div>
+          <div class="files-nav-item" data-path="/home/user/scripts">Scripts</div>
+          <div class="files-nav-item" data-path="/root">System Root</div>
         </div>
         <div class="files-content-pane">
           <div id="filesListGrid" class="files-grid"></div>
@@ -206,7 +206,7 @@
         <button id="btnNotepadDownload" class="menu-text-btn">Download .txt</button>
         <span id="notepadDocTitle" class="doc-title-pill">untitled.txt</span>
       </div>
-      <textarea id="notepadTextarea" class="notepad-textarea" spellcheck="false" placeholder="Start typing..."></textarea>
+      <textarea id="notepadTextarea" class="notepad-textarea" spellcheck="false" placeholder="Start typing notes or code..."></textarea>
       <div class="notepad-footer">
         <span id="notepadStats">Line 1, Col 1 | 0 characters</span>
         <span class="encoding-tag">UTF-8</span>
@@ -215,31 +215,31 @@
   </section>
 
   <!-- Cyber Soundscape & Synth -->
-  <section class="window" id="win-media" data-title="Cyber Soundscape Player">
-    <header class="windowheader"><span class="wintitle">Cyber Soundscape Player</span></header>
+  <section class="window" id="win-media" data-title="Focus Audio Synthesizer">
+    <header class="windowheader"><span class="wintitle">Focus Audio Synthesizer</span></header>
     <div class="winbody media-body">
       <div class="synth-card">
         <div class="synth-header">
-          <h3>Procedural Ambient Coder Audio</h3>
-          <span class="synth-badge">Web Audio Synthesizer</span>
+          <h3>Procedural Focus Soundscapes</h3>
+          <span class="synth-badge">Web Audio DSP</span>
         </div>
-        <p class="synth-desc">Client-side synthesized ambient noise to boost deep work focus without streaming external bandwidth.</p>
+        <p class="synth-desc">Client-side synthesized acoustic textures to maintain deep focus without streaming network latency.</p>
         <div class="soundscape-grid">
           <button class="sound-track-btn" data-track="rain">
-            <span class="track-icon">&#x1F327;</span>
-            <span class="track-name">Cyber Rain</span>
+            <span class="track-icon">&#x223F;</span>
+            <span class="track-name">Pink Noise Rain</span>
           </button>
           <button class="sound-track-btn" data-track="neon">
-            <span class="track-icon">&#x1F30C;</span>
-            <span class="track-name">Neon Drone</span>
+            <span class="track-icon">&#x223E;</span>
+            <span class="track-name">Saw Wave Drone</span>
           </button>
           <button class="sound-track-btn" data-track="terminal">
-            <span class="track-icon">&#x1F4BB;</span>
-            <span class="track-name">Mainframe Hum</span>
+            <span class="track-icon">&#x2328;</span>
+            <span class="track-name">Mainframe 60Hz</span>
           </button>
           <button class="sound-track-btn" data-track="synth">
-            <span class="track-icon">&#x1F3B5;</span>
-            <span class="track-name">Lo-Fi Pulse</span>
+            <span class="track-icon">&#x266B;</span>
+            <span class="track-name">Sine Arp Pulse</span>
           </button>
         </div>
         <div class="synth-controls-row">
@@ -257,6 +257,43 @@
   <section class="window" id="win-settings" data-title="System Settings">
     <header class="windowheader"><span class="wintitle">System Settings</span></header>
     <div class="winbody settings-body">
+      <!-- Wallpaper Section -->
+      <div class="settings-section">
+        <h3>Desktop Wallpaper</h3>
+        <div class="wallpaper-selection-cards" id="wallpaperGrid">
+          <div class="wallpaper-card active" data-wallpaper="mesh">
+            <div class="wallpaper-thumb thumb-mesh"></div>
+            <span>Cyber Grid</span>
+          </div>
+          <div class="wallpaper-card" data-wallpaper="blueprint">
+            <div class="wallpaper-thumb thumb-blueprint"></div>
+            <span>PCB CAD</span>
+          </div>
+          <div class="wallpaper-card" data-wallpaper="matrix">
+            <div class="wallpaper-thumb thumb-matrix"></div>
+            <span>Matrix Rain</span>
+          </div>
+          <div class="wallpaper-card" data-wallpaper="starfield">
+            <div class="wallpaper-thumb thumb-starfield"></div>
+            <span>Starfield</span>
+          </div>
+          <div class="wallpaper-card" data-wallpaper="crt">
+            <div class="wallpaper-thumb thumb-crt"></div>
+            <span>CRT Scanline</span>
+          </div>
+          <div class="wallpaper-card" data-wallpaper="slate">
+            <div class="wallpaper-thumb thumb-slate"></div>
+            <span>Minimal Slate</span>
+          </div>
+        </div>
+        <div class="wallpaper-custom-row">
+          <button id="btnUploadWallpaper" class="toolbtn">Upload Image Wallpaper...</button>
+          <input type="file" id="wallpaperFileInput" accept="image/*" style="display: none;">
+          <button id="btnResetWallpaper" class="toolbtn-small">Default Wallpaper</button>
+        </div>
+      </div>
+
+      <!-- Themes Section -->
       <div class="settings-section">
         <h3>Theme &amp; Accent Palette</h3>
         <div class="theme-selection-cards">
@@ -278,24 +315,19 @@
           </div>
         </div>
       </div>
+
+      <!-- Preferences Section -->
       <div class="settings-section">
         <h3>Shell Preferences</h3>
         <div class="setting-toggle-row">
-          <span>Matrix Rain Wallpaper Layer</span>
-          <input type="checkbox" id="settingMatrixToggle">
-        </div>
-        <div class="setting-toggle-row">
-          <span>UI Click Audio Feedback</span>
-          <input type="checkbox" id="settingSfxToggle" checked>
-        </div>
-        <div class="setting-toggle-row">
-          <span>Smooth Window Animations</span>
+          <span>Window Opening Transitions</span>
           <input type="checkbox" id="settingAnimToggle" checked>
         </div>
       </div>
+
       <div class="settings-section">
         <h3>Storage &amp; Memory Reset</h3>
-        <button id="btnResetLocalStorage" class="toolbtn" style="color: var(--danger);">Clear Local Virtual Disk &amp; Cache</button>
+        <button id="btnResetLocalStorage" class="toolbtn" style="color: var(--danger);">Reset Local Storage Disk &amp; Defaults</button>
       </div>
     </div>
   </section>
@@ -316,15 +348,15 @@
       </div>
       <div class="vault-split">
         <div class="vault-col">
-          <label for="vaultPlaintext">Plaintext Message / Secret Notes</label>
+          <label for="vaultPlaintext">Plaintext Payload</label>
           <textarea id="vaultPlaintext" spellcheck="false" placeholder="Enter secret data to encrypt..."></textarea>
-          <button id="btnVaultEncrypt" class="ctabtn">&#x1F512; Encrypt to Armored Packet</button>
+          <button id="btnVaultEncrypt" class="ctabtn">Encrypt to Armored Packet</button>
         </div>
         <div class="vault-col">
           <label for="vaultCiphertext">Armored Cipher Packet (Base64)</label>
           <textarea id="vaultCiphertext" spellcheck="false" placeholder="Paste armored ciphertext packet here..."></textarea>
           <div class="vault-actions-row">
-            <button id="btnVaultDecrypt" class="toolbtn">&#x1F513; Decrypt with Passphrase</button>
+            <button id="btnVaultDecrypt" class="toolbtn">Decrypt with Passphrase</button>
             <button id="btnVaultCopyCipher" class="toolbtn-small">Copy Packet</button>
           </div>
         </div>
@@ -343,20 +375,19 @@
         <button class="stego-tab-btn" data-tab="fileinspect">File / Base64 Inspector</button>
       </div>
 
-      <!-- Embed Tab -->
       <div id="stego-tab-encode" class="stego-tab-pane active">
         <div class="stego-grid">
           <div class="stego-preview-col">
             <div id="stegoDropZone" class="stego-drop-zone">
               <canvas id="stegoCanvas" width="280" height="180"></canvas>
               <div id="stegoDropPrompt" class="drop-prompt">
-                <span>&#x1F5BC; Drop image or click to select cover carrier</span>
+                <span>Drop image or click to select cover carrier</span>
               </div>
               <input type="file" id="stegoFileInput" accept="image/*" style="display: none;">
             </div>
             <div class="stego-image-meta">
               <span id="stegoImageStats">Carrier: 280x180 (Capacity: ~18.9 KB)</span>
-              <button id="btnGenerateCarrier" class="toolbtn-small">Generate Procedural Noise Carrier</button>
+              <button id="btnGenerateCarrier" class="toolbtn-small">Generate Noise Carrier</button>
             </div>
           </div>
           <div class="stego-payload-col">
@@ -371,14 +402,13 @@
         </div>
       </div>
 
-      <!-- Extract Tab -->
       <div id="stego-tab-decode" class="stego-tab-pane">
         <div class="stego-grid">
           <div class="stego-preview-col">
             <div id="stegoDecodeDropZone" class="stego-drop-zone">
               <canvas id="stegoDecodeCanvas" width="280" height="180"></canvas>
               <div id="stegoDecodeDropPrompt" class="drop-prompt">
-                <span>&#x1F4E5; Drop Stego PNG to extract hidden payload</span>
+                <span>Drop Stego PNG to extract hidden payload</span>
               </div>
               <input type="file" id="stegoDecodeFileInput" accept="image/*" style="display: none;">
             </div>
@@ -392,10 +422,9 @@
         </div>
       </div>
 
-      <!-- File Inspector Tab -->
       <div id="stego-tab-fileinspect" class="stego-tab-pane">
         <div id="fileInspectDropZone" class="file-inspect-drop">
-          <p>&#x1F4C1; Drag and drop any file here to inspect bytes, MIME type, and generate Data URIs</p>
+          <p>Drag and drop any binary file here to inspect byte length, MIME type, and generate Data URIs</p>
           <input type="file" id="fileInspectInput" style="display: none;">
         </div>
         <div class="file-inspect-meta" id="fileInspectMeta">No file loaded.</div>
@@ -453,7 +482,6 @@
         <button class="devpad-tab-btn" data-tab="notes">Quick Scratch</button>
       </div>
       
-      <!-- JSON Tab -->
       <div id="devpad-tab-json" class="devpad-tab-pane active">
         <div class="tab-toolbar">
           <button id="btnJsonPrettify" class="toolbtn">Beautify (2 Spaces)</button>
@@ -464,7 +492,6 @@
         <textarea id="jsonInput" class="devpad-textarea" spellcheck="false" placeholder='Paste JSON here (e.g. {"flow": "os", "ciphers": 14})...'></textarea>
       </div>
 
-      <!-- Regex Tab -->
       <div id="devpad-tab-regex" class="devpad-tab-pane">
         <div class="regex-inputs-bar">
           <div class="regex-field-group">
@@ -487,7 +514,6 @@
         </div>
       </div>
 
-      <!-- Notes Tab -->
       <div id="devpad-tab-notes" class="devpad-tab-pane">
         <div class="tab-toolbar">
           <button id="btnSaveNotes" class="toolbtn">Save Local Buffer</button>
@@ -540,6 +566,16 @@
     </div>
   </section>
 
+  <!-- Desktop Right-Click Context Menu -->
+  <div id="desktopContextMenu" class="context-menu" hidden>
+    <div class="context-item" data-action="wallpaper">Change Wallpaper...</div>
+    <div class="context-item" data-action="terminal">Open RootShell</div>
+    <div class="context-item" data-action="newnote">New Text Note</div>
+    <div class="context-item" data-action="calc">Open Calculator</div>
+    <div class="context-divider"></div>
+    <div class="context-item" data-action="settings">System Settings</div>
+  </div>
+
   <!-- Alt+Tab App Switcher Overlay -->
   <div id="appSwitcher" class="app-switcher-overlay" hidden>
     <div class="app-switcher-modal">
@@ -584,8 +620,6 @@
       <span id="timeElement" class="tray-clock">00:00</span>
     </div>
   </footer>
-
-  <canvas id="matrixCanvas"></canvas>
 </div>
 
 <script src="script.js"></script>
