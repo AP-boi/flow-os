@@ -2,11 +2,11 @@
 
 Flow OS is a browser-native desktop workstation and cryptanalysis environment built entirely with zero external runtime dependencies. Every cryptographic primitive, virtual filesystem structure, multi-language sandbox evaluator, and audio synthesizer operates directly in client memory via standard Web APIs (`SubtleCrypto`, `Canvas`, `Web Audio API`).
 
-## Authorship & Collaboration
+## Authorship & Credits
 
-This system was engineered through a 50/50 human-AI pair programming workflow:
-- **Human Contribution (50%)**: System architecture, cryptographic domain specifications, application layout requirements, security review, and design direction by **[AP-boi](https://github.com/AP-boi)**.
-- **AI Contribution (50%)**: Algorithm implementations, zero-dependency data structures, interactive UI components, test harness, and AGENTS.md humanization passes by **Antigravity AI**.
+This project was built through a 50/50 collaborative workflow:
+- **Architecture & Direction (50%)**: System architecture, cryptographic domain specifications, application layout requirements, security review, and design direction by **[AP-boi](https://github.com/AP-boi)**.
+- **Code Implementation (50%)**: Algorithm implementations, zero-dependency data structures, interactive UI components, and test harness by **Antigravity AI**.
 
 ---
 
