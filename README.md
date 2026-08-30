@@ -2,6 +2,8 @@
 
 A browser-based desktop workstation for coders and cryptographers. Zero dependencies, running 100% offline in client memory.
 
+**Live Demo**: [flowosv1.vercel.app](https://flowosv1.vercel.app)
+
 ## Features
 - **Crypto & Stego**: AES-256-GCM vault, LSB image steganography, Shannon entropy, 16 ciphers (Caesar, Base58, Hex, XOR, Vigenère, Hashes, JWT).
 - **Code Runner**: Multi-language sandbox for JavaScript, Python, live HTML/CSS canvas, in-memory SQL, and Brainfuck.
