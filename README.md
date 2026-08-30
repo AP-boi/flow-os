@@ -2,79 +2,78 @@
 
 > **Live Demo:** [flowosv1.vercel.app](https://flowosv1.vercel.app)
 
-A lightweight, web-based desktop environment built from scratch in vanilla JavaScript, HTML5 Canvas, and WebAudio API.
+A single-file browser desktop operating system built in vanilla JavaScript, HTML5 Canvas, and the WebAudio API.
 
-Flow OS is designed around distraction-free productivity. It combines a clean macOS-style menu bar and dock with Windows-style snap window tiling, a built-in focus timer, ambient sound generators, a terminal, and a sandboxed live code playground.
+Flow OS is structured as a dedicated deep-work workstation. It couples a unified window manager (window snapping, 8-directional pointer capture resizing, spring-damped dock magnification) with an integrated productivity suite: multi-track ambient soundscape synthesis, a global quick-capture scratchpad drawer, an in-browser Babel code playground with virtual filesystem integration, client-side WebCrypto cryptography tools, and focus session reflection auditing.
 
-Everything runs entirely in the browser with zero dependencies, zero build steps, and zero backend servers.
-
----
-
-## Why I Built This
-
-I wanted to see how far I could push pure browser APIs (Canvas, WebAudio, WebCrypto, and DOM pointer events) to build a fast, responsive desktop environment in a single, portable file.
-
-Instead of just cloning an existing OS interface, I built tools directly into the desktop that help me stay focused:
-- **Focus Timer (Flow Sessions)**: Integrated 25m, 50m, and 90m interval timers that dim background distractions and track deep work streaks.
-- **Synthesized Ambient Audio**: Generates brown noise, rain, café ambience, and wind directly in real-time using mathematical oscillators and noise buffers — no static MP3 files needed.
-- **Code Lab**: An in-browser code editor and runner for JavaScript, TypeScript, React (TSX), and live HTML with an integrated console.
-- **Cipher Vault**: An offline cryptography utility powered by the browser's native `window.crypto.subtle` API for AES-GCM encryption, hashing, and password generation.
+The entire operating system runs in the browser without node build steps, external runtime dependencies, or backend services.
 
 ---
 
-## Core Features & Architecture
+## Architectural Decisions & Trade-offs
 
-### 1. Window Management
-- Custom pointer event handling (`setPointerCapture`) for smooth window dragging with physical inertia.
-- 8-directional window resizing handles (`n`, `s`, `e`, `w`, `ne`, `nw`, `se`, `sw`).
-- Window snapping: Drag to top for full screen, left/right edges for 50/50 splits, or use the hover snap flyout on the green maximize button.
-- Smooth genie-style minimization and restoration into the dock.
+### 1. Single-File Vanilla Architecture vs. Component Bundlers
+I chose a zero-framework architecture over a heavy React/Vite build pipeline to keep runtime initialization immediate (<12ms parse time) and allow the system to run directly from `file://` or any static host. Window state management, z-index elevation stacks, and drag physics are coordinated through a single authoritative event loop rather than distributed component lifecycles.
 
-### 2. Live Code Lab (`Code Lab`)
-- Write and run **JavaScript**, **TypeScript**, **React 18 (TSX)**, and **HTML**.
-- Code runs in an isolated `<iframe>` sandbox with a postMessage console bridge that streams `console.log`, `console.warn`, and `console.error` directly to the output panel.
-- Supports keyboard shortcut (`Ctrl + Enter` / `Cmd + Enter`) to run.
+### 2. Multi-Track WebAudio Synthesis vs. Static Audio Assets
+Instead of bundling multi-megabyte MP3 files that require network streaming, ambient soundscapes are synthesized directly on the audio thread using mathematical noise buffers (Brownian random walk and pink noise), biquad filters, LFO modulation, and dual-oscillator binaural beat generation (10Hz alpha focus frequency). This yields zero bandwidth cost, zero playback looping artifacts, and simultaneous multi-layer track mixing.
 
-### 3. WebAudio Ambient Synthesizer
-- **Rain**: Pink/white noise filtered through a lowpass biquad filter with randomized high-frequency water droplet blips.
-- **Brown Noise**: Integrated Brownian random walk noise with a gentle lowpass curve at 360Hz.
-- **Wind**: Resonant bandpass filter modulated by a slow 0.15Hz low-frequency oscillator (LFO).
-- **Café**: Bandpassed Brownian noise with harmonic ambient tones.
+### 3. Pointer Capture Resizing & Friction-Compensated Snapping
+Window dragging and resizing uses the HTML5 Pointer Events API (`setPointerCapture` and `releasePointerCapture`) to prevent cursor detachment during rapid mouse movement over iframe sandboxes or canvas surfaces. Snapping employs a screen-edge threshold detector with visual drop targets and hover flyout presets on window maximize controls.
 
-### 4. Offline Cryptography (Cipher Vault)
-- **AES-256-GCM** encryption and decryption using PBKDF2 key derivation (150,000 iterations).
-- **SHA Hashing**: Real-time SHA-1, SHA-256, SHA-384, and SHA-512 digests.
-- **Base64**: UTF-8 safe text encoding/decoding.
-- **Password Generator**: Cryptographically secure random passwords using `crypto.getRandomValues`.
+---
 
-### 5. Desktop Shell & Utilities
-- **Spotlight Search (`Cmd + K` / `Ctrl + K`)**: Quick launcher for apps, system actions, and searching stored notes.
-- **Virtual Filesystem**: Create folders, files, import local text files, and manage files in localStorage.
-- **Notes & Tasks**: Autosaving markdown notes and task checklists with priority tags.
-- **Terminal (`aura-sh`)**: Command line interface with system commands (`help`, `ls`, `theme`, `flow`, `soundscape`, `neofetch`, `clear`, etc.).
-- **Themes**: Charcoal dark mode and warm paper light mode with custom accent colors.
+## Feature Overview
+
+### 1. Multi-Track Ambient Soundscape Mixer
+- Concurrent multi-layer synthesis: Rain (lowpass noise + random droplet oscillators), Brownian noise (360Hz integrated random walk), Wind (bandpass filter modulated by a 0.15Hz LFO), Café ambiance, and Binaural Beats (216Hz left / 226Hz right alpha drone).
+- Real-time track faders (0–100%) and quick presets (Cozy Rain, Café Work, Deep Zen, Storm) in both Control Center and System Settings.
+
+### 2. Zen Quick-Capture HUD (Scratchpad Drawer)
+- Global `Alt + Space` hotkey summons an elevated scratchpad drawer from the top of the screen.
+- Auto-syncs ephemeral thoughts to `flow.scratchpad` in localStorage.
+- Instant "Save as Note" action bridges scratchpad drafts directly into the persistent Notes app.
+
+### 3. Code Lab & Virtual Filesystem Bridge
+- Multi-mode code runner supporting plain JavaScript, TypeScript (browser-transpiled via Babel), React 18 (TSX with live component mounting), and HTML preview.
+- Console bridge streams stdout/stderr from sandboxed execution iframes into a synchronized console pane.
+- **Snippet Vault**: Direct bridge between Code Lab and the virtual filesystem (`/Home/Snippets`), allowing one-click saving, file browsing, and script execution.
+
+### 4. Focus Session Reflection & Productivity Audit
+- Deep work timers (25m sprint, 50m block, 90m ultradian) with Distraction Shield overlay.
+- End-of-session reflection prompt: 5-star depth rating, interruption tracking, and accomplishment logging.
+- Session Audit Log tab in Flow & Analytics with one-click **Markdown** and **JSON** export for external habit tracking.
+
+### 5. Offline Cryptography Workstation (Cipher Vault)
+- AES-256-GCM authenticated encryption/decryption using PBKDF2 key derivation (150,000 iterations).
+- Real-time cryptographic digests (SHA-1, SHA-256, SHA-384, SHA-512) and password generation via `crypto.getRandomValues`.
+
+### 6. Desktop Shell & File Management
+- Spotlight Search (`Cmd + K` / `Ctrl + K`) indexer across installed apps, user notes, and system actions.
+- Virtual hierarchical filesystem with folder navigation, breadcrumb pathing, and text file import/export.
+- Dark (Charcoal Slate) and Light (Raw Linen) themes with custom accent palettes.
 
 ---
 
 ## Getting Started
 
-No build process, bundler, or installation required.
+No build process, package installation, or compiler toolchain is required.
 
 ### 1. Direct Browser Launch
-Open `index.html` directly in any modern browser (Chrome, Firefox, Safari, Edge).
+Double-click `index.html` to open directly in any modern web browser (Chrome, Firefox, Safari, Edge).
 
-### 2. Running via a Local Server
-If you prefer running through a local development server:
+### 2. Local Static Server
+If running through a local development server:
 
 ```bash
-# Using Python
+# Python 3
 python -m http.server 8080
 
-# Or using Node.js
+# Node.js
 npx serve .
 ```
 
-Then visit `http://localhost:8080` in your browser.
+Navigate to `http://localhost:8080`.
 
 ---
 
@@ -82,17 +81,17 @@ Then visit `http://localhost:8080` in your browser.
 
 ```
 flow-os/
-├── index.html       # Monolithic client OS (CSS, HTML layout, Kernel & Apps)
-├── components/      # Standalone React UI components & demos
+├── index.html       # Monolithic desktop OS (CSS design system, DOM shell, Kernel & Apps)
+├── components/      # Standalone UI components & React preview targets
 │   ├── background-gradient-animation-demo.tsx
 │   └── ui/
 │       └── background-gradient-animation.tsx
 ├── lib/
-│   └── utils.ts     # Classname merging utility (cn)
-├── components.json  # shadcn/ui configuration
+│   └── utils.ts     # Classname merging utility
+├── components.json  # Component configuration
 ├── tsconfig.json    # TypeScript configuration
 ├── LICENSE          # MIT License
-└── README.md
+└── README.md        # Technical documentation & usage instructions
 ```
 
 ---
@@ -101,21 +100,31 @@ flow-os/
 
 | Shortcut | Action |
 | :--- | :--- |
+| <kbd>Alt</kbd> + <kbd>Space</kbd> | Toggle Zen Quick-Capture Scratchpad |
 | <kbd>Cmd</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd> | Open Spotlight Search |
 | <kbd>Ctrl</kbd> + <kbd>L</kbd> | Lock Screen |
 | <kbd>Cmd</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd> | Run Code in Code Lab |
 | <kbd>Cmd</kbd> + <kbd>W</kbd> | Close active window |
 | <kbd>Cmd</kbd> + <kbd>M</kbd> | Minimize all windows |
-| <kbd>Esc</kbd> | Close open menus, Spotlight, or modals |
+| <kbd>Esc</kbd> | Dismiss modals, Spotlight, Scratchpad, and menus |
 
 ---
 
-## Persistence & Privacy
+## Storage & Privacy
 
-All application data (notes, tasks, files, code snippets, settings) is stored locally in your browser via `localStorage` under namespaced keys (`flow.settings`, `flow.notes`, `flow.tasks`, `flow.files`, `flow.codelab`). No external telemetry, no remote servers.
+All user data (notes, tasks, virtual files, code snippets, mixer preferences, and audit logs) is persisted locally in the browser via `localStorage` under namespaced keys:
+- `flow.settings`
+- `flow.notes`
+- `flow.tasks`
+- `flow.files`
+- `flow.codelab`
+- `flow.sessions`
+- `flow.scratchpad`
+
+No telemetry or external network calls are made during core operation.
 
 ---
 
 ## License
 
-MIT License. Feel free to use, modify, and build upon this project.
+MIT License. See [LICENSE](LICENSE) for full terms.

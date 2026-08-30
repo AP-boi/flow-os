@@ -6,11 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Flow OS — Deep Work Desktop</title>
 
-  <!-- Fonts: Sora (UI) + IBM Plex Mono (Code/Clocks/Numerals) -->
+  <!-- Fonts: Plus Jakarta Sans (UI) + JetBrains Mono (Code/Clocks/Numerals) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Sora:wght@300;400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
     rel="stylesheet" />
 
   <!-- Favicon -->
@@ -24,33 +24,40 @@
     /* Theme variables and base styles */
     :root {
       /* Typography */
-      --font-sans: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-mono: 'IBM Plex Mono', monospace;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
 
-      /* Radius Scale */
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 22px;
+      /* Radius Scale - Intentional Hierarchy */
+      --radius-xs: 4px;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
       --radius-pill: 9999px;
 
-      /* Motion & Springs */
-      --ease-flow: cubic-bezier(0.2, 0.9, 0.3, 1);
+      /* Motion & Tactile Physics */
+      --ease-flow: cubic-bezier(0.19, 1, 0.22, 1);
       --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
       --ease-spring-soft: cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-genie: cubic-bezier(0.22, 0.88, 0.28, 1);
+      --ease-genie: cubic-bezier(0.2, 0.9, 0.25, 1);
       --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --transition-fast: 150ms var(--ease-flow);
-      --transition-normal: 240ms var(--ease-flow);
-      --transition-slow: 380ms var(--ease-flow);
-      --transition-spring: 420ms var(--ease-spring-soft);
+      --transition-fast: 130ms var(--ease-flow);
+      --transition-normal: 220ms var(--ease-flow);
+      --transition-slow: 340ms var(--ease-flow);
+      --transition-spring: 380ms var(--ease-spring-soft);
 
-      /* Accent Color (Default Warm Coral) */
-      --accent: #ff7849;
-      --accent-hover: #ff8b61;
-      --accent-rgb: 255, 120, 73;
-      --accent-subtle: rgba(255, 120, 73, 0.14);
-      --accent-glow: rgba(255, 120, 73, 0.25);
+      /* Accent Color (Nordic Burnt Ochre) */
+      --accent: #e28743;
+      --accent-hover: #ec9755;
+      --accent-rgb: 226, 135, 67;
+      --accent-subtle: rgba(226, 135, 67, 0.14);
+      --accent-glow: rgba(226, 135, 67, 0.28);
+      --accent-teal: #3d7a68;
+      --accent-teal-subtle: rgba(61, 122, 104, 0.16);
+
+      /* Inset bevel tokens */
+      --inset-bevel-light: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+      --inset-bevel-dark: inset 0 1px 0 rgba(0, 0, 0, 0.2);
 
       /* Z-Indices */
       --z-wallpaper: 0;
@@ -68,54 +75,54 @@
       --z-boot: 1800;
     }
 
-    /* Dark Theme */
+    /* Dark Theme - Nordic Slate */
     [data-theme="dark"] {
-      --bg-base: #0e0f13;
-      --bg-surface: rgba(22, 23, 29, 0.72);
-      --bg-surface-elevated: rgba(30, 32, 40, 0.88);
-      --bg-surface-active: rgba(45, 48, 60, 0.9);
-      --bg-glass: rgba(18, 19, 25, 0.65);
-      --bg-glass-heavy: rgba(14, 15, 19, 0.88);
-      --border-hairline: rgba(255, 255, 255, 0.08);
+      --bg-base: #121316;
+      --bg-surface: rgba(27, 29, 34, 0.8);
+      --bg-surface-elevated: rgba(32, 35, 42, 0.94);
+      --bg-surface-active: rgba(42, 46, 56, 0.95);
+      --bg-glass: rgba(22, 24, 29, 0.74);
+      --bg-glass-heavy: rgba(18, 19, 23, 0.92);
+      --border-hairline: rgba(255, 255, 255, 0.07);
       --border-subtle: rgba(255, 255, 255, 0.12);
-      --border-focus: rgba(255, 255, 255, 0.24);
-      --text-primary: #e8e5de;
-      --text-secondary: rgba(232, 229, 222, 0.58);
-      --text-tertiary: rgba(232, 229, 222, 0.35);
-      --shadow-window: 0 16px 48px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.25);
-      --shadow-popover: 0 20px 50px rgba(0, 0, 0, 0.55), 0 6px 20px rgba(0, 0, 0, 0.35);
-      --shadow-dock: 0 16px 36px rgba(0, 0, 0, 0.5);
-      --dock-bg: rgba(18, 19, 24, 0.75);
-      --menubar-bg: rgba(14, 15, 19, 0.8);
-      --card-bg: rgba(255, 255, 255, 0.04);
-      --card-hover: rgba(255, 255, 255, 0.08);
-      --input-bg: rgba(0, 0, 0, 0.35);
-      --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+      --border-focus: rgba(226, 135, 67, 0.55);
+      --text-primary: #f0ede6;
+      --text-secondary: rgba(240, 237, 230, 0.62);
+      --text-tertiary: rgba(240, 237, 230, 0.38);
+      --shadow-window: 0 18px 44px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      --shadow-popover: 0 24px 56px -8px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      --shadow-dock: 0 14px 36px -4px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      --dock-bg: rgba(22, 24, 29, 0.84);
+      --menubar-bg: rgba(18, 19, 23, 0.88);
+      --card-bg: rgba(255, 255, 255, 0.035);
+      --card-hover: rgba(255, 255, 255, 0.07);
+      --input-bg: rgba(12, 13, 16, 0.65);
+      --scrollbar-thumb: rgba(255, 255, 255, 0.14);
     }
 
-    /* Light Theme */
+    /* Light Theme - Raw Linen */
     [data-theme="light"] {
-      --bg-base: #f4f1ea;
-      --bg-surface: rgba(255, 255, 255, 0.78);
-      --bg-surface-elevated: rgba(255, 255, 255, 0.94);
-      --bg-surface-active: rgba(240, 237, 230, 0.95);
-      --bg-glass: rgba(244, 241, 234, 0.72);
-      --bg-glass-heavy: rgba(244, 241, 234, 0.92);
-      --border-hairline: rgba(0, 0, 0, 0.08);
-      --border-subtle: rgba(0, 0, 0, 0.12);
-      --border-focus: rgba(0, 0, 0, 0.25);
-      --text-primary: #1a1917;
-      --text-secondary: rgba(26, 25, 23, 0.62);
-      --text-tertiary: rgba(26, 25, 23, 0.38);
-      --shadow-window: 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
-      --shadow-popover: 0 20px 50px rgba(0, 0, 0, 0.16), 0 6px 20px rgba(0, 0, 0, 0.08);
-      --shadow-dock: 0 16px 36px rgba(0, 0, 0, 0.12);
-      --dock-bg: rgba(255, 255, 255, 0.8);
-      --menubar-bg: rgba(244, 241, 234, 0.85);
-      --card-bg: rgba(0, 0, 0, 0.03);
-      --card-hover: rgba(0, 0, 0, 0.06);
-      --input-bg: rgba(255, 255, 255, 0.7);
-      --scrollbar-thumb: rgba(0, 0, 0, 0.18);
+      --bg-base: #f7f5f0;
+      --bg-surface: rgba(255, 255, 255, 0.84);
+      --bg-surface-elevated: rgba(255, 255, 255, 0.96);
+      --bg-surface-active: rgba(238, 235, 228, 0.95);
+      --bg-glass: rgba(247, 245, 240, 0.78);
+      --bg-glass-heavy: rgba(247, 245, 240, 0.94);
+      --border-hairline: rgba(24, 25, 29, 0.08);
+      --border-subtle: rgba(24, 25, 29, 0.14);
+      --border-focus: rgba(200, 106, 40, 0.5);
+      --text-primary: #18191d;
+      --text-secondary: rgba(24, 25, 29, 0.65);
+      --text-tertiary: rgba(24, 25, 29, 0.4);
+      --shadow-window: 0 18px 44px -6px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.07);
+      --shadow-popover: 0 24px 56px -8px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.09);
+      --shadow-dock: 0 14px 36px -4px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.06);
+      --dock-bg: rgba(255, 255, 255, 0.86);
+      --menubar-bg: rgba(247, 245, 240, 0.9);
+      --card-bg: rgba(24, 25, 29, 0.035);
+      --card-hover: rgba(24, 25, 29, 0.065);
+      --input-bg: rgba(255, 255, 255, 0.88);
+      --scrollbar-thumb: rgba(24, 25, 29, 0.18);
     }
 
     *,
@@ -1936,13 +1943,15 @@
     }
 
     .btn-secondary {
-      padding: 8px 16px;
-      border-radius: var(--radius-md);
+      padding: 7px 15px;
+      border-radius: var(--radius-sm);
       background: var(--card-bg);
       border: 1px solid var(--border-hairline);
+      box-shadow: var(--inset-bevel-light);
       color: var(--text-primary);
       font-weight: 500;
-      transition: background var(--transition-fast);
+      font-size: 12px;
+      transition: background var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast);
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -1950,16 +1959,22 @@
 
     .btn-secondary:hover {
       background: var(--card-hover);
+      border-color: var(--border-subtle);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.98);
     }
 
     .btn-primary {
-      padding: 8px 18px;
-      border-radius: var(--radius-md);
+      padding: 7px 16px;
+      border-radius: var(--radius-sm);
       background: var(--accent);
       color: #fff;
       font-weight: 600;
-      box-shadow: 0 2px 10px var(--accent-glow);
-      transition: background var(--transition-fast), transform var(--transition-fast);
+      font-size: 12px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 2px 8px var(--accent-glow);
+      transition: background var(--transition-fast), transform var(--transition-fast), filter var(--transition-fast);
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -1970,12 +1985,18 @@
       transform: translateY(-1px);
     }
 
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
     .btn-danger {
-      padding: 8px 18px;
-      border-radius: var(--radius-md);
-      background: #e04b4b;
+      padding: 7px 16px;
+      border-radius: var(--radius-sm);
+      background: #d44343;
       color: #fff;
       font-weight: 600;
+      font-size: 12px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -3482,6 +3503,341 @@
     .codelab-output-wrap.mode-react .codelab-preview {
       display: block;
     }
+
+    /* --------------------------------------------------------------------------
+       FEATURE STYLING: Multi-Track Mixer, Quick-Capture HUD, Snippet Vault & Audit
+       -------------------------------------------------------------------------- */
+
+    /* F1: Multi-Track Ambient Soundscape Mixer */
+    .soundscape-mixer-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      box-shadow: var(--inset-bevel-light);
+    }
+
+    .mixer-track-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11.5px;
+    }
+
+    .mixer-track-label {
+      width: 78px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .mixer-track-label svg {
+      width: 14px;
+      height: 14px;
+      color: var(--accent);
+    }
+
+    .mixer-track-slider {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 4px;
+      cursor: pointer;
+    }
+
+    .mixer-track-val {
+      width: 32px;
+      text-align: right;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-tertiary);
+    }
+
+    .mixer-track-row.active .mixer-track-val {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .mixer-presets-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .mixer-preset-chip {
+      padding: 3px 9px;
+      border-radius: var(--radius-xs);
+      font-size: 10.5px;
+      font-weight: 500;
+      background: var(--card-hover);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .mixer-preset-chip:hover {
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border-color: rgba(var(--accent-rgb), 0.3);
+    }
+
+    /* F2: Zen Quick-Capture HUD / Scratchpad Drawer */
+    #scratchpad-hud-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: var(--z-modal);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 50px;
+    }
+
+    #scratchpad-hud-backdrop.active {
+      display: flex;
+    }
+
+    #scratchpad-hud {
+      width: 560px;
+      max-width: 92vw;
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(34px);
+      -webkit-backdrop-filter: blur(34px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-popover);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalSlideDown var(--transition-normal);
+    }
+
+    .scratchpad-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-hairline);
+      background: var(--card-bg);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .scratchpad-textarea {
+      width: 100%;
+      min-height: 180px;
+      max-height: 50vh;
+      padding: 14px 16px;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      resize: vertical;
+    }
+
+    .scratchpad-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      border-top: 1px solid var(--border-hairline);
+      background: var(--card-bg);
+      font-size: 11px;
+    }
+
+    .scratchpad-stats {
+      color: var(--text-tertiary);
+      font-family: var(--font-mono);
+      display: flex;
+      gap: 10px;
+    }
+
+    /* F3: Code Lab Snippet Vault */
+    .codelab-vault-flyout {
+      position: absolute;
+      top: 42px;
+      right: 10px;
+      width: 320px;
+      max-height: 380px;
+      background: var(--bg-surface-elevated);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-popover);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: menuFadeIn var(--transition-fast);
+    }
+
+    .codelab-vault-flyout.active {
+      display: flex;
+    }
+
+    .codelab-vault-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-hairline);
+      font-weight: 600;
+      font-size: 11.5px;
+    }
+
+    .codelab-vault-list {
+      overflow-y: auto;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .codelab-vault-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: var(--radius-xs);
+      font-size: 11.5px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+
+    .codelab-vault-item:hover {
+      background: var(--accent-subtle);
+      color: var(--text-primary);
+    }
+
+    .codelab-vault-item-badge {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      padding: 1px 6px;
+      border-radius: var(--radius-xs);
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    /* F4: Focus Session Reflection & Audit Log */
+    #reflection-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 15, 19, 0.82);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: var(--z-modal);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #reflection-modal-backdrop.active {
+      display: flex;
+    }
+
+    #reflection-modal {
+      width: 480px;
+      max-width: 90vw;
+      background: var(--bg-surface-elevated);
+      border: 1px solid rgba(var(--accent-rgb), 0.35);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-popover);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: modalSlideDown var(--transition-normal);
+    }
+
+    .star-rating-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 6px 0;
+    }
+
+    .star-btn {
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      transition: transform var(--transition-fast), color var(--transition-fast);
+    }
+
+    .star-btn:hover,
+    .star-btn.active {
+      color: #f59e0b;
+      transform: scale(1.15);
+    }
+
+    .audit-log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      max-height: 320px;
+    }
+
+    .audit-card {
+      padding: 12px 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--inset-bevel-light);
+    }
+
+    .audit-card-left {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .audit-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .audit-card-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .audit-card-stars {
+      color: #f59e0b;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .audit-export-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-hairline);
+    }
   </style>
 </head>
 
@@ -3642,6 +3998,11 @@
           <div class="battery-fill" id="battery-fill" style="width: 92%;"></div>
         </div>
         <span id="battery-percent" class="mono">92%</span>
+      </div>
+
+      <!-- Zen Scratchpad Quick-Capture Button -->
+      <div class="tray-btn" id="scratchpad-tray-btn" title="Quick Scratchpad (Alt+Space)" onclick="FlowOS.toggleScratchpad()">
+        <i data-lucide="edit-3"></i>
       </div>
 
       <!-- Control Center Toggle -->
@@ -3835,10 +4196,10 @@
       </div>
     </div>
 
-    <!-- Ambient Soundscape Selector -->
+    <!-- Ambient Soundscape Multi-Track Mixer -->
     <div class="cc-soundscape-card">
       <div class="cc-soundscape-header">
-        <span>Ambient Soundscape</span>
+        <span>Soundscape Multi-Track Mixer</span>
         <div class="soundscape-wave" id="cc-soundscape-wave">
           <div class="soundscape-bar"></div>
           <div class="soundscape-bar"></div>
@@ -3846,11 +4207,8 @@
           <div class="soundscape-bar"></div>
         </div>
       </div>
-      <div class="soundscape-buttons">
-        <button class="soundscape-btn" data-sound="rain" onclick="FlowOS.setSoundscape('rain')">Rain</button>
-        <button class="soundscape-btn" data-sound="brown" onclick="FlowOS.setSoundscape('brown')">Brown</button>
-        <button class="soundscape-btn" data-sound="cafe" onclick="FlowOS.setSoundscape('cafe')">Café</button>
-        <button class="soundscape-btn" data-sound="wind" onclick="FlowOS.setSoundscape('wind')">Wind</button>
+      <div id="cc-mixer-container" class="soundscape-mixer-wrap">
+        <!-- Rendered dynamically by FlowOS.renderSoundMixerUI() -->
       </div>
     </div>
   </div>
@@ -3906,6 +4264,65 @@
 
   <!-- Toast Notification Stack -->
   <div id="toast-container"></div>
+
+  <!-- Zen Quick-Capture HUD / Scratchpad Drawer -->
+  <div id="scratchpad-hud-backdrop" onclick="if(event.target===this) FlowOS.toggleScratchpad(false)">
+    <div id="scratchpad-hud">
+      <div class="scratchpad-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <i data-lucide="edit-3" style="color:var(--accent); width:15px; height:15px;"></i>
+          <span>Zen Scratchpad</span>
+          <span style="font-size:10px; font-family:var(--font-mono); color:var(--text-tertiary); margin-left:4px;">Alt+Space</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button class="btn-secondary" style="padding:3px 8px; font-size:11px;" onclick="FlowOS.saveScratchpadToNotes()">
+            <i data-lucide="file-plus" style="width:12px; height:12px;"></i> Save as Note
+          </button>
+          <button class="btn-secondary" style="padding:3px 8px; font-size:11px;" onclick="FlowOS.copyScratchpad()">
+            <i data-lucide="copy" style="width:12px; height:12px;"></i> Copy
+          </button>
+          <button class="tray-btn" style="padding:3px;" onclick="FlowOS.toggleScratchpad(false)" title="Close (Esc)">
+            <i data-lucide="x" style="width:14px; height:14px;"></i>
+          </button>
+        </div>
+      </div>
+      <textarea class="scratchpad-textarea" id="scratchpad-input" placeholder="Type quick thoughts, code snippets, or notes... (auto-saved)" oninput="FlowOS.onScratchpadInput(this.value)"></textarea>
+      <div class="scratchpad-footer">
+        <div class="scratchpad-stats">
+          <span id="scratchpad-word-count">0 words</span>
+          <span>•</span>
+          <span id="scratchpad-char-count">0 chars</span>
+        </div>
+        <span style="color:var(--text-tertiary); font-size:10.5px;">Saved to local scratch buffer</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Focus Session Reflection Modal -->
+  <div id="reflection-modal-backdrop">
+    <div id="reflection-modal">
+      <div class="shield-badge"><i data-lucide="award"></i> Deep Work Review</div>
+      <div style="font-size:18px; font-weight:700; text-align:center;">Session Reflection</div>
+      <div style="font-size:12px; color:var(--text-secondary); text-align:center; line-height:1.5;">
+        Rate your focus depth and note what was accomplished.
+      </div>
+      <div class="star-rating-row" id="reflection-stars">
+        <span class="star-btn active" data-star="1" onclick="FlowOS.setReflectionRating(1)">★</span>
+        <span class="star-btn active" data-star="2" onclick="FlowOS.setReflectionRating(2)">★</span>
+        <span class="star-btn active" data-star="3" onclick="FlowOS.setReflectionRating(3)">★</span>
+        <span class="star-btn active" data-star="4" onclick="FlowOS.setReflectionRating(4)">★</span>
+        <span class="star-btn" data-star="5" onclick="FlowOS.setReflectionRating(5)">★</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <label style="font-size:10.5px; font-weight:600; text-transform:uppercase; color:var(--text-tertiary);">Accomplishments &amp; Notes</label>
+        <input type="text" class="dialog-input" id="reflection-notes-input" placeholder="e.g. Implemented WebAudio mixer and fixed snapping" />
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:6px;">
+        <button class="btn-secondary" onclick="FlowOS.skipSessionReflection()">Skip Review</button>
+        <button class="btn-primary" onclick="FlowOS.saveSessionReflection()">Save to Audit Log</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Dialog -->
   <div id="system-dialog-backdrop">
@@ -4030,11 +4447,18 @@
       defaults: {
         settings: {
           theme: 'dark',
-          accent: '#ff7849',
+          accent: '#e28743',
           wallpaperPreset: 'dawn', // dawn, water, ember
           customWallpaper: 'assets/wallpapers/dawn.jpg',
           volume: 80,
           soundscape: 'none',
+          soundMixer: {
+            rain: 0,
+            brown: 0,
+            wind: 0,
+            cafe: 0,
+            binaural: 0
+          },
           brightness: 100,
           dnd: false,
           wifi: true,
@@ -4044,6 +4468,7 @@
           cypherMode: false,
           cypherPrevWallpaper: null
         },
+        scratchpad: '# Zen Scratchpad (Alt+Space)\n- Protected scratch buffer for rapid thoughts and snippets\n- Auto-syncs to local storage\n',
         notes: [
           {
             id: 'n1',
@@ -4055,7 +4480,7 @@
           {
             id: 'n2',
             title: 'Flow OS Kernel Architecture',
-            body: '# Single-file Web OS\n\n- Zero frameworks, pure vanilla JS\n- Synthesized WebAudio oscillators\n- Hardware-accelerated canvas shaders\n- Ergonomic focus interception layer',
+            body: '# Single-file Web OS\n\n- Zero frameworks, pure vanilla JS\n- Multi-track WebAudio synthesizers\n- Hardware-accelerated canvas shaders\n- Ergonomic focus interception layer',
             date: Date.now() - 3600000 * 24,
             pinned: false
           }
@@ -4066,18 +4491,21 @@
           { id: 't3', title: 'Test 90-minute ultradian flow session', completed: false, priority: 'high', isFocus: false }
         ],
         sessions: [
-          { id: 's1', date: Date.now() - 86400000 * 2, minutes: 50, task: 'Refactor audio synthesis', endedEarly: false, interruptions: 0 },
-          { id: 's2', date: Date.now() - 86400000 * 1, minutes: 25, task: 'Canvas particle physics', endedEarly: false, interruptions: 1 },
-          { id: 's3', date: Date.now() - 3600000 * 4, minutes: 50, task: 'Window manager snapping', endedEarly: false, interruptions: 0 }
+          { id: 's1', date: Date.now() - 86400000 * 2, minutes: 50, task: 'Refactor audio synthesis', endedEarly: false, interruptions: 0, rating: 5, notes: 'Completed multi-track WebAudio oscillator engine' },
+          { id: 's2', date: Date.now() - 86400000 * 1, minutes: 25, task: 'Canvas particle physics', endedEarly: false, interruptions: 1, rating: 4, notes: 'Refined fluid motion blur' },
+          { id: 's3', date: Date.now() - 3600000 * 4, minutes: 50, task: 'Window manager snapping', endedEarly: false, interruptions: 0, rating: 5, notes: 'Polished snap flyouts and keyboard triggers' }
         ],
         files: [
           { id: 'fd_docs', name: 'Documents', type: 'folder', parent: 'root', date: 1720000000000 },
           { id: 'fd_proj', name: 'Projects', type: 'folder', parent: 'root', date: 1720000000001 },
-          { id: 'fd_dl', name: 'Downloads', type: 'folder', parent: 'root', date: 1720000000002 },
-          { id: 'fd_pic', name: 'Pictures', type: 'folder', parent: 'root', date: 1720000000003 },
-          { id: 'fl_1', name: 'Deep Work.md', type: 'file', parent: 'fd_docs', date: 1720000000004, content: '# The 4 Rules of Flow\n\n1. Work deeply.\n2. Embrace boredom.\n3. Quit social friction.\n4. Drain the shallows.' },
-          { id: 'fl_2', name: 'kernel.js', type: 'file', parent: 'fd_proj', date: 1720000000005, content: '// Flow OS kernel entry point\nconsole.log("WebKernel online");' },
-          { id: 'fl_3', name: 'hello.tsx', type: 'file', parent: 'fd_proj', date: 1720000000006, content: '// Open Code Lab to run React components!' }
+          { id: 'fd_snip', name: 'Snippets', type: 'folder', parent: 'root', date: 1720000000002 },
+          { id: 'fd_dl', name: 'Downloads', type: 'folder', parent: 'root', date: 1720000000003 },
+          { id: 'fd_pic', name: 'Pictures', type: 'folder', parent: 'root', date: 1720000000004 },
+          { id: 'fl_1', name: 'Deep Work.md', type: 'file', parent: 'fd_docs', date: 1720000000005, content: '# The 4 Rules of Flow\n\n1. Work deeply.\n2. Embrace boredom.\n3. Quit social friction.\n4. Drain the shallows.' },
+          { id: 'fl_2', name: 'kernel.js', type: 'file', parent: 'fd_proj', date: 1720000000006, content: '// Flow OS kernel entry point\nconsole.log("WebKernel online");' },
+          { id: 'fl_3', name: 'hello.tsx', type: 'file', parent: 'fd_proj', date: 1720000000007, content: '// Open Code Lab to run React components!' },
+          { id: 'fl_snip1', name: 'fibonacci.js', type: 'file', parent: 'fd_snip', date: 1720000000008, content: '// Fibonacci Generator\nconst fib = (n) => (n <= 1 ? n : fib(n - 1) + fib(n - 2));\nconsole.log("Fibonacci 1..10:", Array.from({length: 10}, (_, i) => fib(i + 1)));' },
+          { id: 'fl_snip2', name: 'task-counter.tsx', type: 'file', parent: 'fd_snip', date: 1720000000009, content: '// React Task Counter Demo\nfunction App() {\n  const [count, setCount] = useState(0);\n  return (\n    <div style={{ padding: 24, textAlign: "center", fontFamily: "sans-serif" }}>\n      <h2 style={{ margin: "0 0 12px" }}>Deep Work Counter</h2>\n      <p style={{ color: "#888", fontSize: "14px" }}>Completed sprints: {count}</p>\n      <button onClick={() => setCount(c => c + 1)} style={{ padding: "8px 16px", borderRadius: 6, background: "#e28743", color: "#fff", border: "none", fontWeight: 600, cursor: "pointer" }}>+ Increment</button>\n    </div>\n  );\n}' }
         ],
         codelab: {
           activeLang: 'js',
@@ -4127,9 +4555,9 @@ function App() {
 
   return (
     <div style={{
-      fontFamily: "'Sora', system-ui, sans-serif",
-      background: 'linear-gradient(135deg, #0e1017, #181b24)',
-      color: '#e8e5de',
+      fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+      background: 'linear-gradient(135deg, #121316, #1b1d22)',
+      color: '#f0ede6',
       minHeight: '100vh',
       padding: '24px',
       display: 'flex',
@@ -4138,55 +4566,53 @@ function App() {
       justifyContent: 'center',
       gap: '20px'
     }}>
-      {/* Animated Spring Card */}
+      {/* Animated Tactile Card */}
       <div style={{
-        background: 'rgba(255, 255, 255, 0.05)',
+        background: 'rgba(255, 255, 255, 0.04)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.12)',
-        borderRadius: '20px',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '14px',
         padding: '28px',
         width: '320px',
         boxShadow: \`0 20px 50px hsl(\${accentHue}, 80%, 15%)\`,
         transform: active ? 'scale(1) translateY(0)' : 'scale(0.96) translateY(6px)',
-        transition: 'all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        transition: 'all 0.35s cubic-bezier(0.19, 1, 0.22, 1)',
         textAlign: 'center'
       }}>
         <div style={{
-          width: '64px',
-          height: '64px',
+          width: '56px',
+          height: '56px',
           margin: '0 auto 16px',
           borderRadius: '50%',
           background: \`hsl(\${accentHue}, 90%, 60%)\`,
-          boxShadow: \`0 0 30px hsl(\${accentHue}, 90%, 60%)\`,
+          boxShadow: \`0 0 24px hsl(\${accentHue}, 90%, 60%)\`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '28px',
+          fontSize: '24px',
           transform: \`scale(\${1 + (pulse % 3) * 0.12}) rotate(\${pulse * 25}deg)\`,
           transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
         }}>
           ✨
         </div>
 
-        <h2 style={{ margin: '0 0 6px', fontSize: '20px', fontWeight: 600 }}>Interactive React</h2>
-        <p style={{ color: 'rgba(232, 229, 222, 0.6)', fontSize: '12.5px', margin: '0 0 20px' }}>
-          Smooth hardware-accelerated animations
+        <h2 style={{ margin: '0 0 6px', fontSize: '18px', fontWeight: 700 }}>Interactive React</h2>
+        <p style={{ color: 'rgba(240, 237, 230, 0.6)', fontSize: '12px', margin: '0 0 18px' }}>
+          Hardware-accelerated live preview
         </p>
 
         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '16px' }}>
           <button
             onClick={() => { setPulse(p => p + 1); console.log('Pulse!', pulse + 1); }}
             style={{
-              padding: '10px 18px',
-              borderRadius: '12px',
+              padding: '8px 16px',
+              borderRadius: '6px',
               border: 'none',
               background: \`hsl(\${accentHue}, 85%, 58%)\`,
               color: '#fff',
               fontWeight: 600,
               cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
-              transform: 'scale(1)',
-              transition: 'transform 0.15s ease'
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
             }}
           >
             Pulse ({pulse})
@@ -4195,11 +4621,11 @@ function App() {
           <button
             onClick={() => setActive(a => !a)}
             style={{
-              padding: '10px 18px',
-              borderRadius: '12px',
+              padding: '8px 16px',
+              borderRadius: '6px',
               border: '1px solid rgba(255, 255, 255, 0.15)',
               background: 'rgba(255, 255, 255, 0.08)',
-              color: '#e8e5de',
+              color: '#f0ede6',
               fontWeight: 500,
               cursor: 'pointer'
             }}
@@ -4209,7 +4635,7 @@ function App() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left' }}>
-          <label style={{ fontSize: '11px', color: 'rgba(232, 229, 222, 0.5)' }}>Accent Hue Slider</label>
+          <label style={{ fontSize: '10.5px', color: 'rgba(240, 237, 230, 0.5)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Accent Hue Slider</label>
           <input
             type="range"
             min="0"
@@ -4231,9 +4657,9 @@ function App() {
   <p id="out"></p>
 </div>
 <style>
-  body { font-family: system-ui; background: #f4f1ea; display: grid; place-items: center; height: 100vh; margin: 0; }
-  .card { background: #fff; padding: 28px 32px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.12); text-align: center; }
-  button { padding: 8px 18px; border: none; border-radius: 10px; background: #ff7849; color: #fff; cursor: pointer; font-size: 14px; }
+  body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #121316; color: #f0ede6; display: grid; place-items: center; height: 100vh; margin: 0; }
+  .card { background: #1b1d22; padding: 28px 32px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 30px rgba(0,0,0,.4); text-align: center; }
+  button { padding: 8px 18px; border: none; border-radius: 6px; background: #e28743; color: #fff; cursor: pointer; font-size: 13px; font-weight: 600; }
 </style>
 <script>
   document.getElementById('go').onclick = function () {
@@ -4268,11 +4694,11 @@ function App() {
       }
     };
 
-    // WebAudio sound synthesis (ambient sounds + UI feedback)
+    // Multi-Track WebAudio ambient sound synthesis & UI feedback engine
     const SoundEngine = {
       ctx: null,
       masterGain: null,
-      soundscapeNodes: {},
+      tracks: {},
       activeSoundscape: 'none',
 
       init() {
@@ -4385,39 +4811,16 @@ function App() {
         });
       },
 
-      /* Synthesized Ambient Soundscapes */
-      stopSoundscape() {
-        if (this.soundscapeGain) {
-          this.soundscapeGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.4);
-          setTimeout(() => {
-            if (this.soundscapeSource) {
-              try { this.soundscapeSource.stop(); } catch (e) { }
-              this.soundscapeSource.disconnect();
-            }
-            if (this.soundscapeInterval) clearInterval(this.soundscapeInterval);
-          }, 600);
-        }
-        this.activeSoundscape = 'none';
-      },
-
-      startSoundscape(type) {
-        this.ensureContext();
-        this.stopSoundscape();
-        if (type === 'none') return;
-        this.activeSoundscape = type;
-
-        const sGain = this.ctx.createGain();
-        sGain.gain.setValueAtTime(0.001, this.ctx.currentTime);
-        sGain.gain.exponentialRampToValueAtTime(0.35, this.ctx.currentTime + 1.2);
-        sGain.connect(this.masterGain);
-        this.soundscapeGain = sGain;
-
+      /* ------------------------------------------------------------------------
+         MULTI-TRACK AMBIENT LAYER SYNTHESIS
+         Supports concurrent Rain, Brown Noise, Wind, Cafe, and Binaural Alpha Drone
+         ------------------------------------------------------------------------ */
+      createNoiseBuffer(type = 'white') {
         const bufferSize = this.ctx.sampleRate * 4;
         const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
         const output = noiseBuffer.getChannelData(0);
 
-        if (type === 'brown' || type === 'cafe') {
-          // Integrated Brownian Noise
+        if (type === 'brown') {
           let lastOut = 0.0;
           for (let i = 0; i < bufferSize; i++) {
             const white = Math.random() * 2 - 1;
@@ -4426,89 +4829,179 @@ function App() {
             output[i] *= 3.5;
           }
         } else {
-          // White / Pink Noise
           for (let i = 0; i < bufferSize; i++) {
             output[i] = Math.random() * 2 - 1;
           }
         }
+        return noiseBuffer;
+      },
 
-        const whiteNoise = this.ctx.createBufferSource();
-        whiteNoise.buffer = noiseBuffer;
-        whiteNoise.loop = true;
-        this.soundscapeSource = whiteNoise;
+      initTrack(name) {
+        if (this.tracks[name]) return this.tracks[name];
+        this.ensureContext();
 
-        if (type === 'rain') {
-          // Lowpass filter + random droplet blips
+        const gainNode = this.ctx.createGain();
+        gainNode.gain.setValueAtTime(0, this.ctx.currentTime);
+        gainNode.connect(this.masterGain);
+
+        const trackObj = { name, gain: gainNode, source: null, interval: null, filter: null, active: false };
+
+        if (name === 'binaural') {
+          // Dual oscillators: Left 216Hz, Right 226Hz -> 10Hz Alpha Focus Pulse
+          const oscL = this.ctx.createOscillator();
+          const oscR = this.ctx.createOscillator();
+          oscL.type = 'sine';
+          oscR.type = 'sine';
+          oscL.frequency.setValueAtTime(216, this.ctx.currentTime);
+          oscR.frequency.setValueAtTime(226, this.ctx.currentTime);
+
+          const merger = this.ctx.createChannelMerger(2);
+          oscL.connect(merger, 0, 0);
+          oscR.connect(merger, 0, 1);
+          merger.connect(gainNode);
+
+          oscL.start();
+          oscR.start();
+          trackObj.source = { oscL, oscR, merger };
+          trackObj.active = true;
+        } else {
+          const noiseType = (name === 'brown' || name === 'cafe') ? 'brown' : 'white';
+          const buffer = this.createNoiseBuffer(noiseType);
+          const whiteNoise = this.ctx.createBufferSource();
+          whiteNoise.buffer = buffer;
+          whiteNoise.loop = true;
+
           const filter = this.ctx.createBiquadFilter();
-          filter.type = 'lowpass';
-          filter.frequency.value = 850;
-          whiteNoise.connect(filter);
-          filter.connect(sGain);
-          whiteNoise.start();
 
-          // Droplet generator
-          this.soundscapeInterval = setInterval(() => {
-            if (this.activeSoundscape !== 'rain') return;
-            const drop = this.ctx.createOscillator();
-            const dGain = this.ctx.createGain();
-            drop.frequency.setValueAtTime(1800 + Math.random() * 1200, this.ctx.currentTime);
-            dGain.gain.setValueAtTime(0.04, this.ctx.currentTime);
-            dGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.04);
-            drop.connect(dGain);
-            dGain.connect(sGain);
-            drop.start();
-            drop.stop(this.ctx.currentTime + 0.05);
-          }, 140);
-        }
-        else if (type === 'brown') {
-          const filter = this.ctx.createBiquadFilter();
-          filter.type = 'lowpass';
-          filter.frequency.value = 360;
-          whiteNoise.connect(filter);
-          filter.connect(sGain);
-          whiteNoise.start();
-        }
-        else if (type === 'cafe') {
-          const filter = this.ctx.createBiquadFilter();
-          filter.type = 'bandpass';
-          filter.frequency.value = 900;
-          filter.Q.value = 0.8;
-          whiteNoise.connect(filter);
-          filter.connect(sGain);
-          whiteNoise.start();
+          if (name === 'rain') {
+            filter.type = 'lowpass';
+            filter.frequency.value = 850;
+            whiteNoise.connect(filter);
+            filter.connect(gainNode);
+            whiteNoise.start();
 
-          // Occasional gentle cup clink
-          this.soundscapeInterval = setInterval(() => {
-            if (this.activeSoundscape !== 'cafe' || Math.random() > 0.4) return;
-            const clink = this.ctx.createOscillator();
-            const cGain = this.ctx.createGain();
-            clink.frequency.setValueAtTime(2600 + Math.random() * 400, this.ctx.currentTime);
-            cGain.gain.setValueAtTime(0.03, this.ctx.currentTime);
-            cGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.08);
-            clink.connect(cGain);
-            cGain.connect(sGain);
-            clink.start();
-            clink.stop(this.ctx.currentTime + 0.09);
-          }, 3500);
-        }
-        else if (type === 'wind') {
-          const filter = this.ctx.createBiquadFilter();
-          filter.type = 'bandpass';
-          filter.frequency.value = 450;
-          filter.Q.value = 2.0;
+            trackObj.interval = setInterval(() => {
+              if (!trackObj.active || trackObj.gain.gain.value < 0.01) return;
+              const drop = this.ctx.createOscillator();
+              const dGain = this.ctx.createGain();
+              drop.frequency.setValueAtTime(1800 + Math.random() * 1200, this.ctx.currentTime);
+              dGain.gain.setValueAtTime(0.035, this.ctx.currentTime);
+              dGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.04);
+              drop.connect(dGain);
+              dGain.connect(gainNode);
+              drop.start();
+              drop.stop(this.ctx.currentTime + 0.05);
+            }, 150);
+          } else if (name === 'brown') {
+            filter.type = 'lowpass';
+            filter.frequency.value = 360;
+            whiteNoise.connect(filter);
+            filter.connect(gainNode);
+            whiteNoise.start();
+          } else if (name === 'cafe') {
+            filter.type = 'bandpass';
+            filter.frequency.value = 900;
+            filter.Q.value = 0.8;
+            whiteNoise.connect(filter);
+            filter.connect(gainNode);
+            whiteNoise.start();
 
-          // LFO sweep on filter cutoff
-          const lfo = this.ctx.createOscillator();
-          const lfoGain = this.ctx.createGain();
-          lfo.frequency.value = 0.15;
-          lfoGain.gain.value = 280;
-          lfo.connect(filter.frequency);
-          lfo.start();
+            trackObj.interval = setInterval(() => {
+              if (!trackObj.active || Math.random() > 0.4 || trackObj.gain.gain.value < 0.01) return;
+              const clink = this.ctx.createOscillator();
+              const cGain = this.ctx.createGain();
+              clink.frequency.setValueAtTime(2600 + Math.random() * 400, this.ctx.currentTime);
+              cGain.gain.setValueAtTime(0.025, this.ctx.currentTime);
+              cGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.08);
+              clink.connect(cGain);
+              cGain.connect(gainNode);
+              clink.start();
+              clink.stop(this.ctx.currentTime + 0.09);
+            }, 3600);
+          } else if (name === 'wind') {
+            filter.type = 'bandpass';
+            filter.frequency.value = 450;
+            filter.Q.value = 2.0;
 
-          whiteNoise.connect(filter);
-          filter.connect(sGain);
-          whiteNoise.start();
+            const lfo = this.ctx.createOscillator();
+            const lfoGain = this.ctx.createGain();
+            lfo.frequency.value = 0.15;
+            lfoGain.gain.value = 280;
+            lfo.connect(filter.frequency);
+            lfo.start();
+
+            whiteNoise.connect(filter);
+            filter.connect(gainNode);
+            whiteNoise.start();
+            trackObj.lfo = lfo;
+          }
+
+          trackObj.source = whiteNoise;
+          trackObj.filter = filter;
+          trackObj.active = true;
         }
+
+        this.tracks[name] = trackObj;
+        return trackObj;
+      },
+
+      setTrackVolume(name, val) {
+        this.ensureContext();
+        const num = Math.max(0, Math.min(100, parseInt(val, 10) || 0));
+        const track = this.initTrack(name);
+        const maxGain = name === 'binaural' ? 0.18 : 0.35;
+        const targetGain = (num / 100) * maxGain;
+
+        track.gain.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.15);
+        track.active = num > 0;
+
+        if (!FlowOS.state.settings.soundMixer) FlowOS.state.settings.soundMixer = {};
+        FlowOS.state.settings.soundMixer[name] = num;
+        Store.save('settings', FlowOS.state.settings);
+
+        this.updateActiveStatus();
+      },
+
+      updateActiveStatus() {
+        const mixer = FlowOS.state.settings.soundMixer || {};
+        const activeCount = Object.values(mixer).filter(v => v > 0).length;
+        const wave = document.getElementById('cc-soundscape-wave');
+        if (wave) {
+          wave.style.opacity = activeCount > 0 ? '1' : '0.3';
+        }
+      },
+
+      applyMixerPreset(presetName) {
+        const presets = {
+          'cozy-rain': { rain: 75, brown: 25, wind: 0, cafe: 0, binaural: 0 },
+          'cafe-focus': { rain: 0, brown: 0, wind: 0, cafe: 70, binaural: 35 },
+          'deep-zen': { rain: 0, brown: 60, wind: 20, cafe: 0, binaural: 50 },
+          'storm-flow': { rain: 60, brown: 40, wind: 55, cafe: 0, binaural: 0 },
+          'clear': { rain: 0, brown: 0, wind: 0, cafe: 0, binaural: 0 }
+        };
+
+        const config = presets[presetName] || presets['clear'];
+        Object.keys(config).forEach(track => {
+          this.setTrackVolume(track, config[track]);
+        });
+        FlowOS.refreshSoundMixerUI();
+      },
+
+      stopAllTracks() {
+        this.applyMixerPreset('clear');
+      },
+
+      // Backward compatible presets
+      startSoundscape(type) {
+        if (type === 'rain') this.applyMixerPreset('cozy-rain');
+        else if (type === 'cafe') this.applyMixerPreset('cafe-focus');
+        else if (type === 'brown') this.applyMixerPreset('deep-zen');
+        else if (type === 'wind') this.setTrackVolume('wind', 70);
+        else this.stopAllTracks();
+      },
+
+      stopSoundscape() {
+        this.stopAllTracks();
       }
     };
 
@@ -5127,7 +5620,6 @@ function App() {
         notifications: [
           { id: 'notif_1', app: 'Flow OS', title: 'Welcome to Flow OS', message: 'An authored operating system engineered for deep work.', time: 'Just now' }
         ],
-        heldNotifications: [],
         flowSession: {
           active: false,
           remainingSeconds: 25 * 60,
@@ -5136,6 +5628,7 @@ function App() {
           timerId: null,
           distractionsBlocked: 0
         },
+        scratchpad: Store.load('scratchpad') || Store.defaults.scratchpad,
         uptimeSeconds: 0,
         batteryCharging: true
       },
@@ -5143,11 +5636,12 @@ function App() {
       init() {
         try { if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons(); } catch (e) { }
         try { this.applyTheme((this.state.settings && this.state.settings.theme) || 'dark'); } catch (e) { console.warn(e); }
-        try { this.applyAccent((this.state.settings && this.state.settings.accent) || '#ff7849'); } catch (e) { console.warn(e); }
+        try { this.applyAccent((this.state.settings && this.state.settings.accent) || '#e28743'); } catch (e) { console.warn(e); }
         try { this.initCypherState(); } catch (e) { console.warn(e); }
         try { this.initCodelabBridge(); } catch (e) { console.warn(e); }
         try { WallpaperEngine.init(); } catch (e) { console.warn(e); }
         try { if (this.state.settings && this.state.settings.customWallpaper) this.setCustomWallpaper(this.state.settings.customWallpaper); } catch (e) { console.warn(e); }
+        try { this.renderSoundMixerUI('cc-mixer-container'); } catch (e) { console.warn(e); }
         try { this.initDockMagnification(); } catch (e) { console.warn(e); }
         try { this.initClock(); } catch (e) { console.warn(e); }
         try { this.initKeyboardShortcuts(); } catch (e) { console.warn(e); }
@@ -5192,7 +5686,7 @@ function App() {
             setTimeout(() => {
               if (screen) screen.classList.add('hidden');
               try { SoundEngine.playNotification(); } catch (e) { }
-              this.showToast('Flow OS Ready', 'Press ⌘K or Ctrl+K anytime for Spotlight search.', 'sparkles');
+              this.showToast('Flow OS Ready', 'Press ⌘K or Ctrl+K for search, Alt+Space for Scratchpad.', 'sparkles');
               this.checkDailyRitual();
             }, 250);
           }
@@ -5249,16 +5743,16 @@ function App() {
       },
 
       applyAccent(color) {
-        const c = color || '#ff7849';
+        const c = color || '#e28743';
         document.documentElement.style.setProperty('--accent', c);
         // compute RGB
         const hex = c.replace('#', '');
-        const r = parseInt(hex.substring(0, 2), 16) || 255;
-        const g = parseInt(hex.substring(2, 4), 16) || 120;
-        const b = parseInt(hex.substring(4, 6), 16) || 73;
+        const r = parseInt(hex.substring(0, 2), 16) || 226;
+        const g = parseInt(hex.substring(2, 4), 16) || 135;
+        const b = parseInt(hex.substring(4, 6), 16) || 67;
         document.documentElement.style.setProperty('--accent-rgb', `${r}, ${g}, ${b}`);
         document.documentElement.style.setProperty('--accent-subtle', `rgba(${r}, ${g}, ${b}, 0.14)`);
-        document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.3)`);
+        document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.28)`);
         this.state.settings.accent = c;
         Store.save('settings', this.state.settings);
       },
@@ -5440,25 +5934,322 @@ function App() {
         Store.save('settings', this.state.settings);
       },
 
-      setMasterVolume(val) {
-        SoundEngine.setVolume(val);
-        document.getElementById('cc-volume-val').innerText = `${val}%`;
-        this.state.settings.volume = val;
-        Store.save('settings', this.state.settings);
+      /* ------------------------------------------------------------------------
+         FEATURE 1: MULTI-TRACK AMBIENT MIXER UI & CONTROLS
+         ------------------------------------------------------------------------ */
+      renderSoundMixerUI(containerId = 'cc-mixer-container') {
+        const container = typeof containerId === 'string' ? document.getElementById(containerId) : containerId;
+        if (!container) return;
+
+        const mixer = this.state.settings.soundMixer || { rain: 0, brown: 0, wind: 0, cafe: 0, binaural: 0 };
+        const tracks = [
+          { id: 'rain', label: 'Rain', icon: 'cloud-rain' },
+          { id: 'brown', label: 'Brown', icon: 'waves' },
+          { id: 'wind', label: 'Wind', icon: 'wind' },
+          { id: 'cafe', label: 'Café', icon: 'coffee' },
+          { id: 'binaural', label: 'Binaural', icon: 'zap' }
+        ];
+
+        container.innerHTML = `
+          ${tracks.map(t => {
+            const val = mixer[t.id] || 0;
+            return `
+              <div class="mixer-track-row ${val > 0 ? 'active' : ''}">
+                <div class="mixer-track-label">
+                  <i data-lucide="${t.icon}"></i>
+                  <span>${t.label}</span>
+                </div>
+                <input type="range" class="mixer-track-slider" min="0" max="100" value="${val}"
+                  data-track="${t.id}"
+                  oninput="FlowOS.setMixerTrack('${t.id}', this.value)" />
+                <span class="mixer-track-val" id="mixer-val-${t.id}">${val}%</span>
+              </div>
+            `;
+          }).join('')}
+          <div class="mixer-presets-row">
+            <span style="font-size:10.5px; color:var(--text-tertiary); align-self:center; margin-right:4px;">Presets:</span>
+            <button class="mixer-preset-chip" onclick="SoundEngine.applyMixerPreset('cozy-rain')">Cozy Rain</button>
+            <button class="mixer-preset-chip" onclick="SoundEngine.applyMixerPreset('cafe-focus')">Café Work</button>
+            <button class="mixer-preset-chip" onclick="SoundEngine.applyMixerPreset('deep-zen')">Deep Zen</button>
+            <button class="mixer-preset-chip" onclick="SoundEngine.applyMixerPreset('storm-flow')">Storm</button>
+            <button class="mixer-preset-chip" style="color:#e56565;" onclick="SoundEngine.applyMixerPreset('clear')">Mute</button>
+          </div>
+        `;
+        if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons({ root: container });
+      },
+
+      setMixerTrack(track, val) {
+        SoundEngine.setTrackVolume(track, val);
+        const valEls = document.querySelectorAll(`[id="mixer-val-${track}"]`);
+        valEls.forEach(el => el.innerText = `${val}%`);
+        document.querySelectorAll(`.mixer-track-slider[data-track="${track}"]`).forEach(sl => sl.value = val);
+        document.querySelectorAll(`.mixer-track-row:has(.mixer-track-slider[data-track="${track}"])`).forEach(r => {
+          r.classList.toggle('active', parseInt(val, 10) > 0);
+        });
+      },
+
+      refreshSoundMixerUI() {
+        this.renderSoundMixerUI('cc-mixer-container');
+        const settingsContainer = document.getElementById('settings-mixer-container');
+        if (settingsContainer) this.renderSoundMixerUI(settingsContainer);
       },
 
       setSoundscape(type) {
-        document.querySelectorAll('.soundscape-btn').forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.sound === type);
-        });
-        const wave = document.getElementById('cc-soundscape-wave');
-        if (type === 'none') {
-          wave.classList.remove('soundscape-playing');
-          SoundEngine.stopSoundscape();
-        } else {
-          wave.classList.add('soundscape-playing');
-          SoundEngine.startSoundscape(type);
+        SoundEngine.startSoundscape(type);
+      },
+
+      /* ------------------------------------------------------------------------
+         FEATURE 2: ZEN QUICK-CAPTURE HUD / SCRATCHPAD DRAWER
+         ------------------------------------------------------------------------ */
+      toggleScratchpad(force) {
+        const hud = document.getElementById('scratchpad-hud-backdrop');
+        if (!hud) return;
+        const target = typeof force === 'boolean' ? force : !hud.classList.contains('active');
+        hud.classList.toggle('active', target);
+        if (target) {
+          const input = document.getElementById('scratchpad-input');
+          if (input) {
+            input.value = this.state.scratchpad || '';
+            this.updateScratchpadStats(input.value);
+            input.focus();
+          }
+          SoundEngine.playClick();
         }
+      },
+
+      onScratchpadInput(val) {
+        this.state.scratchpad = val;
+        Store.save('scratchpad', val);
+        this.updateScratchpadStats(val);
+      },
+
+      updateScratchpadStats(val) {
+        const str = val || '';
+        const words = str.trim() ? str.trim().split(/\s+/).length : 0;
+        const chars = str.length;
+        const wEl = document.getElementById('scratchpad-word-count');
+        const cEl = document.getElementById('scratchpad-char-count');
+        if (wEl) wEl.innerText = `${words} words`;
+        if (cEl) cEl.innerText = `${chars} chars`;
+      },
+
+      saveScratchpadToNotes() {
+        const text = (this.state.scratchpad || '').trim();
+        if (!text) {
+          this.showToast('Scratchpad Empty', 'Type something before saving to notes.', 'info');
+          return;
+        }
+        const lines = text.split('\n');
+        const title = lines[0].replace(/^#+\s*/, '').trim() || 'Scratchpad Note';
+        const freshNote = {
+          id: 'n_' + Date.now(),
+          title: title,
+          body: text,
+          date: Date.now(),
+          pinned: false
+        };
+        this.state.notes.unshift(freshNote);
+        Store.save('notes', this.state.notes);
+        this.showToast('Note Created', `Saved "${title}" to Notes app.`, 'file-plus');
+        SoundEngine.playNotification();
+      },
+
+      copyScratchpad() {
+        const text = this.state.scratchpad || '';
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text);
+          this.showToast('Copied', 'Scratchpad copied to clipboard', 'copy');
+        }
+      },
+
+      /* ------------------------------------------------------------------------
+         FEATURE 4: FOCUS SESSION REFLECTION & PRODUCTIVITY AUDIT
+         ------------------------------------------------------------------------ */
+      pendingReflection: null,
+
+      openSessionReflectionModal() {
+        const modal = document.getElementById('reflection-modal-backdrop');
+        if (!modal) return;
+        modal.classList.add('active');
+        this.setReflectionRating(5);
+        const input = document.getElementById('reflection-notes-input');
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+      },
+
+      setReflectionRating(rating) {
+        if (this.pendingReflection) this.pendingReflection.rating = rating;
+        const stars = document.querySelectorAll('#reflection-stars .star-btn');
+        stars.forEach(s => {
+          const num = parseInt(s.dataset.star, 10);
+          s.classList.toggle('active', num <= rating);
+        });
+      },
+
+      saveSessionReflection() {
+        if (!this.pendingReflection) {
+          document.getElementById('reflection-modal-backdrop').classList.remove('active');
+          return;
+        }
+        const input = document.getElementById('reflection-notes-input');
+        if (input) this.pendingReflection.notes = input.value.trim();
+
+        this.state.sessions.unshift(this.pendingReflection);
+        Store.save('sessions', this.state.sessions);
+
+        document.getElementById('reflection-modal-backdrop').classList.remove('active');
+        this.showToast('Reflection Saved', `Logged ${this.pendingReflection.minutes}m focus session with ${'★'.repeat(this.pendingReflection.rating || 5)}`, 'award');
+        this.pendingReflection = null;
+      },
+
+      skipSessionReflection() {
+        if (this.pendingReflection) {
+          this.state.sessions.unshift(this.pendingReflection);
+          Store.save('sessions', this.state.sessions);
+          this.pendingReflection = null;
+        }
+        document.getElementById('reflection-modal-backdrop').classList.remove('active');
+      },
+
+      exportFocusAudit(format = 'markdown') {
+        const sessions = this.state.sessions || [];
+        if (!sessions.length) {
+          this.showToast('No Sessions', 'No completed focus sessions to export.', 'info');
+          return;
+        }
+
+        let content = '';
+        let filename = `flowos-focus-audit-${new Date().toISOString().slice(0, 10)}`;
+        let mime = 'text/plain';
+
+        if (format === 'json') {
+          content = JSON.stringify(sessions, null, 2);
+          filename += '.json';
+          mime = 'application/json';
+        } else {
+          content = `# Flow OS — Deep Work Productivity Audit Log\n\n`;
+          content += `Generated: ${new Date().toLocaleString()}\n`;
+          content += `Total Recorded Sessions: ${sessions.length}\n`;
+          const totalMins = sessions.reduce((acc, s) => acc + (s.minutes || 0), 0);
+          content += `Total Focus Time: ${(totalMins / 60).toFixed(1)} hours (${totalMins} minutes)\n\n`;
+          content += `| Date | Task Intention | Duration | Rating | Distractions | Accomplishments / Notes |\n`;
+          content += `|---|---|---|---|---|---|\n`;
+
+          sessions.forEach(s => {
+            const dateStr = new Date(s.date).toLocaleDateString() + ' ' + new Date(s.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const ratingStr = '★'.repeat(s.rating || 5) + '☆'.repeat(5 - (s.rating || 5));
+            content += `| ${dateStr} | ${s.task || 'Deep Work'} | ${s.minutes}m | ${ratingStr} | ${s.interruptions || 0} | ${(s.notes || '-').replace(/\|/g, '/')} |\n`;
+          });
+          filename += '.md';
+          mime = 'text/markdown';
+        }
+
+        const blob = new Blob([content], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.showToast('Audit Log Exported', `Downloaded ${filename}`, 'download');
+      },
+
+      /* ------------------------------------------------------------------------
+         FEATURE 3: CODE LAB SNIPPET VAULT & FILESYSTEM BRIDGE
+         ------------------------------------------------------------------------ */
+      openSnippetVault() {
+        const flyout = document.getElementById('codelab-vault-flyout');
+        if (!flyout) return;
+        const isOpen = flyout.classList.contains('active');
+        if (isOpen) {
+          flyout.classList.remove('active');
+          return;
+        }
+
+        const snippets = this.state.files.filter(f => f.type === 'file' && (f.name.endsWith('.js') || f.name.endsWith('.ts') || f.name.endsWith('.tsx') || f.name.endsWith('.html')));
+
+        const listEl = document.getElementById('codelab-vault-list');
+        if (listEl) {
+          if (!snippets.length) {
+            listEl.innerHTML = '<div style="padding:12px; text-align:center; font-size:11px; color:var(--text-tertiary);">No code files in /Home/Snippets or /Home/Projects</div>';
+          } else {
+            listEl.innerHTML = snippets.map(s => {
+              const ext = s.name.split('.').pop().toLowerCase();
+              return `
+                <div class="codelab-vault-item" onclick="FlowOS.loadSnippetIntoCodeLab('${s.id}')">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <i data-lucide="file-code" style="width:14px; height:14px; color:var(--accent);"></i>
+                    <span>${s.name}</span>
+                  </div>
+                  <span class="codelab-vault-item-badge">${ext}</span>
+                </div>
+              `;
+            }).join('');
+            if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons({ root: listEl });
+          }
+        }
+        flyout.classList.add('active');
+      },
+
+      loadSnippetIntoCodeLab(fileId) {
+        const file = this.state.files.find(f => f.id === fileId);
+        if (!file) return;
+
+        const flyout = document.getElementById('codelab-vault-flyout');
+        if (flyout) flyout.classList.remove('active');
+
+        let mode = 'js';
+        if (file.name.endsWith('.tsx') || (file.content.includes('<') && file.content.includes('function App'))) mode = 'react';
+        else if (file.name.endsWith('.ts')) mode = 'ts';
+        else if (file.name.endsWith('.html')) mode = 'html';
+
+        if (!this.state.codelab.sources) this.state.codelab.sources = {};
+        this.state.codelab.sources[mode] = file.content;
+        this.state.codelab.activeLang = mode;
+        Store.save('codelab', this.state.codelab);
+
+        // Switch tab in Code Lab window
+        const win = Object.values(WindowManager.windows).find(w => w.appKey === 'codelab');
+        if (win) {
+          const body = document.getElementById(`body-${win.id}`);
+          if (body) {
+            this.apps.codelab.render(body);
+            if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons({ root: body });
+          }
+        }
+        this.showToast('Snippet Loaded', `Loaded "${file.name}" into Code Lab (${mode.toUpperCase()})`, 'code');
+        SoundEngine.playNotification();
+      },
+
+      saveCurrentCodeAsSnippet() {
+        const mode = this.state.codelab.activeLang || 'js';
+        const editor = document.getElementById('codelab-editor');
+        const code = editor ? editor.value : (this.state.codelab.sources[mode] || '');
+
+        const defaultExt = mode === 'react' ? 'tsx' : mode;
+        const name = prompt('Snippet filename (e.g. math-lib.js, counter.tsx):', `snippet-${Date.now().toString().slice(-4)}.${defaultExt}`);
+        if (!name || !name.trim()) return;
+
+        let snipFolder = this.state.files.find(f => f.name === 'Snippets' && f.type === 'folder');
+        if (!snipFolder) {
+          snipFolder = { id: 'fd_snip_' + Date.now(), name: 'Snippets', type: 'folder', parent: 'root', date: Date.now() };
+          this.state.files.push(snipFolder);
+        }
+
+        const newFile = {
+          id: 'fl_' + Date.now(),
+          name: name.trim(),
+          type: 'file',
+          parent: snipFolder.id,
+          date: Date.now(),
+          content: code
+        };
+        this.state.files.push(newFile);
+        Store.save('files', this.state.files);
+        this.showToast('Saved to Virtual Files', `Saved snippet "${newFile.name}" under /Home/Snippets`, 'check');
+        SoundEngine.playNotification();
       },
 
       /* === CYPHER MODE - system-wide cryptography workstation state === */
@@ -5754,24 +6545,23 @@ function App() {
         document.getElementById('flow-tray-badge').style.display = 'none';
         document.getElementById('nc-held-banner').style.display = 'none';
 
-        // Log session
         const durationMins = Math.round(this.state.flowSession.totalSeconds / 60);
-        const record = {
+        this.pendingReflection = {
           id: 'sess_' + Date.now(),
           date: Date.now(),
           minutes: durationMins,
           task: this.state.flowSession.taskName,
           endedEarly: false,
-          interruptions: this.state.flowSession.distractionsBlocked
+          interruptions: this.state.flowSession.distractionsBlocked,
+          rating: 5,
+          notes: ''
         };
-        this.state.sessions.unshift(record);
-        Store.save('sessions', this.state.sessions);
 
         SoundEngine.playFlowComplete();
-        this.showToast('Deep Work Complete!', `Completed ${durationMins}m on "${record.task}". Excellent focus.`, 'award');
+        this.openSessionReflectionModal();
 
         // Deliver queued notifications
-        if (this.state.heldNotifications.length > 0) {
+        if (this.state.heldNotifications && this.state.heldNotifications.length > 0) {
           this.state.heldNotifications.forEach(n => this.state.notifications.unshift(n));
           this.state.heldNotifications = [];
           this.renderNotificationCenter();
@@ -5783,7 +6573,20 @@ function App() {
         this.state.flowSession.active = false;
         document.body.classList.remove('flow-active');
         document.getElementById('flow-tray-badge').style.display = 'none';
-        this.showToast('Session Ended', 'Flow session wrapped up early.', 'info');
+
+        const elapsedMins = Math.max(1, Math.round((this.state.flowSession.totalSeconds - this.state.flowSession.remainingSeconds) / 60));
+        this.pendingReflection = {
+          id: 'sess_' + Date.now(),
+          date: Date.now(),
+          minutes: elapsedMins,
+          task: this.state.flowSession.taskName,
+          endedEarly: true,
+          interruptions: this.state.flowSession.distractionsBlocked,
+          rating: 4,
+          notes: 'Wrapped up sprint early'
+        };
+
+        this.openSessionReflectionModal();
       },
 
       updateFlowUI() {
@@ -6101,6 +6904,12 @@ function App() {
       /* Keyboard Shortcuts & Global Inputs */
       initKeyboardShortcuts() {
         window.addEventListener('keydown', (e) => {
+          // Zen Scratchpad: Alt+Space
+          if (e.altKey && (e.code === 'Space' || e.key === ' ')) {
+            e.preventDefault();
+            this.toggleScratchpad();
+            return;
+          }
           // Spotlight: Cmd+K or Ctrl+K
           if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
             e.preventDefault();
@@ -6114,6 +6923,9 @@ function App() {
           // Escape closes top modal / spotlight / menus
           if (e.key === 'Escape') {
             this.closeSpotlight();
+            this.toggleScratchpad(false);
+            const refModal = document.getElementById('reflection-modal-backdrop');
+            if (refModal && refModal.classList.contains('active')) this.skipSessionReflection();
             document.getElementById('control-center').classList.remove('active');
             document.getElementById('notification-center').classList.remove('active');
             document.getElementById('desktop-context-menu').classList.remove('active');
@@ -6699,17 +7511,18 @@ ${mount}
       flow: {
         title: 'Flow & Analytics',
         icon: 'flame',
-        width: 780,
-        height: 560,
+        width: 800,
+        height: 580,
         render(container) {
-          const sessions = FlowOS.state.sessions;
-          const totalMins = sessions.reduce((acc, s) => acc + s.minutes, 0);
+          const sessions = FlowOS.state.sessions || [];
+          const totalMins = sessions.reduce((acc, s) => acc + (s.minutes || 0), 0);
 
           container.innerHTML = `
             <div class="flow-app-layout">
               <div class="flow-tabs">
                 <div class="flow-tab active" data-tab="timer">Focus Session</div>
-                <div class="flow-tab" data-tab="analytics">Analytics & Streaks</div>
+                <div class="flow-tab" data-tab="analytics">Analytics &amp; Streaks</div>
+                <div class="flow-tab" data-tab="audit">Session Audit Log</div>
               </div>
 
               <!-- Tab 1: Timer Controls -->
@@ -6761,6 +7574,46 @@ ${mount}
                   <canvas id="flow-chart-canvas" width="600" height="120" style="width: 100%; height: 120px;"></canvas>
                 </div>
               </div>
+
+              <!-- Tab 3: Productivity Audit Log -->
+              <div class="flow-tab-content" id="tab-audit">
+                <div class="audit-export-bar">
+                  <div style="font-size: 12px; font-weight: 600;">
+                    <span>Completed Focus Sessions (${sessions.length})</span>
+                  </div>
+                  <div style="display:flex; gap:8px;">
+                    <button class="btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="FlowOS.exportFocusAudit('markdown')">
+                      <i data-lucide="download"></i> Export Markdown
+                    </button>
+                    <button class="btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="FlowOS.exportFocusAudit('json')">
+                      <i data-lucide="file-code"></i> Export JSON
+                    </button>
+                  </div>
+                </div>
+
+                <div class="audit-log-list" id="audit-log-list" style="margin-top: 12px;">
+                  ${!sessions.length ? '<div style="padding:24px; text-align:center; font-size:12px; color:var(--text-tertiary);">No completed sessions yet. Start a focus sprint to build your audit history.</div>' : sessions.map(s => {
+                    const stars = '★'.repeat(s.rating || 5) + '☆'.repeat(5 - (s.rating || 5));
+                    const dateStr = new Date(s.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' at ' + new Date(s.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    return `
+                      <div class="audit-card">
+                        <div class="audit-card-left">
+                          <span class="audit-card-title">${s.task || 'Deep Work Session'}</span>
+                          <div class="audit-card-meta">
+                            <span>${dateStr}</span>
+                            <span>•</span>
+                            <span class="mono">${s.minutes} mins</span>
+                            <span>•</span>
+                            <span>${s.interruptions || 0} distractions</span>
+                          </div>
+                          ${s.notes ? `<div style="font-size:11.5px; color:var(--text-secondary); margin-top:3px; font-style:italic;">"${s.notes}"</div>` : ''}
+                        </div>
+                        <div class="audit-card-stars" title="Rating: ${s.rating || 5} stars">${stars}</div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
             </div>
           `;
 
@@ -6775,9 +7628,11 @@ ${mount}
               if (tab.dataset.tab === 'analytics') {
                 setTimeout(() => FlowOS.drawAnalyticsChart(), 50);
               }
+              if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons({ root: container });
             };
           });
 
+          if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons({ root: container });
           FlowOS.updateFlowUI();
         }
       },
@@ -7107,7 +7962,18 @@ ${mount}
           let activeLang = cl.activeLang;
 
           container.innerHTML = `
-            <div class="codelab-layout">
+            <div class="codelab-layout" style="position:relative;">
+              <!-- Snippet Vault Flyout Menu -->
+              <div class="codelab-vault-flyout" id="codelab-vault-flyout">
+                <div class="codelab-vault-header">
+                  <span>Virtual Files Snippet Vault</span>
+                  <button class="tray-btn" style="padding:2px;" onclick="FlowOS.openSnippetVault()"><i data-lucide="x" style="width:12px; height:12px;"></i></button>
+                </div>
+                <div class="codelab-vault-list" id="codelab-vault-list">
+                  <!-- Loaded dynamically by FlowOS.openSnippetVault() -->
+                </div>
+              </div>
+
               <div class="codelab-toolbar">
                 <div class="codelab-lang-tabs">
                   ${LANGS.map(l => `
@@ -7117,7 +7983,13 @@ ${mount}
                 </div>
                 <div class="codelab-toolbar-right">
                   <span class="codelab-status" id="codelab-status">Ready</span>
-                  <button class="btn-secondary" id="codelab-clear" style="padding: 4px 10px; font-size: 11px;">
+                  <button class="btn-secondary" id="codelab-vault-btn" style="padding: 4px 9px; font-size: 11px;" onclick="FlowOS.openSnippetVault()">
+                    <i data-lucide="folder"></i> Snippets...
+                  </button>
+                  <button class="btn-secondary" id="codelab-save-btn" style="padding: 4px 9px; font-size: 11px;" onclick="FlowOS.saveCurrentCodeAsSnippet()">
+                    <i data-lucide="save"></i> Save to Files
+                  </button>
+                  <button class="btn-secondary" id="codelab-clear" style="padding: 4px 9px; font-size: 11px;">
                     <i data-lucide="eraser"></i> Clear
                   </button>
                   <button class="btn-primary" id="codelab-run" style="padding: 5px 14px; font-size: 11.5px;">
@@ -7701,12 +8573,12 @@ ${mount}
               <div style="display: flex; flex-direction: column; gap: 8px;">
                 <span style="font-weight:600; font-size:12.5px;">Accent Color Palette</span>
                 <div class="accent-swatches">
-                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#ff7849' ? 'active' : ''}" style="background:#ff7849;" title="Warm Coral" onclick="FlowOS.applyAccent('#ff7849'); FlowOS.refreshSettingsTab();"></div>
-                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#e5983b' ? 'active' : ''}" style="background:#e5983b;" title="Amber Ochre" onclick="FlowOS.applyAccent('#e5983b'); FlowOS.refreshSettingsTab();"></div>
-                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#4e9b7a' ? 'active' : ''}" style="background:#4e9b7a;" title="Sage Green" onclick="FlowOS.applyAccent('#4e9b7a'); FlowOS.refreshSettingsTab();"></div>
-                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#d9654d' ? 'active' : ''}" style="background:#d9654d;" title="Terracotta" onclick="FlowOS.applyAccent('#d9654d'); FlowOS.refreshSettingsTab();"></div>
-                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#d1a87b' ? 'active' : ''}" style="background:#d1a87b;" title="Dune Sand" onclick="FlowOS.applyAccent('#d1a87b'); FlowOS.refreshSettingsTab();"></div>
-                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#6a9eb5' ? 'active' : ''}" style="background:#6a9eb5;" title="Nordic Frost" onclick="FlowOS.applyAccent('#6a9eb5'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#e28743' ? 'active' : ''}" style="background:#e28743;" title="Burnt Ochre" onclick="FlowOS.applyAccent('#e28743'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#3d7a68' ? 'active' : ''}" style="background:#3d7a68;" title="Nordic Teal" onclick="FlowOS.applyAccent('#3d7a68'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#c95942' ? 'active' : ''}" style="background:#c95942;" title="Clay Rust" onclick="FlowOS.applyAccent('#c95942'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#4f7899' ? 'active' : ''}" style="background:#4f7899;" title="Slate Blue" onclick="FlowOS.applyAccent('#4f7899'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#c99b53' ? 'active' : ''}" style="background:#c99b53;" title="Sand Amber" onclick="FlowOS.applyAccent('#c99b53'); FlowOS.refreshSettingsTab();"></div>
+                  <div class="accent-swatch ${FlowOS.state.settings.accent === '#537854' ? 'active' : ''}" style="background:#537854;" title="Forest Moss" onclick="FlowOS.applyAccent('#537854'); FlowOS.refreshSettingsTab();"></div>
                 </div>
               </div>
 
@@ -7791,26 +8663,11 @@ ${mount}
                 </div>
               </div>
 
-              <!-- Synthesized Ambient Soundscapes -->
+              <!-- Multi-Track Ambient Layer Mixer -->
               <div style="display: flex; flex-direction: column; gap: 10px;">
-                <span style="font-weight: 600; font-size: 12.5px;">Synthesized Background Soundscapes (Web Audio API)</span>
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                  <div class="theme-card ${activeNoise === 'none' ? 'active' : ''}" style="padding:10px; text-align:center; align-items:center;" onclick="SoundEngine.stopSoundscape(); FlowOS.refreshSettingsTab();">
-                    <i data-lucide="volume-x" style="width:20px; color:var(--text-secondary);"></i>
-                    <span style="font-size:12px; font-weight:600;">Off</span>
-                  </div>
-                  <div class="theme-card ${activeNoise === 'brown' ? 'active' : ''}" style="padding:10px; text-align:center; align-items:center;" onclick="SoundEngine.startSoundscape('brown'); FlowOS.refreshSettingsTab();">
-                    <i data-lucide="cloud-rain" style="width:20px; color:var(--accent);"></i>
-                    <span style="font-size:12px; font-weight:600;">Deep Rain</span>
-                  </div>
-                  <div class="theme-card ${activeNoise === 'pink' ? 'active' : ''}" style="padding:10px; text-align:center; align-items:center;" onclick="SoundEngine.startSoundscape('pink'); FlowOS.refreshSettingsTab();">
-                    <i data-lucide="wind" style="width:20px; color:var(--accent);"></i>
-                    <span style="font-size:12px; font-weight:600;">Pink Noise</span>
-                  </div>
-                  <div class="theme-card ${activeNoise === 'cafe' ? 'active' : ''}" style="padding:10px; text-align:center; align-items:center;" onclick="SoundEngine.startSoundscape('cafe'); FlowOS.refreshSettingsTab();">
-                    <i data-lucide="coffee" style="width:20px; color:var(--accent);"></i>
-                    <span style="font-size:12px; font-weight:600;">Warm Cafe</span>
-                  </div>
+                <span style="font-weight: 600; font-size: 12.5px;">Multi-Track Ambient Soundscape Mixer</span>
+                <div id="settings-mixer-container">
+                  <!-- Rendered dynamically by FlowOS.renderSoundMixerUI() -->
                 </div>
               </div>
             `;
@@ -7971,6 +8828,10 @@ ${mount}
               </div>
             </div>
           `;
+
+          if (tab === 'sound') {
+            FlowOS.renderSoundMixerUI('settings-mixer-container');
+          }
 
           if (window.lucide) {
             window.lucide.createIcons({ root: container });
