@@ -3,6 +3,7 @@
 /**
  * Flow OS — Coder & Crypter Workstation
  * Client-side cryptographic suite, multi-language code runner, desktop WM, and wallpaper engine.
+ * Authorship: 50% Human (Architecture & Direction by AP-boi) / 50% AI (Implementation & Tooling by Antigravity AI).
  * Zero-dependency: all routines operate directly in client memory without external network calls.
  */
 

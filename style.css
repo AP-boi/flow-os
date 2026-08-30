@@ -2589,3 +2589,19 @@ body.theme-cobalt .term-body { color: #7cb3ff; }
   padding: 4px 6px;
   border-radius: var(--radius-sm);
 }
+
+.authorship-badge {
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: var(--surface-alt);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+  font-family: var(--mono-font);
+}
+
+.authorship-badge span {
+  color: var(--accent);
+}
