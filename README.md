@@ -1,67 +1,44 @@
-# Flow OS — Coder & Crypter Workstation
+# Flow OS
 
-Flow OS is a browser-native desktop workstation and cryptanalysis environment built entirely with zero external runtime dependencies. Every cryptographic primitive, virtual filesystem structure, multi-language sandbox evaluator, and audio synthesizer operates directly in client memory via standard Web APIs (`SubtleCrypto`, `Canvas`, `Web Audio API`).
+A lightweight, browser-based desktop environment built for coders, cryptographers, and reverse-engineering enthusiasts. Everything runs 100% client-side in memory with zero external dependencies or server requirements.
 
-## Authorship & Credits
+## Overview
 
-This project was built through a 50/50 collaborative workflow:
-- **Architecture & Direction (50%)**: System architecture, cryptographic domain specifications, application layout requirements, security review, and design direction by **[AP-boi](https://github.com/AP-boi)**.
-- **Code Implementation (50%)**: Algorithm implementations, zero-dependency data structures, interactive UI components, and test harness by **Antigravity AI**.
+Flow OS is an offline workstation packaged into a single page. It bundles developer playgrounds, classic and modern cryptographic suites, in-browser execution environments, and desktop utilities into a responsive window manager.
 
----
+### Features
+- **Cryptography & Encoding**: AES-256-GCM vault with PBKDF2 key derivation, LSB image steganography, Shannon entropy analyzer (0.0 to 8.0 bits/byte), JWT inspector, and 16 ciphers/codecs (Caesar with 26-shift brute-force matrix, Base58/32/64, Hex, XOR, Vigenère, MD5, SHA digests).
+- **Multi-Language Sandbox**: Interactive REPL and runner for JavaScript (ES2024), Python scripts, live HTML/CSS canvas preview, in-memory SQL queries, and a 30,000-cell Brainfuck interpreter.
+- **Desktop Utilities**: Programmer calculator with synchronized Hex/Dec/Oct/Bin bases and bitwise operators, virtual filesystem tree (`/home/user`, `/scripts`, `/crypto_keys`), markdown notepad, and procedural audio focus synthesizer (pink noise rain, saw drones, 60Hz hum).
+- **Customization & Themes**: Independent wallpaper presets (Cyber Grid, PCB CAD, Matrix rain stream, Starfield particles, CRT scanlines, Minimal slate) + custom image upload, plus 4 phosphor theme palettes.
+- **Session Controls**: Passphrase lock screen, warm reboot console sequence, and system shutdown.
 
-## Technical Architecture & Trade-Offs
+## Getting Started
 
-Flow OS avoids bundling heavy Node/npm runtimes in the browser. Instead, all functionality relies on native browser primitives to ensure instant zero-latency startup and complete air-gapped security:
+No build step or npm installation required. Open `index.html` in any modern web browser.
 
-- **Cryptographic Suite**:
-  - Authenticated AES-256-GCM encryption with PBKDF2 (100,000 iterations, SHA-256) deriving 256-bit symmetric keys with 128-bit random salts and 96-bit initialization vectors.
-  - 16 classic and modern codecs/ciphers: Caesar shift with a full 26-shift brute-force matrix, ROT13/47, Base32, Base58 (Bitcoin alphabet), Hex, 8-bit Binary ASCII, XOR stream with dynamic keying, Vigenère polyalphabetic, Atbash, Morse code, MD5, SHA-256/512 digests, and structured JWT token inspection.
-  - Lossless LSB Image Steganography embedding a 32-bit big-endian payload length header across RGB bit-planes with procedural carrier generation.
-  - Shannon Entropy analysis calculating accurate $H(X) = -\sum P(x_i) \log_2 P(x_i)$ scores ($0.000 \dots 8.000$ bits/byte) with live buffer classification.
-
-- **Developer Sandbox & Code Playground**:
-  - JavaScript ES2024 runtime with custom standard output interceptor (`console.log`, `console.warn`, `console.error`) and object return inspector.
-  - Python-style script interpreter for loops, functions, and data structures.
-  - Live sandboxed HTML/CSS canvas iframe rendering.
-  - In-memory SQL relational query engine supporting `CREATE TABLE`, `INSERT INTO`, and `SELECT ... WHERE` conditions.
-  - Complete 30,000-cell Brainfuck bytecode interpreter.
-
-- **Desktop Productivity Suite & Session Security**:
-  - Programmer Calculator featuring synchronized 4-base conversion (Hex, Dec, Oct, grouped 16-bit Bin) alongside bitwise ALUs (`AND`, `OR`, `XOR`, `NOT`, `LSH`, `RSH`, `MOD`).
-  - Virtual File Explorer managing a hierarchical tree in localStorage (`/home/user`, `/documents`, `/crypto_keys`, `/scripts`, `/root`).
-  - Session Security & Power Management: biometric-style lock screen with passphrase authentication, kernel boot sequence reboot, and halted state shutdown.
-  - Web Audio API procedural soundboard generating pink noise rain, dual detuned sawtooth neon drones, and 60Hz mainframe hums.
-  - Multi-wallpaper engine supporting geometric grid mesh, PCB CAD blueprint, matrix rain streams, interactive canvas starfield, CRT phosphor scanlines, and custom image uploads.
-
----
-
-## Quickstart
-
-Flow OS requires no build steps, bundlers, or package installations.
-
-### Running Locally
-Open `index.html` directly in any modern web browser, or serve via a local static server:
-
+To serve locally:
 ```bash
-# Python 3
+# Python
 python -m http.server 8080
 
-# Node.js
+# Node
 npx serve .
 ```
 
-### Keyboard Shortcuts
-| Shortcut | Action |
+## Hotkeys
+
+| Key | Description |
 |---|---|
-| `Win + L` or `Ctrl + Alt + L` | Lock session screen |
-| `Alt + Tab` | Window switcher HUD |
-| `Win` or `Ctrl + Space` | Toggle Start Menu |
-| `Ctrl + Alt + T` or `Ctrl + \`` | Open RootShell Terminal |
-| `Escape` | Dismiss active HUD or Start Menu |
+| `Win + L` / `Ctrl + Alt + L` | Lock session screen |
+| `Alt + Tab` | App switcher HUD |
+| `Win` / `Ctrl + Space` | Toggle Start menu |
+| `Ctrl + Alt + T` / `Ctrl + \`` | Open RootShell terminal |
+| `Escape` | Close active menu or HUD |
 
----
+## Credits
 
-## Repository
-- Source: [https://github.com/AP-boi/flow-os](https://github.com/AP-boi/flow-os)
-- License: MIT
+Designed and architected by [AP-boi](https://github.com/AP-boi), built in collaboration with Antigravity AI.
+
+## License
+MIT
