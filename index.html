@@ -17,36 +17,38 @@
     <div class="winbody welcome-body">
       <div class="brandglyph"></div>
       <h1>Flow OS</h1>
-      <p class="tagline">Workstation for cryptanalysis, encoding, and rapid code prototyping.</p>
+      <p class="tagline">Coder workstation, cryptanalysis suite, and full-featured desktop environment.</p>
       <hr>
       <div class="welcome-content">
         <p class="bio">
-          Flow OS is a browser-native desktop tailored for developers, security researchers, and crypters. All cryptographic routines, base transforms, and hex analysis execute locally in zero-dependency client memory.
+          Flow OS is an integrated browser-native operating system for coders and crypters. Built in zero-dependency client memory with developer playgrounds, cryptographic engines, and everyday desktop productivity utilities.
         </p>
         <div class="feature-grid">
           <div class="feature-card">
-            <h3>Cipher Lab</h3>
-            <p>Caesar with 26-shift brute forcer, Base58/85/64, XOR with frequency scoring, Vigen&egrave;re, MD5, SHA family, and JWT inspector.</p>
+            <h3>Cipher Lab &amp; Vault</h3>
+            <p>Caesar brute-force, Base58/85/64, XOR, Vigen&egrave;re, AES-256-GCM authenticated vault, and LSB image steganography.</p>
           </div>
           <div class="feature-card">
-            <h3>AES Vault</h3>
-            <p>Hardware-accelerated AES-256-GCM encryption with PBKDF2 key derivation and armored cipher packets.</p>
+            <h3>Code Runner</h3>
+            <p>Multi-language sandbox supporting JavaScript/TS, Python scripts, HTML/CSS live canvas preview, and in-memory SQL queries.</p>
           </div>
           <div class="feature-card">
-            <h3>Stego Lab</h3>
-            <p>Lossless LSB image steganography to embed/extract hidden payloads inside PNG pixels.</p>
+            <h3>Desktop Utilities</h3>
+            <p>Programmer Calculator (Hex/Dec/Bin/Bitwise), Virtual File Explorer, Markdown Notepad, and Cyber Ambient Soundboard.</p>
           </div>
           <div class="feature-card">
             <h3>RootShell &amp; Hex</h3>
-            <p>Interactive virtual shell, Shannon Entropy analysis, and JSON/Regex DevPad.</p>
+            <p>Interactive virtual shell, Shannon Entropy analysis, process manager, and system telemetry.</p>
           </div>
         </div>
       </div>
       <p class="links">
-        <a class="placeholder" href="#" id="link-open-ciphers">Launch Cipher Lab</a>
-        <a class="placeholder" href="#" id="link-open-vault">Open AES Vault</a>
-        <a class="placeholder" href="#" id="link-open-stego">Stego Lab</a>
-        <a class="placeholder" href="#" id="link-open-term">Open RootShell</a>
+        <a class="placeholder" href="#" id="link-open-ciphers">Cipher Lab</a>
+        <a class="placeholder" href="#" id="link-open-coderunner">Code Runner</a>
+        <a class="placeholder" href="#" id="link-open-files">File Explorer</a>
+        <a class="placeholder" href="#" id="link-open-calc">Calculator</a>
+        <a class="placeholder" href="#" id="link-open-vault">AES Vault</a>
+        <a class="placeholder" href="#" id="link-open-term">RootShell</a>
       </p>
     </div>
   </section>
@@ -100,6 +102,200 @@
 
         <!-- Extra analysis view (e.g. Caesar 26 shifts, JWT breakdown, XOR brute force) -->
         <div id="cipherAuxView" class="cipher-aux-container" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Multi-Language Code Playground / Runner -->
+  <section class="window" id="win-coderunner" data-title="Code Playground &amp; Runner">
+    <header class="windowheader"><span class="wintitle">Code Playground &amp; Runner</span></header>
+    <div class="winbody coderunner-body">
+      <div class="coderunner-top-bar">
+        <div class="lang-selector-group">
+          <label for="codeLangSelect">Language:</label>
+          <select id="codeLangSelect" class="param-input">
+            <option value="javascript">JavaScript (ES2024 / REPL)</option>
+            <option value="python">Python (Script Evaluator)</option>
+            <option value="html">HTML / CSS / JS Sandbox</option>
+            <option value="sql">In-Memory SQL Query</option>
+            <option value="brainfuck">Brainfuck Interpreter</option>
+          </select>
+        </div>
+        <div class="coderunner-actions">
+          <button id="btnRunCode" class="ctabtn">&#x25B6; Run Code</button>
+          <button id="btnClearConsole" class="toolbtn-small">Clear Console</button>
+          <button id="btnLoadTemplate" class="toolbtn-small">Template</button>
+        </div>
+      </div>
+      <div class="coderunner-split">
+        <div class="code-editor-pane">
+          <div class="editor-header">
+            <span id="editorFileName" class="editor-tab">script.js</span>
+            <span id="codeCharCount" class="code-stats">0 lines</span>
+          </div>
+          <textarea id="codeSourceInput" class="code-textarea" spellcheck="false" placeholder="Write code here..."></textarea>
+        </div>
+        <div class="code-output-pane">
+          <div class="output-header">
+            <span>Execution Console / Preview</span>
+            <span id="execTimer" class="code-stats">0 ms</span>
+          </div>
+          <div id="codeConsoleOutput" class="code-console"></div>
+          <iframe id="webPreviewFrame" class="web-preview-frame" sandbox="allow-scripts" style="display: none;"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Programmer & Standard Calculator -->
+  <section class="window" id="win-calc" data-title="Calculator (Programmer / Math)">
+    <header class="windowheader"><span class="wintitle">Calculator (Programmer / Math)</span></header>
+    <div class="winbody calc-body">
+      <div class="calc-mode-bar">
+        <button class="calc-mode-btn active" data-mode="programmer">Programmer (Bitwise &amp; Hex)</button>
+        <button class="calc-mode-btn" data-mode="standard">Standard Scientific</button>
+      </div>
+      <div class="calc-display-container">
+        <div class="calc-formula" id="calcFormula">0</div>
+        <div class="calc-main-val" id="calcDisplay">0</div>
+      </div>
+      <div id="programmerBases" class="calc-bases-grid">
+        <div class="base-row" data-base="hex"><span class="base-tag">HEX</span><span class="base-val" id="baseHex">0</span></div>
+        <div class="base-row active" data-base="dec"><span class="base-tag">DEC</span><span class="base-val" id="baseDec">0</span></div>
+        <div class="base-row" data-base="oct"><span class="base-tag">OCT</span><span class="base-val" id="baseOct">0</span></div>
+        <div class="base-row" data-base="bin"><span class="base-tag">BIN</span><span class="base-val" id="baseBin">0000 0000</span></div>
+      </div>
+      <div class="calc-keypad" id="calcKeypad"></div>
+    </div>
+  </section>
+
+  <!-- Virtual File Explorer -->
+  <section class="window" id="win-files" data-title="File Explorer">
+    <header class="windowheader"><span class="wintitle">File Explorer</span></header>
+    <div class="winbody files-body">
+      <div class="files-toolbar">
+        <button id="btnFileUp" class="toolbtn-small" title="Up one folder">&#x2191; Up</button>
+        <div class="files-path-bar" id="filesCurrentPath">/home/user</div>
+        <button id="btnNewFile" class="toolbtn-small">+ New File</button>
+        <button id="btnNewFolder" class="toolbtn-small">+ Folder</button>
+      </div>
+      <div class="files-layout">
+        <div class="files-sidebar">
+          <div class="sidebar-section-title">Quick Access</div>
+          <div class="files-nav-item active" data-path="/home/user">&#x1F4C1; Home</div>
+          <div class="files-nav-item" data-path="/home/user/documents">&#x1F4C4; Documents</div>
+          <div class="files-nav-item" data-path="/home/user/crypto_keys">&#x1F511; Crypto Keys</div>
+          <div class="files-nav-item" data-path="/home/user/scripts">&#x1F4BB; Scripts</div>
+          <div class="files-nav-item" data-path="/root">&#x1F5C4; System Root</div>
+        </div>
+        <div class="files-content-pane">
+          <div id="filesListGrid" class="files-grid"></div>
+        </div>
+      </div>
+      <div class="files-status-bar" id="filesStatusBar">0 items</div>
+    </div>
+  </section>
+
+  <!-- Notepad / Markdown Editor -->
+  <section class="window" id="win-notepad" data-title="Notepad">
+    <header class="windowheader"><span class="wintitle">Notepad</span></header>
+    <div class="winbody notepad-body">
+      <div class="notepad-menu-bar">
+        <button id="btnNotepadNew" class="menu-text-btn">New</button>
+        <button id="btnNotepadSave" class="menu-text-btn">Save to Disk</button>
+        <button id="btnNotepadDownload" class="menu-text-btn">Download .txt</button>
+        <span id="notepadDocTitle" class="doc-title-pill">untitled.txt</span>
+      </div>
+      <textarea id="notepadTextarea" class="notepad-textarea" spellcheck="false" placeholder="Start typing..."></textarea>
+      <div class="notepad-footer">
+        <span id="notepadStats">Line 1, Col 1 | 0 characters</span>
+        <span class="encoding-tag">UTF-8</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cyber Soundscape & Synth -->
+  <section class="window" id="win-media" data-title="Cyber Soundscape Player">
+    <header class="windowheader"><span class="wintitle">Cyber Soundscape Player</span></header>
+    <div class="winbody media-body">
+      <div class="synth-card">
+        <div class="synth-header">
+          <h3>Procedural Ambient Coder Audio</h3>
+          <span class="synth-badge">Web Audio Synthesizer</span>
+        </div>
+        <p class="synth-desc">Client-side synthesized ambient noise to boost deep work focus without streaming external bandwidth.</p>
+        <div class="soundscape-grid">
+          <button class="sound-track-btn" data-track="rain">
+            <span class="track-icon">&#x1F327;</span>
+            <span class="track-name">Cyber Rain</span>
+          </button>
+          <button class="sound-track-btn" data-track="neon">
+            <span class="track-icon">&#x1F30C;</span>
+            <span class="track-name">Neon Drone</span>
+          </button>
+          <button class="sound-track-btn" data-track="terminal">
+            <span class="track-icon">&#x1F4BB;</span>
+            <span class="track-name">Mainframe Hum</span>
+          </button>
+          <button class="sound-track-btn" data-track="synth">
+            <span class="track-icon">&#x1F3B5;</span>
+            <span class="track-name">Lo-Fi Pulse</span>
+          </button>
+        </div>
+        <div class="synth-controls-row">
+          <button id="btnToggleAudio" class="ctabtn">&#x25B6; Play Audio</button>
+          <label class="volume-label">
+            <span>Vol:</span>
+            <input type="range" id="audioVolume" min="0" max="100" value="50">
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Settings & Customization -->
+  <section class="window" id="win-settings" data-title="System Settings">
+    <header class="windowheader"><span class="wintitle">System Settings</span></header>
+    <div class="winbody settings-body">
+      <div class="settings-section">
+        <h3>Theme &amp; Accent Palette</h3>
+        <div class="theme-selection-cards">
+          <div class="theme-card active" data-theme="obsidian">
+            <div class="color-swatch" style="background: #d4a72c;"></div>
+            <span>Obsidian Gold</span>
+          </div>
+          <div class="theme-card" data-theme="hacker">
+            <div class="color-swatch" style="background: #22e565;"></div>
+            <span>Cyber Emerald</span>
+          </div>
+          <div class="theme-card" data-theme="amber">
+            <div class="color-swatch" style="background: #ffb432;"></div>
+            <span>Amber Phosphor</span>
+          </div>
+          <div class="theme-card" data-theme="cobalt">
+            <div class="color-swatch" style="background: #4e88ff;"></div>
+            <span>Cobalt Deep</span>
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>Shell Preferences</h3>
+        <div class="setting-toggle-row">
+          <span>Matrix Rain Wallpaper Layer</span>
+          <input type="checkbox" id="settingMatrixToggle">
+        </div>
+        <div class="setting-toggle-row">
+          <span>UI Click Audio Feedback</span>
+          <input type="checkbox" id="settingSfxToggle" checked>
+        </div>
+        <div class="setting-toggle-row">
+          <span>Smooth Window Animations</span>
+          <input type="checkbox" id="settingAnimToggle" checked>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>Storage &amp; Memory Reset</h3>
+        <button id="btnResetLocalStorage" class="toolbtn" style="color: var(--danger);">Clear Local Virtual Disk &amp; Cache</button>
       </div>
     </div>
   </section>
@@ -336,8 +532,8 @@
           <span class="d-val">Hardware Acceleration (Active)</span>
         </div>
         <div class="detail-cell">
-          <span class="d-label">Keyboard Shortcut Engine</span>
-          <span class="d-val">Alt+Tab, Win, Ctrl+Alt+T</span>
+          <span class="d-label">Running Tasks</span>
+          <span id="sysmonTasksVal" class="d-val">12 Active Apps</span>
         </div>
       </div>
       <p class="sysmon-note">Hardware telemetry and network flow rates are simulated in client memory.</p>

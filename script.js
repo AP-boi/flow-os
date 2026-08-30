@@ -2,7 +2,7 @@
 
 /**
  * Flow OS — Coder & Crypter Workstation
- * Client-side cryptographic suite, interactive virtual shell, and desktop WM.
+ * Client-side cryptographic suite, multi-language code runner, everyday utilities, and desktop WM.
  * Dependency-free: all routines operate directly in client memory.
  */
 
@@ -25,33 +25,51 @@ let sysmonTimer = null;
 const APPS = [
   { id: 'welcome', title: 'Welcome', icon: 'flow' },
   { id: 'cipher', title: 'Cipher Lab', icon: 'key' },
+  { id: 'coderunner', title: 'Code Runner', icon: 'play' },
+  { id: 'calc', title: 'Calculator', icon: 'calc' },
+  { id: 'files', title: 'File Explorer', icon: 'folder' },
+  { id: 'notepad', title: 'Notepad', icon: 'doc' },
   { id: 'vault', title: 'AES Vault', icon: 'lock' },
   { id: 'stego', title: 'Stego Lab', icon: 'image' },
   { id: 'terminal', title: 'rootshell', icon: 'terminal' },
   { id: 'hexdump', title: 'Hex & Entropy', icon: 'binary' },
   { id: 'devpad', title: 'DevPad', icon: 'code' },
+  { id: 'media', title: 'Soundscape', icon: 'music' },
+  { id: 'settings', title: 'Settings', icon: 'settings' },
   { id: 'sysmon', title: 'System Monitor', icon: 'pulse' },
 ];
 
 const HACKER_LABELS = {
   welcome: 'readme.txt',
   cipher: 'crypt_suite.bin',
+  coderunner: 'exec_sandbox.elf',
+  calc: 'bitwise_math.asm',
+  files: 'vfs_tree.db',
+  notepad: 'scratch_pad.md',
   vault: 'vault_gcm.enc',
   stego: 'stego_lsb.py',
   terminal: 'rootshell.elf',
   hexdump: 'hexdump.sh',
-  devpad: 'scratchpad.log',
+  devpad: 'devpad.log',
+  media: 'audio_synth.dsp',
+  settings: 'sys_config.json',
   sysmon: 'sysprobe.sh',
 };
 
 const ICON_PATHS = {
   flow: '<path d="M3 8c3-5 6-5 9 0s6 5 9 0"/><path d="M3 16c3-5 6-5 9 0s6 5 9 0"/>',
   key: '<circle cx="8" cy="12" r="4"/><path d="M12 12h9M17 12v4M20 12v3"/>',
+  play: '<polygon points="5 3 19 12 5 21 5 3"/>',
+  calc: '<rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="16" y1="14" x2="16" y2="14.01"/><line x1="8" y1="18" x2="8" y2="18.01"/><line x1="12" y1="18" x2="12" y2="18.01"/><line x1="16" y1="18" x2="16" y2="18.01"/>',
+  folder: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>',
   lock: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
   image: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
   terminal: '<path d="M4 6l6 6-6 6"/><path d="M13 18h7"/>',
   binary: '<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/>',
   code: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+  music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
   pulse: '<path d="M2 12h4l3-8 4 16 3-8h6"/>',
   start: '<rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/>',
   minim: '<path d="M5 17h14"/>',
@@ -221,8 +239,8 @@ function placeWindow(id) {
   } else {
     const placedCount = [...windows.values()].filter(x => x.placed).length;
     const offset = (placedCount % 8) * 26;
-    win.el.style.left = `${clamp(70 + offset, 10, desk.width - w - 20)}px`;
-    win.el.style.top = `${clamp(36 + offset, 10, desk.height - TASKBAR_HEIGHT - h - 16)}px`;
+    win.el.style.left = `${clamp(60 + offset, 10, desk.width - w - 20)}px`;
+    win.el.style.top = `${clamp(30 + offset, 10, desk.height - TASKBAR_HEIGHT - h - 16)}px`;
   }
   win.placed = true;
 }
@@ -345,7 +363,6 @@ function setTheme(themeName) {
     document.body.classList.add('theme-cobalt');
     stopMatrix();
   } else {
-    // obsidian default
     stopMatrix();
   }
 
@@ -354,16 +371,19 @@ function setTheme(themeName) {
     indicator.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
   }
 
+  document.querySelectorAll('.theme-card').forEach(card => {
+    card.classList.toggle('active', card.dataset.theme === themeName);
+  });
+
   relabelIcons();
   syncTaskbar();
   buildStartMenu();
 }
 
 /* ==========================================================================
-   3. Cryptographic Routines & Engines (Vanilla JS, Zero Dependencies)
+   3. Cryptographic Engines & Cipher Lab
    ========================================================================== */
 
-// Caesar Shift
 function caesarTransform(text, shift) {
   const normalizedShift = ((shift % 26) + 26) % 26;
   return text.replace(/[a-zA-Z]/g, char => {
@@ -375,51 +395,34 @@ function caesarTransform(text, shift) {
 function caesarBruteForce(text) {
   const rows = [];
   for (let s = 0; s < 26; s++) {
-    const shifted = caesarTransform(text, s);
-    rows.push({ shift: s, text: shifted });
+    rows.push({ shift: s, text: caesarTransform(text, s) });
   }
   return rows;
 }
 
-// ROT13 & ROT47
-function rot13(text) {
-  return caesarTransform(text, 13);
-}
-
+function rot13(text) { return caesarTransform(text, 13); }
 function rot47(text) {
-  return text.replace(/[\x21-\x7e]/g, char => {
-    return String.fromCharCode(33 + ((char.charCodeAt(0) - 33 + 47) % 94));
-  });
+  return text.replace(/[\x21-\x7e]/g, char => String.fromCharCode(33 + ((char.charCodeAt(0) - 33 + 47) % 94)));
 }
 
-// Base64 (UTF-8 Safe)
 function base64Encode(text) {
   const utf8Bytes = new TextEncoder().encode(text);
   let binaryStr = '';
-  for (let i = 0; i < utf8Bytes.length; i++) {
-    binaryStr += String.fromCharCode(utf8Bytes[i]);
-  }
+  for (let i = 0; i < utf8Bytes.length; i++) binaryStr += String.fromCharCode(utf8Bytes[i]);
   return btoa(binaryStr);
 }
 
 function base64Decode(text) {
-  const clean = text.trim();
-  const binaryStr = atob(clean);
+  const binaryStr = atob(text.trim());
   const bytes = new Uint8Array(binaryStr.length);
-  for (let i = 0; i < binaryStr.length; i++) {
-    bytes[i] = binaryStr.charCodeAt(i);
-  }
+  for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
   return new TextDecoder().decode(bytes);
 }
 
-// Base32 (RFC 4648)
 const BASE32_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 function base32Encode(text) {
   const bytes = new TextEncoder().encode(text);
-  let bits = 0;
-  let value = 0;
-  let output = '';
-
+  let bits = 0, value = 0, output = '';
   for (let i = 0; i < bytes.length; i++) {
     value = (value << 8) | bytes[i];
     bits += 8;
@@ -428,19 +431,15 @@ function base32Encode(text) {
       bits -= 5;
     }
   }
-  if (bits > 0) {
-    output += BASE32_ALPHABET[(value << (5 - bits)) & 31];
-  }
+  if (bits > 0) output += BASE32_ALPHABET[(value << (5 - bits)) & 31];
   while (output.length % 8 !== 0) output += '=';
   return output;
 }
 
 function base32Decode(text) {
   const clean = text.toUpperCase().replace(/=+$/, '');
-  let bits = 0;
-  let value = 0;
+  let bits = 0, value = 0;
   const bytes = [];
-
   for (let i = 0; i < clean.length; i++) {
     const idx = BASE32_ALPHABET.indexOf(clean[i]);
     if (idx === -1) continue;
@@ -454,12 +453,10 @@ function base32Decode(text) {
   return new TextDecoder().decode(new Uint8Array(bytes));
 }
 
-// Base58 (Bitcoin Alphabet)
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 function base58Encode(text) {
   const bytes = new TextEncoder().encode(text);
   const digits = [0];
-
   for (let i = 0; i < bytes.length; i++) {
     let carry = bytes[i];
     for (let j = 0; j < digits.length; j++) {
@@ -472,25 +469,19 @@ function base58Encode(text) {
       carry = (carry / 58) | 0;
     }
   }
-
   let leadingZeros = 0;
   while (leadingZeros < bytes.length && bytes[leadingZeros] === 0) leadingZeros++;
-
   let str = '1'.repeat(leadingZeros);
-  for (let k = digits.length - 1; k >= 0; k--) {
-    str += BASE58_ALPHABET[digits[k]];
-  }
+  for (let k = digits.length - 1; k >= 0; k--) str += BASE58_ALPHABET[digits[k]];
   return str;
 }
 
 function base58Decode(text) {
   const clean = text.trim();
   const bytes = [0];
-
   for (let i = 0; i < clean.length; i++) {
     const value = BASE58_ALPHABET.indexOf(clean[i]);
     if (value === -1) throw new Error(`Invalid Base58 character: "${clean[i]}"`);
-
     let carry = value;
     for (let j = 0; j < bytes.length; j++) {
       carry += bytes[j] * 58;
@@ -502,18 +493,13 @@ function base58Decode(text) {
       carry = carry >> 8;
     }
   }
-
   let leadingOnes = 0;
   while (leadingOnes < clean.length && clean[leadingOnes] === '1') leadingOnes++;
-
   const result = new Uint8Array(leadingOnes + bytes.length);
-  for (let k = 0; k < bytes.length; k++) {
-    result[leadingOnes + k] = bytes[bytes.length - 1 - k];
-  }
+  for (let k = 0; k < bytes.length; k++) result[leadingOnes + k] = bytes[bytes.length - 1 - k];
   return new TextDecoder().decode(result);
 }
 
-// Hex Conversions
 function textToHex(text, delimiter = ' ') {
   const bytes = new TextEncoder().encode(text);
   return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join(delimiter);
@@ -523,13 +509,10 @@ function hexToText(hexStr) {
   const clean = hexStr.replace(/[^0-9a-fA-F]/g, '');
   if (clean.length % 2 !== 0) throw new Error('Hex string must have an even length.');
   const bytes = new Uint8Array(clean.length / 2);
-  for (let i = 0; i < clean.length; i += 2) {
-    bytes[i / 2] = parseInt(clean.slice(i, i + 2), 16);
-  }
+  for (let i = 0; i < clean.length; i += 2) bytes[i / 2] = parseInt(clean.slice(i, i + 2), 16);
   return new TextDecoder().decode(bytes);
 }
 
-// Binary <-> ASCII
 function textToBinary(text) {
   const bytes = new TextEncoder().encode(text);
   return Array.from(bytes, b => b.toString(2).padStart(8, '0')).join(' ');
@@ -538,35 +521,24 @@ function textToBinary(text) {
 function binaryToText(binStr) {
   const tokens = binStr.trim().split(/\s+/);
   const bytes = new Uint8Array(tokens.length);
-  for (let i = 0; i < tokens.length; i++) {
-    bytes[i] = parseInt(tokens[i], 2);
-  }
+  for (let i = 0; i < tokens.length; i++) bytes[i] = parseInt(tokens[i], 2);
   return new TextDecoder().decode(bytes);
 }
 
-// XOR Transform
 function xorTransform(text, key, isHexOutput = false) {
   if (!key) return text;
   const textBytes = new TextEncoder().encode(text);
   const keyBytes = new TextEncoder().encode(key);
   const outBytes = new Uint8Array(textBytes.length);
-
-  for (let i = 0; i < textBytes.length; i++) {
-    outBytes[i] = textBytes[i] ^ keyBytes[i % keyBytes.length];
-  }
-
-  if (isHexOutput) {
-    return Array.from(outBytes, b => b.toString(16).padStart(2, '0')).join(' ');
-  }
+  for (let i = 0; i < textBytes.length; i++) outBytes[i] = textBytes[i] ^ keyBytes[i % keyBytes.length];
+  if (isHexOutput) return Array.from(outBytes, b => b.toString(16).padStart(2, '0')).join(' ');
   return new TextDecoder('utf-8', { fatal: false }).decode(outBytes);
 }
 
-// Vigenère Cipher
 function vigenereCipher(text, key, decrypt = false) {
   if (!key) return text;
   const cleanKey = key.toUpperCase().replace(/[^A-Z]/g, '');
   if (!cleanKey) return text;
-
   let keyIndex = 0;
   return text.replace(/[a-zA-Z]/g, char => {
     const isUpper = char <= 'Z';
@@ -574,22 +546,18 @@ function vigenereCipher(text, key, decrypt = false) {
     const charCode = char.charCodeAt(0) - base;
     const shift = cleanKey.charCodeAt(keyIndex % cleanKey.length) - 65;
     keyIndex++;
-
     const finalShift = decrypt ? (charCode - shift + 26) % 26 : (charCode + shift) % 26;
     return String.fromCharCode(finalShift + base);
   });
 }
 
-// Atbash
 function atbash(text) {
   return text.replace(/[a-zA-Z]/g, char => {
-    const isUpper = char <= 'Z';
-    const base = isUpper ? 65 : 97;
+    const base = char <= 'Z' ? 65 : 97;
     return String.fromCharCode(25 - (char.charCodeAt(0) - base) + base);
   });
 }
 
-// Morse Code
 const MORSE_TABLE = {
   a: '.-', b: '-...', c: '-.-.', d: '-..', e: '.', f: '..-.', g: '--.', h: '....',
   i: '..', j: '.---', k: '-.-', l: '.-..', m: '--', n: '-.', o: '---', p: '.--.',
@@ -607,7 +575,6 @@ function morseDecode(text) {
   return text.trim().split(/\s+/).map(tok => (tok === '/' ? ' ' : MORSE_LOOKUP[tok] ?? tok)).join('');
 }
 
-// Pure JS MD5 (RFC 1321)
 function md5(string) {
   function md5cycle(x, k) {
     let a = x[0], b = x[1], c = x[2], d = x[3];
@@ -665,9 +632,7 @@ function md5(string) {
     md5cycle(state, k);
   }
   const tail = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0];
-  for (let j = 0; j < n - (i - 64); j++) {
-    tail[j >> 2] |= txt[i - 64 + j] << ((j % 4) << 3);
-  }
+  for (let j = 0; j < n - (i - 64); j++) tail[j >> 2] |= txt[i - 64 + j] << ((j % 4) << 3);
   tail[(n - (i - 64)) >> 2] |= 0x80 << (((n - (i - 64)) % 4) << 3);
   if ((n - (i - 64)) > 55) {
     md5cycle(state, tail);
@@ -680,14 +645,11 @@ function md5(string) {
   const hexTab = '0123456789abcdef';
   let out = '';
   for (let j = 0; j < 4; j++) {
-    for (let b = 0; b < 4; b++) {
-      out += hexTab.charAt((state[j] >> (b * 8 + 4)) & 0x0F) + hexTab.charAt((state[j] >> (b * 8)) & 0x0F);
-    }
+    for (let b = 0; b < 4; b++) out += hexTab.charAt((state[j] >> (b * 8 + 4)) & 0x0F) + hexTab.charAt((state[j] >> (b * 8)) & 0x0F);
   }
   return out;
 }
 
-// WebCrypto SHA Digests
 async function subtleDigest(algorithm, text) {
   const data = new TextEncoder().encode(text);
   const hashBuffer = await crypto.subtle.digest(algorithm, data);
@@ -695,46 +657,25 @@ async function subtleDigest(algorithm, text) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// JWT Inspector
 function parseJwt(token) {
   const parts = token.trim().split('.');
   if (parts.length < 2) throw new Error('JWT must contain at least Header and Payload separated by dot.');
-
   const decodeSegment = seg => {
     let base64 = seg.replace(/-/g, '+').replace(/_/g, '/');
     while (base64.length % 4) base64 += '=';
     return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(base64), c => c.charCodeAt(0))));
   };
-
   const header = decodeSegment(parts[0]);
   const payload = decodeSegment(parts[1]);
-
-  const formatTimestamp = ts => {
-    if (!ts || typeof ts !== 'number') return ts;
-    const d = new Date(ts * 1000);
-    return `${ts} (${d.toISOString().replace('T', ' ').replace('.000Z', ' UTC')})`;
-  };
-
-  const enhancedPayload = { ...payload };
-  if (enhancedPayload.exp) enhancedPayload.exp = formatTimestamp(enhancedPayload.exp);
-  if (enhancedPayload.iat) enhancedPayload.iat = formatTimestamp(enhancedPayload.iat);
-  if (enhancedPayload.nbf) enhancedPayload.nbf = formatTimestamp(enhancedPayload.nbf);
-
-  return `HEADER:\n${JSON.stringify(header, null, 2)}\n\nPAYLOAD:\n${JSON.stringify(enhancedPayload, null, 2)}\n\nSIGNATURE:\n${parts[2] ? parts[2] : '(no signature)'}`;
+  return `HEADER:\n${JSON.stringify(header, null, 2)}\n\nPAYLOAD:\n${JSON.stringify(payload, null, 2)}\n\nSIGNATURE:\n${parts[2] || '(none)'}`;
 }
 
-// Shannon Entropy Calculation
 function calculateEntropy(str) {
   if (!str) return 0;
   const bytes = new TextEncoder().encode(str);
   const len = bytes.length;
   const freq = new Map();
-
-  for (let i = 0; i < len; i++) {
-    const b = bytes[i];
-    freq.set(b, (freq.get(b) || 0) + 1);
-  }
-
+  for (let i = 0; i < len; i++) freq.set(bytes[i], (freq.get(bytes[i]) || 0) + 1);
   let entropy = 0;
   for (const count of freq.values()) {
     const p = count / len;
@@ -744,7 +685,7 @@ function calculateEntropy(str) {
 }
 
 /* ==========================================================================
-   3B. AES-256-GCM / PBKDF2 Password Encryption & Decryption Engine
+   3B. AES-256-GCM / PBKDF2 Vault Engine
    ========================================================================== */
 
 async function deriveAesKey(passphrase, salt) {
@@ -756,14 +697,8 @@ async function deriveAesKey(passphrase, salt) {
     false,
     ['deriveKey']
   );
-
   return crypto.subtle.deriveKey(
-    {
-      name: 'PBKDF2',
-      salt,
-      iterations: 100000,
-      hash: 'SHA-256',
-    },
+    { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
     false,
@@ -772,20 +707,14 @@ async function deriveAesKey(passphrase, salt) {
 }
 
 async function encryptAesGcm(plaintext, passphrase) {
-  if (!passphrase) throw new Error('Master passphrase cannot be empty.');
+  if (!passphrase) throw new Error('Passphrase cannot be empty.');
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const key = await deriveAesKey(passphrase, salt);
   const plainBytes = new TextEncoder().encode(plaintext);
-
-  const cipherBuffer = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    plainBytes
-  );
-
+  const cipherBuffer = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plainBytes);
   const cipherBytes = new Uint8Array(cipherBuffer);
-  // Packet structure: [16B salt] + [12B IV] + [Ciphertext + Auth Tag]
+
   const packet = new Uint8Array(salt.length + iv.length + cipherBytes.length);
   packet.set(salt, 0);
   packet.set(iv, salt.length);
@@ -797,584 +726,659 @@ async function encryptAesGcm(plaintext, passphrase) {
 }
 
 async function decryptAesGcm(packetString, passphrase) {
-  if (!passphrase) throw new Error('Master passphrase cannot be empty.');
+  if (!passphrase) throw new Error('Passphrase cannot be empty.');
   const clean = packetString.trim();
   const rawBase64 = clean.startsWith('FLOWVAULT1:') ? clean.slice(11) : clean;
-
   let binaryStr;
-  try {
-    binaryStr = atob(rawBase64);
-  } catch (e) {
-    throw new Error('Invalid Base64 armored packet format.');
-  }
-
+  try { binaryStr = atob(rawBase64); } catch (e) { throw new Error('Invalid Base64 packet format.'); }
   const packet = new Uint8Array(binaryStr.length);
   for (let i = 0; i < binaryStr.length; i++) packet[i] = binaryStr.charCodeAt(i);
-
-  if (packet.length < 28) throw new Error('Armored packet is too short (corrupted).');
+  if (packet.length < 28) throw new Error('Armored packet is too short.');
 
   const salt = packet.slice(0, 16);
   const iv = packet.slice(16, 28);
   const cipherBytes = packet.slice(28);
-
   const key = await deriveAesKey(passphrase, salt);
 
   try {
-    const plainBuffer = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv },
-      key,
-      cipherBytes
-    );
+    const plainBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipherBytes);
     return new TextDecoder().decode(plainBuffer);
   } catch (err) {
-    throw new Error('Authentication failure: incorrect passphrase or corrupted data packet.');
+    throw new Error('Authentication failure: incorrect passphrase or corrupted data.');
   }
 }
 
 /* ==========================================================================
-   4. Cipher Lab Application Controller
+   4. Multi-Language Code Playground / Runner
    ========================================================================== */
 
-const CIPHERS = [
-  { id: 'caesar', name: 'Caesar Shift', hasKey: true, keyType: 'number', defaultKey: 3 },
-  { id: 'rot13', name: 'ROT13', symmetric: true },
-  { id: 'rot47', name: 'ROT47', symmetric: true },
-  { id: 'base64', name: 'Base64' },
-  { id: 'base32', name: 'Base32' },
-  { id: 'base58', name: 'Base58' },
-  { id: 'hex', name: 'Hexadecimal' },
-  { id: 'binary', name: 'Binary ASCII' },
-  { id: 'xor', name: 'XOR Stream', hasKey: true, keyType: 'text', defaultKey: 'key' },
-  { id: 'vigenere', name: 'Vigenère', hasKey: true, keyType: 'text', defaultKey: 'CIPHER' },
-  { id: 'atbash', name: 'Atbash', symmetric: true },
-  { id: 'morse', name: 'Morse Code' },
-  { id: 'md5', name: 'MD5 Hash', oneWay: true },
-  { id: 'sha256', name: 'SHA-256 Hash', oneWay: true, async: true },
-  { id: 'sha512', name: 'SHA-512 Hash', oneWay: true, async: true },
-  { id: 'jwt', name: 'JWT Inspector', oneWay: true },
-];
+const CODE_TEMPLATES = {
+  javascript: `// JavaScript ES2024 Sandbox
+console.log("Welcome to Flow OS Code Runner!");
 
-let currentCipher = CIPHERS[0];
-
-function buildCipherSidebar() {
-  const nav = document.getElementById('cipherList');
-  nav.replaceChildren();
-
-  CIPHERS.forEach((cipher, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'cipherItem' + (i === 0 ? ' selected' : '');
-    btn.textContent = cipher.name;
-    btn.addEventListener('click', () => selectCipher(btn, cipher));
-    nav.append(btn);
-  });
-}
-
-function selectCipher(btn, cipher) {
-  currentCipher = cipher;
-  for (const other of btn.parentElement.children) {
-    other.classList.toggle('selected', other === btn);
+function findPrimes(max) {
+  const primes = [];
+  for (let i = 2; i <= max; i++) {
+    if (primes.every(p => i % p !== 0)) primes.push(i);
   }
-
-  document.getElementById('cipherName').textContent = cipher.name;
-  renderCipherParams(cipher);
-
-  const encodeBtn = document.getElementById('cipherEncode');
-  const decodeBtn = document.getElementById('cipherDecode');
-
-  if (cipher.oneWay) {
-    encodeBtn.textContent = 'Compute';
-    decodeBtn.classList.add('hidden');
-  } else if (cipher.symmetric) {
-    encodeBtn.textContent = 'Transform';
-    decodeBtn.classList.add('hidden');
-  } else {
-    encodeBtn.textContent = 'Encode';
-    decodeBtn.textContent = 'Decode';
-    decodeBtn.classList.remove('hidden');
-  }
-
-  runActiveCipher();
+  return primes;
 }
 
-function renderCipherParams(cipher) {
-  const bar = document.getElementById('cipherParams');
-  bar.replaceChildren();
+const primes = findPrimes(50);
+console.log("Primes up to 50:", primes);
+return { totalPrimes: primes.length, largest: primes.at(-1) };`,
 
-  if (cipher.id === 'caesar') {
-    bar.innerHTML = `
-      <label for="caesarShiftInput">Shift Key (0-25):</label>
-      <input type="number" id="caesarShiftInput" class="param-input" min="0" max="25" value="3" style="width: 60px;">
-      <button id="btnCaesarBrute" class="toolbtn-small">Brute Force (All 26)</button>
-    `;
-    const input = document.getElementById('caesarShiftInput');
-    input.addEventListener('input', () => runActiveCipher());
-    document.getElementById('btnCaesarBrute').addEventListener('click', toggleCaesarBruteView);
-  } else if (cipher.hasKey) {
-    bar.innerHTML = `
-      <label for="cipherKeyInput">Passphrase / Key:</label>
-      <input type="text" id="cipherKeyInput" class="param-input" value="${cipher.defaultKey || ''}" placeholder="Key..." style="min-width: 160px;">
-    `;
-    document.getElementById('cipherKeyInput').addEventListener('input', () => runActiveCipher());
-  } else {
-    bar.innerHTML = `<span style="color: var(--text-muted); font-size: 11.5px;">Standard parameterless transformation.</span>`;
-  }
-}
+  python: `# Python-like script runner
+def fibonacci(n):
+    a, b = 0, 1
+    seq = []
+    for _ in range(n):
+        seq.append(a)
+        a, b = b, a + b
+    return seq
 
-function toggleCaesarBruteView() {
-  const aux = document.getElementById('cipherAuxView');
-  const input = document.getElementById('cipherInput').value;
-  if (!input) {
-    aux.hidden = true;
-    return;
-  }
+print("Generating Fibonacci sequence:")
+result = fibonacci(10)
+print("Fibonacci(10):", result)
+`,
 
-  if (!aux.hidden) {
-    aux.hidden = true;
-    return;
-  }
+  html: `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { background: #0c101d; color: #39ff6a; font-family: monospace; padding: 20px; }
+    .neon-box { border: 2px solid #39ff6a; padding: 15px; border-radius: 8px; box-shadow: 0 0 15px rgba(57,255,106,0.4); }
+  </style>
+</head>
+<body>
+  <div class="neon-box">
+    <h2>Flow OS Web Sandbox</h2>
+    <p>Live HTML/CSS/JS Canvas rendering inside sandboxed iframe.</p>
+    <button onclick="alert('Hello from Flow OS!')">Click Interactive</button>
+  </div>
+</body>
+</html>`,
 
-  const shifts = caesarBruteForce(input);
-  let html = `<table class="aux-table"><thead><tr><th>Shift</th><th>Plaintext Candidate</th></tr></thead><tbody>`;
-  shifts.forEach(row => {
-    html += `<tr><td class="aux-shift-val">ROT-${row.shift.toString().padStart(2, '0')}</td><td>${escapeHtml(row.text)}</td></tr>`;
-  });
-  html += `</tbody></table>`;
-  aux.innerHTML = html;
-  aux.hidden = false;
-}
+  sql: `-- In-Memory SQL Engine
+CREATE TABLE coders (id INT, name TEXT, specialty TEXT, level INT);
+INSERT INTO coders VALUES (1, 'Alice', 'Cryptography', 95);
+INSERT INTO coders VALUES (2, 'Bob', 'Reverse Engineering', 88);
+INSERT INTO coders VALUES (3, 'Cipher0x', 'Binary Exploits', 99);
 
-function escapeHtml(str) {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
+SELECT * FROM coders WHERE level > 90;`,
 
-async function runCipher(direction = 'encode') {
-  const input = document.getElementById('cipherInput').value;
-  const outEl = document.getElementById('cipherOutput');
-  const aux = document.getElementById('cipherAuxView');
-  aux.hidden = true;
+  brainfuck: `++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.`
+};
 
-  if (!input) {
-    outEl.value = '';
-    updateIoStats();
-    return;
-  }
+function initCodeRunner() {
+  const langSelect = document.getElementById('codeLangSelect');
+  const sourceArea = document.getElementById('codeSourceInput');
+  const consoleEl = document.getElementById('codeConsoleOutput');
+  const iframeEl = document.getElementById('webPreviewFrame');
+  const fileNameTab = document.getElementById('editorFileName');
+  const charStats = document.getElementById('codeCharCount');
+  const timerEl = document.getElementById('execTimer');
 
-  try {
-    let result = '';
-    const id = currentCipher.id;
+  if (!langSelect || !sourceArea) return;
 
-    if (id === 'caesar') {
-      const shift = parseInt(document.getElementById('caesarShiftInput')?.value || '3', 10);
-      result = direction === 'decode' ? caesarTransform(input, -shift) : caesarTransform(input, shift);
-    } else if (id === 'rot13') {
-      result = rot13(input);
-    } else if (id === 'rot47') {
-      result = rot47(input);
-    } else if (id === 'base64') {
-      result = direction === 'decode' ? base64Decode(input) : base64Encode(input);
-    } else if (id === 'base32') {
-      result = direction === 'decode' ? base32Decode(input) : base32Encode(input);
-    } else if (id === 'base58') {
-      result = direction === 'decode' ? base58Decode(input) : base58Encode(input);
-    } else if (id === 'hex') {
-      result = direction === 'decode' ? hexToText(input) : textToHex(input);
-    } else if (id === 'binary') {
-      result = direction === 'decode' ? binaryToText(input) : textToBinary(input);
-    } else if (id === 'xor') {
-      const key = document.getElementById('cipherKeyInput')?.value || 'key';
-      result = xorTransform(input, key);
-    } else if (id === 'vigenere') {
-      const key = document.getElementById('cipherKeyInput')?.value || 'KEY';
-      result = vigenereCipher(input, key, direction === 'decode');
-    } else if (id === 'atbash') {
-      result = atbash(input);
-    } else if (id === 'morse') {
-      result = direction === 'decode' ? morseDecode(input) : morseEncode(input);
-    } else if (id === 'md5') {
-      result = md5(input);
-    } else if (id === 'sha256') {
-      result = await subtleDigest('SHA-256', input);
-    } else if (id === 'sha512') {
-      result = await subtleDigest('SHA-512', input);
-    } else if (id === 'jwt') {
-      result = parseJwt(input);
-    }
+  const updateStats = () => {
+    const lines = sourceArea.value.split('\n').length;
+    charStats.textContent = `${lines} lines | ${sourceArea.value.length} chars`;
+  };
+  sourceArea.addEventListener('input', updateStats);
 
-    outEl.value = result;
-  } catch (err) {
-    outEl.value = `[Transform Error]: ${err.message}`;
-  }
-
-  updateIoStats();
-}
-
-function runActiveCipher() {
-  const isLive = document.getElementById('cipherLiveToggle')?.checked ?? true;
-  if (isLive) runCipher('encode');
-}
-
-function updateIoStats() {
-  const inVal = document.getElementById('cipherInput')?.value || '';
-  const outVal = document.getElementById('cipherOutput')?.value || '';
-  const inStats = document.getElementById('inputStats');
-  const outStats = document.getElementById('outputStats');
-
-  if (inStats) inStats.textContent = `${inVal.length} chars (${new TextEncoder().encode(inVal).length} B)`;
-  if (outStats) outStats.textContent = `${outVal.length} chars (${new TextEncoder().encode(outVal).length} B)`;
-}
-
-/* ==========================================================================
-   4B. Secret Vault (AES-256-GCM) Controller
-   ========================================================================== */
-
-function initVault() {
-  const passInput = document.getElementById('vaultPassphrase');
-  const togglePassBtn = document.getElementById('btnToggleVaultPass');
-  const plainArea = document.getElementById('vaultPlaintext');
-  const cipherArea = document.getElementById('vaultCiphertext');
-  const statusEl = document.getElementById('vaultStatusMessage');
-
-  togglePassBtn?.addEventListener('click', () => {
-    if (passInput.type === 'password') {
-      passInput.type = 'text';
-      togglePassBtn.textContent = 'Hide';
+  const switchLanguage = lang => {
+    sourceArea.value = CODE_TEMPLATES[lang] || '';
+    fileNameTab.textContent = lang === 'javascript' ? 'main.js' : lang === 'python' ? 'script.py' : lang === 'html' ? 'index.html' : lang === 'sql' ? 'query.sql' : 'program.bf';
+    updateStats();
+    if (lang === 'html') {
+      consoleEl.style.display = 'none';
+      iframeEl.style.display = 'block';
     } else {
-      passInput.type = 'password';
-      togglePassBtn.textContent = 'Show';
+      consoleEl.style.display = 'flex';
+      iframeEl.style.display = 'none';
     }
-  });
+  };
 
-  document.getElementById('btnVaultEncrypt')?.addEventListener('click', async () => {
-    const plain = plainArea.value;
-    const pass = passInput.value;
-    if (!plain) {
-      statusEl.textContent = 'Error: Plaintext buffer is empty.';
-      statusEl.style.color = 'var(--danger)';
-      return;
-    }
-    if (!pass) {
-      statusEl.textContent = 'Error: Master passphrase is required.';
-      statusEl.style.color = 'var(--danger)';
-      passInput.focus();
-      return;
-    }
+  langSelect.addEventListener('change', () => switchLanguage(langSelect.value));
+  document.getElementById('btnLoadTemplate')?.addEventListener('click', () => switchLanguage(langSelect.value));
+  document.getElementById('btnClearConsole')?.addEventListener('click', () => { consoleEl.replaceChildren(); });
+
+  // Initial load
+  switchLanguage('javascript');
+
+  document.getElementById('btnRunCode')?.addEventListener('click', () => {
+    const lang = langSelect.value;
+    const code = sourceArea.value;
+    consoleEl.replaceChildren();
+    const t0 = performance.now();
 
     try {
-      statusEl.textContent = 'Deriving PBKDF2 key (100,000 rounds) & encrypting...';
-      const packet = await encryptAesGcm(plain, pass);
-      cipherArea.value = packet;
-      statusEl.textContent = '✔ Encrypted successfully. AES-GCM tag authenticated.';
-      statusEl.style.color = 'var(--success)';
+      if (lang === 'javascript') {
+        const logs = [];
+        const customConsole = {
+          log: (...a) => logs.push({ type: 'log', text: a.map(String).join(' ') }),
+          warn: (...a) => logs.push({ type: 'error', text: '[WARN] ' + a.map(String).join(' ') }),
+          error: (...a) => logs.push({ type: 'error', text: '[ERR] ' + a.map(String).join(' ') }),
+        };
+        const runFn = new Function('console', code);
+        const ret = runFn(customConsole);
+
+        logs.forEach(l => {
+          const div = document.createElement('div');
+          div.className = `console-entry ${l.type}`;
+          div.textContent = l.text;
+          consoleEl.append(div);
+        });
+
+        if (ret !== undefined) {
+          const retDiv = document.createElement('div');
+          retDiv.className = 'console-entry return';
+          retDiv.textContent = '◀ ' + (typeof ret === 'object' ? JSON.stringify(ret, null, 2) : String(ret));
+          consoleEl.append(retDiv);
+        }
+      } else if (lang === 'python') {
+        // Python-like evaluator: handles prints, defs, loops, and math
+        runPythonLikeScript(code, consoleEl);
+      } else if (lang === 'html') {
+        iframeEl.srcdoc = code;
+      } else if (lang === 'sql') {
+        runInMemorySql(code, consoleEl);
+      } else if (lang === 'brainfuck') {
+        const out = runBrainfuck(code);
+        const div = document.createElement('div');
+        div.className = 'console-entry return';
+        div.textContent = 'Output: ' + out;
+        consoleEl.append(div);
+      }
     } catch (e) {
-      statusEl.textContent = `Encryption failed: ${e.message}`;
-      statusEl.style.color = 'var(--danger)';
+      const errDiv = document.createElement('div');
+      errDiv.className = 'console-entry error';
+      errDiv.textContent = `Runtime Exception: ${e.message}`;
+      consoleEl.append(errDiv);
+    }
+
+    const duration = (performance.now() - t0).toFixed(1);
+    if (timerEl) timerEl.textContent = `${duration} ms`;
+  });
+}
+
+function runPythonLikeScript(code, consoleEl) {
+  const lines = code.split('\n');
+  const variables = {};
+
+  const printOut = msg => {
+    const div = document.createElement('div');
+    div.className = 'console-entry log';
+    div.textContent = msg;
+    consoleEl.append(div);
+  };
+
+  // Convert Python-like syntax to JS execution safely
+  let jsCode = '';
+  lines.forEach(line => {
+    let l = line.trim();
+    if (l.startsWith('#') || !l) return;
+    if (l.startsWith('print(')) {
+      jsCode += l.replace('print(', 'pyPrint(') + ';\n';
+    } else if (l.startsWith('def ')) {
+      jsCode += l.replace('def ', 'function ').replace(':', ' {') + '\n';
+    } else if (l.startsWith('return ')) {
+      jsCode += l + ';\n';
+    } else if (l.includes('range(')) {
+      jsCode += l.replace(/for\s+(\w+)\s+in\s+range\((\w+)\):/, 'for(let $1=0; $1<$2; $1++) {') + '\n';
+    } else {
+      jsCode += l + (l.endsWith(':') ? ' {' : ';') + '\n';
     }
   });
 
-  document.getElementById('btnVaultDecrypt')?.addEventListener('click', async () => {
-    const cipher = cipherArea.value;
-    const pass = passInput.value;
-    if (!cipher) {
-      statusEl.textContent = 'Error: Ciphertext packet buffer is empty.';
-      statusEl.style.color = 'var(--danger)';
-      return;
-    }
-    if (!pass) {
-      statusEl.textContent = 'Error: Master passphrase is required.';
-      statusEl.style.color = 'var(--danger)';
-      passInput.focus();
-      return;
-    }
+  // Count open/close braces
+  const openCount = (jsCode.match(/\{/g) || []).length;
+  const closeCount = (jsCode.match(/\}/g) || []).length;
+  jsCode += '}'.repeat(Math.max(0, openCount - closeCount));
 
-    try {
-      statusEl.textContent = 'Verifying authentication tag & decrypting...';
-      const plain = await decryptAesGcm(cipher, pass);
-      plainArea.value = plain;
-      statusEl.textContent = '✔ Decrypted successfully. Authenticated plaintext recovered.';
-      statusEl.style.color = 'var(--success)';
-    } catch (e) {
-      statusEl.textContent = `✖ ${e.message}`;
-      statusEl.style.color = 'var(--danger)';
+  const runner = new Function('pyPrint', 'vars', jsCode);
+  runner(printOut, variables);
+}
+
+function runInMemorySql(sql, consoleEl) {
+  const tables = {};
+  const statements = sql.split(';').map(s => s.trim()).filter(Boolean);
+
+  statements.forEach(stmt => {
+    if (stmt.toUpperCase().startsWith('CREATE TABLE')) {
+      const match = stmt.match(/CREATE\s+TABLE\s+(\w+)\s*\(([^)]+)\)/i);
+      if (match) {
+        const tableName = match[1];
+        const cols = match[2].split(',').map(c => c.trim().split(/\s+/)[0]);
+        tables[tableName] = { cols, rows: [] };
+      }
+    } else if (stmt.toUpperCase().startsWith('INSERT INTO')) {
+      const match = stmt.match(/INSERT\s+INTO\s+(\w+)\s+VALUES\s*\(([^)]+)\)/i);
+      if (match) {
+        const tableName = match[1];
+        if (tables[tableName]) {
+          const vals = match[2].split(',').map(v => v.trim().replace(/^['"]|['"]$/g, ''));
+          tables[tableName].rows.push(vals);
+        }
+      }
+    } else if (stmt.toUpperCase().startsWith('SELECT')) {
+      const match = stmt.match(/SELECT\s+(.+)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.+))?/i);
+      if (match && tables[match[2]]) {
+        const tbl = tables[match[2]];
+        let results = tbl.rows;
+        if (match[3]) {
+          // Simple where filter
+          const whereParts = match[3].split(/\s*(=|>|<)\s*/);
+          if (whereParts.length === 3) {
+            const colIdx = tbl.cols.indexOf(whereParts[0]);
+            const op = whereParts[1];
+            const targetVal = whereParts[2].replace(/^['"]|['"]$/g, '');
+            if (colIdx !== -1) {
+              results = results.filter(r => op === '=' ? r[colIdx] == targetVal : op === '>' ? Number(r[colIdx]) > Number(targetVal) : Number(r[colIdx]) < Number(targetVal));
+            }
+          }
+        }
+
+        // Render table
+        let tableText = tbl.cols.map(c => c.padEnd(14)).join('| ') + '\n' + '-'.repeat(tbl.cols.length * 16) + '\n';
+        results.forEach(r => {
+          tableText += r.map(c => String(c).padEnd(14)).join('| ') + '\n';
+        });
+        const div = document.createElement('div');
+        div.className = 'console-entry info';
+        div.textContent = `Query Result (${results.length} rows):\n${tableText}`;
+        consoleEl.append(div);
+      }
     }
   });
+}
 
-  document.getElementById('btnVaultCopyCipher')?.addEventListener('click', () => {
-    if (cipherArea.value) {
-      navigator.clipboard.writeText(cipherArea.value).then(() => {
-        const btn = document.getElementById('btnVaultCopyCipher');
-        btn.textContent = 'Copied!';
-        setTimeout(() => { btn.textContent = 'Copy Packet'; }, 1000);
-      });
+function runBrainfuck(code) {
+  const memory = new Uint8Array(30000);
+  let ptr = 0;
+  let pc = 0;
+  let output = '';
+  const cleanCode = code.replace(/[^><+\-.,[\]]/g, '');
+
+  while (pc < cleanCode.length) {
+    const cmd = cleanCode[pc];
+    if (cmd === '>') ptr = (ptr + 1) % 30000;
+    else if (cmd === '<') ptr = (ptr - 1 + 30000) % 30000;
+    else if (cmd === '+') memory[ptr]++;
+    else if (cmd === '-') memory[ptr]--;
+    else if (cmd === '.') output += String.fromCharCode(memory[ptr]);
+    else if (cmd === '[') {
+      if (memory[ptr] === 0) {
+        let depth = 1;
+        while (depth > 0 && ++pc < cleanCode.length) {
+          if (cleanCode[pc] === '[') depth++;
+          else if (cleanCode[pc] === ']') depth--;
+        }
+      }
+    } else if (cmd === ']') {
+      if (memory[ptr] !== 0) {
+        let depth = 1;
+        while (depth > 0 && --pc >= 0) {
+          if (cleanCode[pc] === ']') depth++;
+          else if (cleanCode[pc] === '[') depth--;
+        }
+      }
     }
-  });
+    pc++;
+  }
+  return output;
 }
 
 /* ==========================================================================
-   4C. Steganography Lab & File Inspector Controller
+   5. Programmer & Standard Calculator
    ========================================================================== */
 
-function ensureStegoCarrier() {
-  const canvas = document.getElementById('stegoCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  // Check if blank
-  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  let isBlank = true;
-  for (let i = 0; i < imgData.data.length; i += 4) {
-    if (imgData.data[i + 3] !== 0) { isBlank = false; break; }
-  }
-  if (isBlank) generateProceduralCarrier();
-}
+let calcValue = '0';
+let calcFormula = '';
+let calcMode = 'programmer';
 
-function generateProceduralCarrier() {
-  const canvas = document.getElementById('stegoCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width;
-  const h = canvas.height;
+function initCalculator() {
+  const display = document.getElementById('calcDisplay');
+  const formulaEl = document.getElementById('calcFormula');
+  const keypad = document.getElementById('calcKeypad');
+  if (!keypad) return;
 
-  // Generate cyber matrix gradient
-  const grad = ctx.createLinearGradient(0, 0, w, h);
-  grad.addColorStop(0, '#0e1e24');
-  grad.addColorStop(0.5, '#16382b');
-  grad.addColorStop(1, '#0b1622');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, w, h);
+  const updateBases = val => {
+    const num = parseInt(val, 10) || 0;
+    document.getElementById('baseHex').textContent = (num >>> 0).toString(16).toUpperCase();
+    document.getElementById('baseDec').textContent = num.toString(10);
+    document.getElementById('baseOct').textContent = (num >>> 0).toString(8);
+    const binStr = (num >>> 0).toString(2).padStart(16, '0');
+    document.getElementById('baseBin').textContent = binStr.match(/.{1,4}/g)?.join(' ') || binStr;
+  };
 
-  // Add noise grain
-  const imgData = ctx.getImageData(0, 0, w, h);
-  for (let i = 0; i < imgData.data.length; i += 4) {
-    const noise = (Math.random() - 0.5) * 35;
-    imgData.data[i] = clamp(imgData.data[i] + noise, 0, 255);
-    imgData.data[i + 1] = clamp(imgData.data[i + 1] + noise, 0, 255);
-    imgData.data[i + 2] = clamp(imgData.data[i + 2] + noise, 0, 255);
-    imgData.data[i + 3] = 255;
-  }
-  ctx.putImageData(imgData, 0, 0);
+  const renderKeypad = () => {
+    keypad.replaceChildren();
+    const keys = calcMode === 'programmer'
+      ? ['AND', 'OR', 'XOR', 'NOT', 'LSH', 'RSH', 'MOD', 'C', '7', '8', '9', '/', '4', '5', '6', '*', '1', '2', '3', '-', '0', '+/-', '=', '+']
+      : ['C', '(', ')', '/', '7', '8', '9', '*', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '+/-', '='];
 
-  const stats = document.getElementById('stegoImageStats');
-  const capBytes = Math.floor((w * h * 3) / 8) - 4;
-  if (stats) stats.textContent = `Carrier: ${w}x${h} (Capacity: ~${(capBytes / 1024).toFixed(1)} KB)`;
-}
+    keys.forEach(k => {
+      const btn = document.createElement('button');
+      btn.className = 'calc-btn' + (['=', 'AND', 'OR', 'XOR', 'NOT', 'LSH', 'RSH', 'MOD', '/', '*', '-', '+'].includes(k) ? (k === '=' ? ' eq' : ' op') : '');
+      btn.textContent = k;
+      btn.addEventListener('click', () => handleCalcKey(k));
+      keypad.append(btn);
+    });
+  };
 
-function initStego() {
-  // Tabs
-  document.querySelectorAll('.stego-tab-btn').forEach(btn => {
+  const handleCalcKey = k => {
+    if (k === 'C') {
+      calcValue = '0';
+      calcFormula = '';
+    } else if (k === '+/-') {
+      calcValue = String(-Number(calcValue));
+    } else if (k === '=') {
+      try {
+        let expr = (calcFormula + calcValue)
+          .replace(/AND/g, '&')
+          .replace(/OR/g, '|')
+          .replace(/XOR/g, '^')
+          .replace(/NOT/g, '~')
+          .replace(/LSH/g, '<<')
+          .replace(/RSH/g, '>>')
+          .replace(/MOD/g, '%');
+        // eslint-disable-next-line no-eval
+        calcValue = String(window.eval(expr));
+        calcFormula = '';
+      } catch (e) {
+        calcValue = 'Error';
+      }
+    } else if (['+', '-', '*', '/', 'AND', 'OR', 'XOR', 'LSH', 'RSH', 'MOD'].includes(k)) {
+      calcFormula += ` ${calcValue} ${k} `;
+      calcValue = '0';
+    } else {
+      if (calcValue === '0' || calcValue === 'Error') calcValue = k;
+      else calcValue += k;
+    }
+
+    display.textContent = calcValue;
+    formulaEl.textContent = calcFormula;
+    updateBases(calcValue);
+  };
+
+  document.querySelectorAll('.calc-mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.stego-tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.stego-tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.calc-mode-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const pane = document.getElementById(`stego-tab-${btn.dataset.tab}`);
-      if (pane) pane.classList.add('active');
+      calcMode = btn.dataset.mode;
+      document.getElementById('programmerBases').style.display = calcMode === 'programmer' ? 'flex' : 'none';
+      renderKeypad();
     });
   });
 
-  // Carrier generation
-  document.getElementById('btnGenerateCarrier')?.addEventListener('click', generateProceduralCarrier);
-
-  // File Upload Handlers
-  const fileInput = document.getElementById('stegoFileInput');
-  const dropZone = document.getElementById('stegoDropZone');
-  dropZone?.addEventListener('click', () => fileInput.click());
-
-  fileInput?.addEventListener('change', e => {
-    const file = e.target.files?.[0];
-    if (file) loadStegoImage(file, 'stegoCanvas', 'stegoImageStats');
-  });
-
-  // Decode Upload Handlers
-  const decodeFileInput = document.getElementById('stegoDecodeFileInput');
-  const decodeDropZone = document.getElementById('stegoDecodeDropZone');
-  decodeDropZone?.addEventListener('click', () => decodeFileInput.click());
-
-  decodeFileInput?.addEventListener('change', e => {
-    const file = e.target.files?.[0];
-    if (file) loadStegoImage(file, 'stegoDecodeCanvas', null);
-  });
-
-  // Stego Encode Button
-  document.getElementById('btnStegoEncode')?.addEventListener('click', () => {
-    const canvas = document.getElementById('stegoCanvas');
-    const msg = document.getElementById('stegoPayloadInput').value;
-    const status = document.getElementById('stegoEncodeStatus');
-    const downloadBtn = document.getElementById('btnDownloadStego');
-
-    if (!msg) {
-      status.textContent = 'Error: Secret payload is empty.';
-      status.style.color = 'var(--danger)';
-      return;
-    }
-
-    try {
-      const payloadBytes = new TextEncoder().encode(msg);
-      const len = payloadBytes.length;
-      const ctx = canvas.getContext('2d');
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const totalPixels = canvas.width * canvas.height;
-      const maxBytes = Math.floor((totalPixels * 3) / 8) - 4;
-
-      if (len > maxBytes) {
-        status.textContent = `Payload (${len} B) exceeds carrier capacity (${maxBytes} B).`;
-        status.style.color = 'var(--danger)';
-        return;
-      }
-
-      // Convert length (32-bit big endian) + payload bytes into bit array
-      const bits = [];
-      for (let b = 31; b >= 0; b--) {
-        bits.push((len >>> b) & 1);
-      }
-      for (let i = 0; i < payloadBytes.length; i++) {
-        for (let b = 7; b >= 0; b--) {
-          bits.push((payloadBytes[i] >>> b) & 1);
-        }
-      }
-
-      // Embed into LSB of RGB channels
-      let bitIdx = 0;
-      for (let i = 0; i < imgData.data.length && bitIdx < bits.length; i += 4) {
-        for (let c = 0; c < 3 && bitIdx < bits.length; c++) {
-          imgData.data[i + c] = (imgData.data[i + c] & 0xFE) | bits[bitIdx];
-          bitIdx++;
-        }
-      }
-
-      ctx.putImageData(imgData, 0, 0);
-      status.textContent = `✔ Embedded ${len} bytes into pixel LSBs. Lossless PNG ready.`;
-      status.style.color = 'var(--success)';
-
-      canvas.toBlob(blob => {
-        const url = URL.createObjectURL(blob);
-        downloadBtn.href = url;
-        downloadBtn.style.display = 'inline-flex';
-      }, 'image/png');
-    } catch (e) {
-      status.textContent = `Stego Encode Error: ${e.message}`;
-      status.style.color = 'var(--danger)';
-    }
-  });
-
-  // Stego Decode Button
-  document.getElementById('btnStegoDecode')?.addEventListener('click', () => {
-    const canvas = document.getElementById('stegoDecodeCanvas');
-    const outArea = document.getElementById('stegoExtractedOutput');
-    const status = document.getElementById('stegoDecodeStatus');
-
-    try {
-      const ctx = canvas.getContext('2d');
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const totalPixels = canvas.width * canvas.height;
-      const maxPossibleBytes = Math.floor((totalPixels * 3) / 8);
-
-      // Extract first 32 bits for length prefix
-      let bitIdx = 0;
-      const rawBits = [];
-      for (let i = 0; i < imgData.data.length && bitIdx < 32; i += 4) {
-        for (let c = 0; c < 3 && bitIdx < 32; c++) {
-          rawBits.push(imgData.data[i + c] & 1);
-          bitIdx++;
-        }
-      }
-
-      let payloadLen = 0;
-      for (let i = 0; i < 32; i++) {
-        payloadLen = (payloadLen << 1) | rawBits[i];
-      }
-
-      if (payloadLen <= 0 || payloadLen > maxPossibleBytes) {
-        status.textContent = '✖ No valid steganographic header detected in carrier.';
-        status.style.color = 'var(--danger)';
-        outArea.value = '';
-        return;
-      }
-
-      // Read payload bytes
-      const totalBitsNeeded = 32 + (payloadLen * 8);
-      const allBits = [];
-      let bCount = 0;
-
-      for (let i = 0; i < imgData.data.length && bCount < totalBitsNeeded; i += 4) {
-        for (let c = 0; c < 3 && bCount < totalBitsNeeded; c++) {
-          if (bCount >= 32) {
-            allBits.push(imgData.data[i + c] & 1);
-          }
-          bCount++;
-        }
-      }
-
-      const outBytes = new Uint8Array(payloadLen);
-      for (let i = 0; i < payloadLen; i++) {
-        let byteVal = 0;
-        for (let b = 0; b < 8; b++) {
-          byteVal = (byteVal << 1) | allBits[i * 8 + b];
-        }
-        outBytes[i] = byteVal;
-      }
-
-      const recoveredText = new TextDecoder().decode(outBytes);
-      outArea.value = recoveredText;
-      status.textContent = `✔ Extracted ${payloadLen} bytes of hidden payload.`;
-      status.style.color = 'var(--success)';
-    } catch (e) {
-      status.textContent = `Extraction Error: ${e.message}`;
-      status.style.color = 'var(--danger)';
-    }
-  });
-
-  // File / Base64 Inspector Drop Zone
-  const fileDrop = document.getElementById('fileInspectDropZone');
-  const fileDropInput = document.getElementById('fileInspectInput');
-  fileDrop?.addEventListener('click', () => fileDropInput.click());
-
-  const handleInspectFile = file => {
-    if (!file) return;
-    const metaEl = document.getElementById('fileInspectMeta');
-    const outArea = document.getElementById('fileInspectOutput');
-
-    metaEl.textContent = `File: ${file.name} | Size: ${(file.size / 1024).toFixed(2)} KB (${file.size} B) | MIME: ${file.type || 'application/octet-stream'}`;
-
-    const reader = new FileReader();
-    reader.onload = e => {
-      outArea.value = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  fileDropInput?.addEventListener('change', e => handleInspectFile(e.target.files?.[0]));
-
-  fileDrop?.addEventListener('dragover', e => { e.preventDefault(); });
-  fileDrop?.addEventListener('drop', e => {
-    e.preventDefault();
-    handleInspectFile(e.dataTransfer?.files?.[0]);
-  });
-}
-
-function loadStegoImage(file, canvasId, statsId) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const img = new Image();
-  const reader = new FileReader();
-
-  reader.onload = ev => {
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
-
-      if (statsId) {
-        const stats = document.getElementById(statsId);
-        const capBytes = Math.floor((img.width * img.height * 3) / 8) - 4;
-        if (stats) stats.textContent = `Carrier: ${img.width}x${img.height} (Capacity: ~${(capBytes / 1024).toFixed(1)} KB)`;
-      }
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
+  renderKeypad();
+  updateBases(0);
 }
 
 /* ==========================================================================
-   5. Interactive Virtual Terminal ("RootShell")
+   6. Virtual File Explorer
+   ========================================================================== */
+
+let currentDirPath = '/home/user';
+const VFS_DEFAULT = {
+  '/home/user': [
+    { name: 'documents', type: 'dir' },
+    { name: 'crypto_keys', type: 'dir' },
+    { name: 'scripts', type: 'dir' },
+    { name: 'readme.txt', type: 'file', content: 'Welcome to Flow OS File Manager.\nStore your developer notes and crypto payloads here.' }
+  ],
+  '/home/user/documents': [
+    { name: 'manifesto.md', type: 'file', content: '# Flow OS\nBuilt for deep work, cryptanalysis, and code testing.' }
+  ],
+  '/home/user/crypto_keys': [
+    { name: 'rsa_pub.pem', type: 'file', content: '-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...\n-----END PUBLIC KEY-----' }
+  ],
+  '/home/user/scripts': [
+    { name: 'cipher_scan.js', type: 'file', content: 'console.log("Scanning bitwise patterns...");' }
+  ],
+  '/root': [
+    { name: 'system.cfg', type: 'file', content: 'arch=x86_64\nkernel=FlowOS-2026\nwm=flow_compositor' }
+  ]
+};
+
+function initFileExplorer() {
+  const pathBar = document.getElementById('filesCurrentPath');
+  const grid = document.getElementById('filesListGrid');
+  const statusBar = document.getElementById('filesStatusBar');
+
+  const renderDir = path => {
+    currentDirPath = path;
+    pathBar.textContent = path;
+    grid.replaceChildren();
+
+    const items = VFS_DEFAULT[path] || [];
+    statusBar.textContent = `${items.length} items`;
+
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'file-item-card';
+      card.innerHTML = `
+        <span class="file-icon-glyph">${item.type === 'dir' ? '📁' : '📄'}</span>
+        <span class="file-name-label">${item.name}</span>
+      `;
+
+      card.addEventListener('click', () => {
+        for (const c of grid.children) c.classList.remove('selected');
+        card.classList.add('selected');
+      });
+
+      card.addEventListener('dblclick', () => {
+        if (item.type === 'dir') {
+          renderDir(path === '/' ? `/${item.name}` : `${path}/${item.name}`);
+        } else {
+          // Open in notepad
+          openWindow('notepad');
+          const noteArea = document.getElementById('notepadTextarea');
+          const noteTitle = document.getElementById('notepadDocTitle');
+          if (noteArea) noteArea.value = item.content || '';
+          if (noteTitle) noteTitle.textContent = item.name;
+        }
+      });
+
+      grid.append(card);
+    });
+  };
+
+  document.querySelectorAll('.files-nav-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.files-nav-item').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderDir(btn.dataset.path);
+    });
+  });
+
+  document.getElementById('btnFileUp')?.addEventListener('click', () => {
+    if (currentDirPath !== '/') {
+      const parent = currentDirPath.split('/').slice(0, -1).join('/') || '/';
+      renderDir(parent);
+    }
+  });
+
+  document.getElementById('btnNewFile')?.addEventListener('click', () => {
+    const name = prompt('Enter new filename:', 'new_file.txt');
+    if (name) {
+      if (!VFS_DEFAULT[currentDirPath]) VFS_DEFAULT[currentDirPath] = [];
+      VFS_DEFAULT[currentDirPath].push({ name, type: 'file', content: '' });
+      renderDir(currentDirPath);
+    }
+  });
+
+  document.getElementById('btnNewFolder')?.addEventListener('click', () => {
+    const name = prompt('Enter new folder name:', 'new_folder');
+    if (name) {
+      if (!VFS_DEFAULT[currentDirPath]) VFS_DEFAULT[currentDirPath] = [];
+      VFS_DEFAULT[currentDirPath].push({ name, type: 'dir' });
+      VFS_DEFAULT[`${currentDirPath}/${name}`] = [];
+      renderDir(currentDirPath);
+    }
+  });
+
+  renderDir(currentDirPath);
+}
+
+/* ==========================================================================
+   7. Notepad / Markdown Editor
+   ========================================================================== */
+
+function initNotepad() {
+  const textarea = document.getElementById('notepadTextarea');
+  const stats = document.getElementById('notepadStats');
+
+  textarea?.addEventListener('input', () => {
+    const lines = textarea.value.split('\n').length;
+    stats.textContent = `Lines: ${lines} | ${textarea.value.length} characters`;
+  });
+
+  document.getElementById('btnNotepadNew')?.addEventListener('click', () => {
+    if (textarea) textarea.value = '';
+    document.getElementById('notepadDocTitle').textContent = 'untitled.txt';
+  });
+
+  document.getElementById('btnNotepadDownload')?.addEventListener('click', () => {
+    if (!textarea) return;
+    const blob = new Blob([textarea.value], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = document.getElementById('notepadDocTitle')?.textContent || 'document.txt';
+    a.click();
+  });
+}
+
+/* ==========================================================================
+   8. Web Audio Procedural Cyber Soundscape
+   ========================================================================== */
+
+let audioCtx = null;
+let soundNodes = [];
+let isAudioPlaying = false;
+
+function initSoundscape() {
+  const toggleBtn = document.getElementById('btnToggleAudio');
+  const volSlider = document.getElementById('audioVolume');
+
+  const startTrack = trackName => {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    stopAudio();
+
+    const masterGain = audioCtx.createGain();
+    masterGain.gain.value = (volSlider.value / 100) * 0.3;
+    masterGain.connect(audioCtx.destination);
+    soundNodes.push(masterGain);
+
+    if (trackName === 'rain') {
+      // Pink/White noise generator
+      const bufferSize = audioCtx.sampleRate * 2;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      let b0 = 0, b1 = 0, b2 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        data[i] = (b0 + b1 + b2 + white * 0.5362) * 0.11;
+      }
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      noise.loop = true;
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 1200;
+      noise.connect(filter);
+      filter.connect(masterGain);
+      noise.start();
+      soundNodes.push(noise);
+    } else if (trackName === 'neon' || trackName === 'terminal') {
+      // Detuned dual oscillators
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      osc1.type = 'sawtooth';
+      osc2.type = 'sawtooth';
+      osc1.frequency.value = trackName === 'neon' ? 110 : 60;
+      osc2.frequency.value = trackName === 'neon' ? 110.8 : 60.5;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 400;
+
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(masterGain);
+      osc1.start();
+      osc2.start();
+      soundNodes.push(osc1, osc2);
+    } else {
+      // Lo-fi pulse
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = 220;
+      osc.connect(masterGain);
+      osc.start();
+      soundNodes.push(osc);
+    }
+
+    isAudioPlaying = true;
+    toggleBtn.textContent = '⏹ Stop Audio';
+  };
+
+  const stopAudio = () => {
+    soundNodes.forEach(n => {
+      try { n.stop?.(); n.disconnect?.(); } catch (e) {}
+    });
+    soundNodes = [];
+    isAudioPlaying = false;
+    toggleBtn.textContent = '▶ Play Audio';
+  };
+
+  toggleBtn?.addEventListener('click', () => {
+    if (isAudioPlaying) stopAudio();
+    else startTrack(document.querySelector('.sound-track-btn.active')?.dataset.track || 'rain');
+  });
+
+  document.querySelectorAll('.sound-track-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sound-track-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (isAudioPlaying) startTrack(btn.dataset.track);
+    });
+  });
+}
+
+/* ==========================================================================
+   9. System Settings Controller
+   ========================================================================== */
+
+function initSettings() {
+  document.querySelectorAll('.theme-card').forEach(card => {
+    card.addEventListener('click', () => {
+      setTheme(card.dataset.theme);
+    });
+  });
+
+  document.getElementById('settingMatrixToggle')?.addEventListener('change', e => {
+    document.body.classList.toggle('matrix-active', e.target.checked);
+    if (e.target.checked) startMatrix();
+    else stopMatrix();
+  });
+
+  document.getElementById('btnResetLocalStorage')?.addEventListener('click', () => {
+    if (confirm('Reset virtual disk, scratchpad notes, and restore factory OS settings?')) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  });
+}
+
+/* ==========================================================================
+   10. Interactive Virtual Terminal ("RootShell")
    ========================================================================== */
 
 const CLI_HISTORY = [];
@@ -1385,8 +1389,7 @@ function initTerminal() {
   const termScreen = document.getElementById('termScreen');
   if (!termInput || !termScreen) return;
 
-  // Print welcome banner
-  printTermLine('Flow OS RootShell [v2.5.0-coder-workstation]', 'term-accent');
+  printTermLine('Flow OS RootShell [v3.0.0-workstation]', 'term-accent');
   printTermLine('Type "help" to list available cryptographic and shell commands.', 'term-dim');
   printTermLine('');
 
@@ -1458,13 +1461,8 @@ async function executeCliCommand(cmdLine) {
       break;
 
     case 'caesar':
-      if (args.length < 2) {
-        printTermLine('Usage: caesar <shift-number> <text>', 'term-error');
-      } else {
-        const shift = parseInt(args[0], 10);
-        const payload = args.slice(1).join(' ');
-        printTermLine(caesarTransform(payload, shift), 'term-success');
-      }
+      if (args.length < 2) printTermLine('Usage: caesar <shift> <text>', 'term-error');
+      else printTermLine(caesarTransform(args.slice(1).join(' '), parseInt(args[0], 10)), 'term-success');
       break;
 
     case 'rot13':
@@ -1473,116 +1471,72 @@ async function executeCliCommand(cmdLine) {
       break;
 
     case 'base64':
-      if (!args.length) {
-        printTermLine('Usage: base64 [-d] <text>', 'term-error');
-      } else if (args[0] === '-d') {
-        try {
-          printTermLine(base64Decode(args.slice(1).join(' ')), 'term-success');
-        } catch (e) {
-          printTermLine(`Base64 decode error: ${e.message}`, 'term-error');
-        }
-      } else {
-        printTermLine(base64Encode(text), 'term-success');
-      }
+      if (!args.length) printTermLine('Usage: base64 [-d] <text>', 'term-error');
+      else if (args[0] === '-d') {
+        try { printTermLine(base64Decode(args.slice(1).join(' ')), 'term-success'); }
+        catch (e) { printTermLine(`Error: ${e.message}`, 'term-error'); }
+      } else printTermLine(base64Encode(text), 'term-success');
       break;
 
     case 'hex':
-      if (!args.length) {
-        printTermLine('Usage: hex [-d] <text>', 'term-error');
-      } else if (args[0] === '-d') {
-        try {
-          printTermLine(hexToText(args.slice(1).join(' ')), 'term-success');
-        } catch (e) {
-          printTermLine(`Hex decode error: ${e.message}`, 'term-error');
-        }
-      } else {
-        printTermLine(textToHex(text), 'term-success');
-      }
+      if (!args.length) printTermLine('Usage: hex [-d] <text>', 'term-error');
+      else if (args[0] === '-d') {
+        try { printTermLine(hexToText(args.slice(1).join(' ')), 'term-success'); }
+        catch (e) { printTermLine(`Error: ${e.message}`, 'term-error'); }
+      } else printTermLine(textToHex(text), 'term-success');
       break;
 
     case 'xor':
-      if (args.length < 2) {
-        printTermLine('Usage: xor <key> <text>', 'term-error');
-      } else {
-        const key = args[0];
-        const payload = args.slice(1).join(' ');
-        printTermLine(xorTransform(payload, key), 'term-success');
-      }
+      if (args.length < 2) printTermLine('Usage: xor <key> <text>', 'term-error');
+      else printTermLine(xorTransform(args.slice(1).join(' '), args[0]), 'term-success');
       break;
 
     case 'vault':
-      if (args.length < 3) {
-        printTermLine('Usage: vault <enc|dec> <passphrase> <text/packet>', 'term-error');
-      } else {
-        const action = args[0].toLowerCase();
-        const pass = args[1];
-        const payload = args.slice(2).join(' ');
+      if (args.length < 3) printTermLine('Usage: vault <enc|dec> <passphrase> <text/packet>', 'term-error');
+      else {
         try {
-          if (action === 'enc') {
-            const out = await encryptAesGcm(payload, pass);
-            printTermLine(out, 'term-success');
-          } else {
-            const out = await decryptAesGcm(payload, pass);
-            printTermLine(out, 'term-success');
-          }
-        } catch (e) {
-          printTermLine(`Vault Error: ${e.message}`, 'term-error');
-        }
+          if (args[0] === 'enc') printTermLine(await encryptAesGcm(args.slice(2).join(' '), args[1]), 'term-success');
+          else printTermLine(await decryptAesGcm(args.slice(2).join(' '), args[1]), 'term-success');
+        } catch (e) { printTermLine(`Vault Error: ${e.message}`, 'term-error'); }
       }
       break;
 
     case 'hash':
-      if (args.length < 2) {
-        printTermLine('Usage: hash <md5|sha1|sha256|sha512> <text>', 'term-error');
-      } else {
+      if (args.length < 2) printTermLine('Usage: hash <md5|sha1|sha256|sha512> <text>', 'term-error');
+      else {
         const algo = args[0].toLowerCase();
         const payload = args.slice(1).join(' ');
-        if (algo === 'md5') {
-          printTermLine(md5(payload), 'term-success');
-        } else if (algo === 'sha1') {
-          printTermLine(await subtleDigest('SHA-1', payload), 'term-success');
-        } else if (algo === 'sha256') {
-          printTermLine(await subtleDigest('SHA-256', payload), 'term-success');
-        } else if (algo === 'sha512') {
-          printTermLine(await subtleDigest('SHA-512', payload), 'term-success');
-        } else {
-          printTermLine(`Unknown algorithm "${algo}". Supported: md5, sha1, sha256, sha512`, 'term-error');
-        }
+        if (algo === 'md5') printTermLine(md5(payload), 'term-success');
+        else if (algo === 'sha1') printTermLine(await subtleDigest('SHA-1', payload), 'term-success');
+        else if (algo === 'sha256') printTermLine(await subtleDigest('SHA-256', payload), 'term-success');
+        else if (algo === 'sha512') printTermLine(await subtleDigest('SHA-512', payload), 'term-success');
+        else printTermLine(`Unknown algorithm "${algo}".`, 'term-error');
       }
       break;
 
     case 'jwt':
-      if (!text) {
-        printTermLine('Usage: jwt <token>', 'term-error');
-      } else {
-        try {
-          printTermLine(parseJwt(text), 'term-success');
-        } catch (e) {
-          printTermLine(`JWT Error: ${e.message}`, 'term-error');
-        }
+      if (!text) printTermLine('Usage: jwt <token>', 'term-error');
+      else {
+        try { printTermLine(parseJwt(text), 'term-success'); }
+        catch (e) { printTermLine(`JWT Error: ${e.message}`, 'term-error'); }
       }
       break;
 
     case 'entropy':
-      if (!text) {
-        printTermLine('Usage: entropy <text>', 'term-error');
-      } else {
+      if (!text) printTermLine('Usage: entropy <text>', 'term-error');
+      else {
         const score = calculateEntropy(text);
-        printTermLine(`Shannon Entropy: ${score.toFixed(4)} / 8.0000 bits per byte`, 'term-success');
+        printTermLine(`Shannon Entropy: ${score.toFixed(4)} / 8.0000 bits/byte`, 'term-success');
       }
       break;
 
     case 'eval':
-      if (!text) {
-        printTermLine('Usage: eval <js-expression>', 'term-error');
-      } else {
+      if (!text) printTermLine('Usage: eval <js-code>', 'term-error');
+      else {
         try {
           // eslint-disable-next-line no-eval
-          const out = window.eval(text);
-          printTermLine(String(out), 'term-success');
-        } catch (e) {
-          printTermLine(`Evaluation Error: ${e.message}`, 'term-error');
-        }
+          printTermLine(String(window.eval(text)), 'term-success');
+        } catch (e) { printTermLine(`Error: ${e.message}`, 'term-error'); }
       }
       break;
 
@@ -1590,17 +1544,14 @@ async function executeCliCommand(cmdLine) {
       if (['obsidian', 'hacker', 'amber', 'cobalt'].includes(args[0]?.toLowerCase())) {
         setTheme(args[0].toLowerCase());
         printTermLine(`Theme updated to "${args[0]}".`, 'term-success');
-      } else {
-        printTermLine('Usage: theme <obsidian | hacker | amber | cobalt>', 'term-error');
-      }
+      } else printTermLine('Usage: theme <obsidian|hacker|amber|cobalt>', 'term-error');
       break;
 
     case 'neofetch':
       printTermLine('        /\\        OS: Flow OS Coder Edition x86_64', 'term-accent');
       printTermLine('       /  \\       Host: Browser WebWorker Sandbox', 'term-accent');
       printTermLine('      / /\\ \\      Kernel: JavaScript ES2024 / WebCrypto', 'term-accent');
-      printTermLine('     / /__\\ \\     Shell: RootShell 2.5.0', 'term-accent');
-      printTermLine('    /________\\    Palette: 4 Themes Active', 'term-accent');
+      printTermLine('     / /__\\ \\     Shell: RootShell 3.0.0', 'term-accent');
       break;
 
     case 'clear':
@@ -1609,13 +1560,13 @@ async function executeCliCommand(cmdLine) {
       break;
 
     default:
-      printTermLine(`Command not found: "${cmd}". Type "help" for a command listing.`, 'term-error');
+      printTermLine(`Command not found: "${cmd}". Type "help" for a list.`, 'term-error');
       break;
   }
 }
 
 /* ==========================================================================
-   6. HexDump & Shannon Entropy Inspector
+   11. HexDump & Shannon Entropy Inspector
    ========================================================================== */
 
 function triggerHexUpdate() {
@@ -1627,7 +1578,6 @@ function triggerHexUpdate() {
   const classificationEl = document.getElementById('entropyClassification');
 
   if (!inputEl || !dumpEl) return;
-
   const rawText = inputEl.value;
   const bytes = new TextEncoder().encode(rawText);
   const len = bytes.length;
@@ -1645,7 +1595,6 @@ function triggerHexUpdate() {
     return;
   }
 
-  // Calculate Entropy
   const entropy = calculateEntropy(rawText);
   if (entropyScoreEl) entropyScoreEl.textContent = `${entropy.toFixed(3)} / 8.000`;
   const pct = Math.min(100, Math.round((entropy / 8.0) * 100));
@@ -1667,12 +1616,10 @@ function triggerHexUpdate() {
     }
   }
 
-  // Generate Hex Grid
   const lines = [];
   for (let i = 0; i < len; i += 16) {
     const offset = i.toString(16).padStart(8, '0');
     const chunk = bytes.slice(i, i + 16);
-
     let hexPart = '';
     let asciiPart = '';
 
@@ -1686,67 +1633,44 @@ function triggerHexUpdate() {
       }
       if (j === 7) hexPart += ' ';
     }
-
     lines.push(`${offset}:  ${hexPart} |${asciiPart}|`);
   }
-
   dumpEl.textContent = lines.join('\n');
 }
 
 /* ==========================================================================
-   7. DevPad: JSON Beautifier, Regex Tester & Persistent Notes
+   12. DevPad: JSON & Regex Tools
    ========================================================================== */
 
 function initDevPad() {
-  // Tab Switching
   document.querySelectorAll('.devpad-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.devpad-tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.devpad-tab-pane').forEach(p => p.classList.remove('active'));
-
       btn.classList.add('active');
       const targetPane = document.getElementById(`devpad-tab-${btn.dataset.tab}`);
       if (targetPane) targetPane.classList.add('active');
     });
   });
 
-  // JSON Tools
   document.getElementById('btnJsonPrettify')?.addEventListener('click', () => {
     const input = document.getElementById('jsonInput');
     const status = document.getElementById('jsonStatus');
     try {
-      const parsed = JSON.parse(input.value);
-      input.value = JSON.stringify(parsed, null, 2);
+      input.value = JSON.stringify(JSON.parse(input.value), null, 2);
       if (status) status.textContent = 'Valid JSON (Formatted)';
-    } catch (e) {
-      if (status) status.textContent = `Error: ${e.message}`;
-    }
+    } catch (e) { if (status) status.textContent = `Error: ${e.message}`; }
   });
 
   document.getElementById('btnJsonMinify')?.addEventListener('click', () => {
     const input = document.getElementById('jsonInput');
     const status = document.getElementById('jsonStatus');
     try {
-      const parsed = JSON.parse(input.value);
-      input.value = JSON.stringify(parsed);
+      input.value = JSON.stringify(JSON.parse(input.value));
       if (status) status.textContent = 'Minified';
-    } catch (e) {
-      if (status) status.textContent = `Error: ${e.message}`;
-    }
+    } catch (e) { if (status) status.textContent = `Error: ${e.message}`; }
   });
 
-  document.getElementById('btnJsonValidate')?.addEventListener('click', () => {
-    const input = document.getElementById('jsonInput');
-    const status = document.getElementById('jsonStatus');
-    try {
-      JSON.parse(input.value);
-      if (status) status.textContent = 'Valid JSON Payload';
-    } catch (e) {
-      if (status) status.textContent = `Syntax Error: ${e.message}`;
-    }
-  });
-
-  // Regex Tester
   const regexPattern = document.getElementById('regexPattern');
   const regexFlags = document.getElementById('regexFlags');
   const regexTestText = document.getElementById('regexTestText');
@@ -1759,7 +1683,7 @@ function initDevPad() {
     const matchCountEl = document.getElementById('regexMatchCount');
 
     if (!pattern || !testText) {
-      if (resPanel) resPanel.textContent = 'No active pattern or test text.';
+      if (resPanel) resPanel.textContent = 'No pattern or test text.';
       if (matchCountEl) matchCountEl.textContent = '0 matches';
       return;
     }
@@ -1768,7 +1692,6 @@ function initDevPad() {
       const re = new RegExp(pattern, flags);
       const matches = [...testText.matchAll(re)];
       if (matchCountEl) matchCountEl.textContent = `${matches.length} matches`;
-
       if (matches.length === 0) {
         if (resPanel) resPanel.textContent = 'Zero matches found.';
         return;
@@ -1777,17 +1700,11 @@ function initDevPad() {
       let html = '';
       matches.forEach((m, idx) => {
         const groups = m.slice(1).map((g, gi) => `Group ${gi + 1}: "${escapeHtml(g || '')}"`).join(', ');
-        html += `
-          <div class="regex-match-pill">
-            <strong>Match ${idx + 1}</strong>: "${escapeHtml(m[0])}" (idx: ${m.index})
-            ${groups ? `<div style="font-size:10.5px; color:var(--text-muted);">${groups}</div>` : ''}
-          </div>
-        `;
+        html += `<div class="regex-match-pill"><strong>Match ${idx + 1}</strong>: "${escapeHtml(m[0])}" (idx: ${m.index})${groups ? `<div style="font-size:10.5px; color:var(--text-muted);">${groups}</div>` : ''}</div>`;
       });
       if (resPanel) resPanel.innerHTML = html;
     } catch (e) {
       if (resPanel) resPanel.textContent = `RegExp Error: ${e.message}`;
-      if (matchCountEl) matchCountEl.textContent = 'Error';
     }
   };
 
@@ -1795,23 +1712,17 @@ function initDevPad() {
   regexFlags?.addEventListener('input', runRegex);
   regexTestText?.addEventListener('input', runRegex);
 
-  // Notes Local Storage
   const notesArea = document.getElementById('notesContent');
   if (notesArea) {
     notesArea.value = localStorage.getItem('flow_os_scratch_notes') || '';
     notesArea.addEventListener('input', () => {
       localStorage.setItem('flow_os_scratch_notes', notesArea.value);
-      const indicator = document.getElementById('notesSavedIndicator');
-      if (indicator) {
-        indicator.textContent = 'Saving...';
-        setTimeout(() => { indicator.textContent = 'Saved'; }, 400);
-      }
     });
   }
 }
 
 /* ==========================================================================
-   8. System Monitor Telemetry
+   13. System Monitor Telemetry
    ========================================================================== */
 
 let cpuSeries = [];
@@ -1867,8 +1778,6 @@ function drawGraph(canvasId, series, color) {
 
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, w, h);
-
-  // Background Gridlines
   ctx.strokeStyle = 'rgba(255,255,255,.05)';
   ctx.lineWidth = 1;
   ctx.beginPath();
@@ -1878,7 +1787,6 @@ function drawGraph(canvasId, series, color) {
   }
   ctx.stroke();
 
-  // Draw Graph Line
   ctx.beginPath();
   series.forEach((v, i) => {
     const x = (i / (SERIES_LEN - 1)) * w;
@@ -1886,12 +1794,10 @@ function drawGraph(canvasId, series, color) {
     if (i === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
-
   ctx.strokeStyle = color;
   ctx.lineWidth = 1.6;
   ctx.stroke();
 
-  // Area Fill
   ctx.lineTo(w, h);
   ctx.lineTo(0, h);
   ctx.closePath();
@@ -1902,7 +1808,7 @@ function drawGraph(canvasId, series, color) {
 }
 
 /* ==========================================================================
-   9. Matrix Rain Effect
+   14. Matrix Rain Wallpaper Layer
    ========================================================================== */
 
 function startMatrix() {
@@ -1954,13 +1860,11 @@ function stopMatrix() {
     matrixResize = null;
   }
   const canvas = document.getElementById('matrixCanvas');
-  if (canvas) {
-    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-  }
+  if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
 
 /* ==========================================================================
-   10. Desktop Keyboard Shortcuts Engine (Alt+Tab, Win Key, Shortcuts)
+   15. Desktop Keyboard Shortcuts Engine
    ========================================================================== */
 
 let isAltTabActive = false;
@@ -1969,28 +1873,21 @@ let openWindowsCache = [];
 
 function initKeyboardShortcuts() {
   window.addEventListener('keydown', e => {
-    // 1. Alt + Tab window switcher
     if (e.altKey && e.key === 'Tab') {
       e.preventDefault();
       handleAltTabPress(e.shiftKey ? -1 : 1);
       return;
     }
-
-    // 2. Windows / Super Key or Ctrl + Space for Start Menu
     if (e.key === 'Meta' || (e.ctrlKey && e.code === 'Space')) {
       e.preventDefault();
       toggleStartMenu();
       return;
     }
-
-    // 3. Ctrl + Alt + T or Ctrl + ` for RootShell Terminal
     if ((e.ctrlKey && e.altKey && e.key.toLowerCase() === 't') || (e.ctrlKey && e.key === '`')) {
       e.preventDefault();
       openWindow('terminal');
       return;
     }
-
-    // 4. Escape to close top modals / Start Menu
     if (e.key === 'Escape') {
       const switcher = document.getElementById('appSwitcher');
       if (!switcher.hidden) {
@@ -2003,10 +1900,7 @@ function initKeyboardShortcuts() {
   });
 
   window.addEventListener('keyup', e => {
-    // Release Alt key confirms selection in Alt+Tab switcher
-    if (e.key === 'Alt' && isAltTabActive) {
-      commitAltTabSelection();
-    }
+    if (e.key === 'Alt' && isAltTabActive) commitAltTabSelection();
   });
 }
 
@@ -2021,16 +1915,13 @@ function handleAltTabPress(direction) {
       .map(([id, win]) => ({ id, win }));
 
     if (openWindowsCache.length === 0) {
-      // If no windows open, include default primary apps
-      openWindowsCache = APPS.slice(0, 4).map(app => ({ id: app.id, win: windows.get(app.id) }));
+      openWindowsCache = APPS.slice(0, 5).map(app => ({ id: app.id, win: windows.get(app.id) }));
     }
-
     altTabSelectedIndex = 0;
     renderAltTabList();
     switcher.hidden = false;
   }
 
-  // Cycle index
   altTabSelectedIndex = (altTabSelectedIndex + direction + openWindowsCache.length) % openWindowsCache.length;
   updateAltTabHighlight();
 }
@@ -2058,7 +1949,6 @@ function commitAltTabSelection() {
   const switcher = document.getElementById('appSwitcher');
   switcher.hidden = true;
   isAltTabActive = false;
-
   if (openWindowsCache[altTabSelectedIndex]) {
     const selectedId = openWindowsCache[altTabSelectedIndex].id;
     openWindow(selectedId);
@@ -2067,25 +1957,27 @@ function commitAltTabSelection() {
 }
 
 /* ==========================================================================
-   11. System Initialization & Boot Sequence
+   16. System Boot Sequence
    ========================================================================== */
 
 function boot() {
-  // Initialize all windows in registry
-  for (const app of APPS) {
-    initializeWindow(app.id);
-  }
+  for (const app of APPS) initializeWindow(app.id);
 
   buildDesktopIcons();
   buildCipherSidebar();
   selectCipher(document.querySelector('.cipherItem'), CIPHERS[0]);
+  initCodeRunner();
+  initCalculator();
+  initFileExplorer();
+  initNotepad();
+  initSoundscape();
+  initSettings();
   initVault();
   initStego();
   initTerminal();
   initDevPad();
   initKeyboardShortcuts();
 
-  // Desktop chrome bindings
   document.getElementById('startButton')?.addEventListener('click', toggleStartMenu);
   const startBtn = document.getElementById('startButton');
   if (startBtn) startBtn.innerHTML = svgIcon('start');
@@ -2100,19 +1992,14 @@ function boot() {
     }
   });
 
-  // Persona Switcher
   document.getElementById('switchUser')?.addEventListener('click', () => {
     setTheme(currentTheme === 'hacker' ? 'obsidian' : 'hacker');
   });
 
-  // Theme Picker Buttons
   document.querySelectorAll('.theme-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      setTheme(btn.dataset.theme);
-    });
+    btn.addEventListener('click', () => setTheme(btn.dataset.theme));
   });
 
-  // Cipher Action Buttons
   document.getElementById('cipherEncode')?.addEventListener('click', () => runCipher('encode'));
   document.getElementById('cipherDecode')?.addEventListener('click', () => runCipher('decode'));
   document.getElementById('cipherInput')?.addEventListener('input', runActiveCipher);
@@ -2143,32 +2030,19 @@ function boot() {
     }
   });
 
-  // HexDump Input Binding
   document.getElementById('hexSourceInput')?.addEventListener('input', triggerHexUpdate);
 
   // Quick Launch Links on Welcome Screen
-  document.getElementById('link-open-ciphers')?.addEventListener('click', e => {
-    e.preventDefault();
-    openWindow('cipher');
-  });
-  document.getElementById('link-open-vault')?.addEventListener('click', e => {
-    e.preventDefault();
-    openWindow('vault');
-  });
-  document.getElementById('link-open-stego')?.addEventListener('click', e => {
-    e.preventDefault();
-    openWindow('stego');
-  });
-  document.getElementById('link-open-term')?.addEventListener('click', e => {
-    e.preventDefault();
-    openWindow('terminal');
-  });
+  document.getElementById('link-open-ciphers')?.addEventListener('click', e => { e.preventDefault(); openWindow('cipher'); });
+  document.getElementById('link-open-coderunner')?.addEventListener('click', e => { e.preventDefault(); openWindow('coderunner'); });
+  document.getElementById('link-open-files')?.addEventListener('click', e => { e.preventDefault(); openWindow('files'); });
+  document.getElementById('link-open-calc')?.addEventListener('click', e => { e.preventDefault(); openWindow('calc'); });
+  document.getElementById('link-open-vault')?.addEventListener('click', e => { e.preventDefault(); openWindow('vault'); });
+  document.getElementById('link-open-term')?.addEventListener('click', e => { e.preventDefault(); openWindow('terminal'); });
 
-  // Clock
   updateClock();
   setInterval(updateClock, CLOCK_TICK_MS);
 
-  // Open default window
   openWindow('welcome');
 }
 
