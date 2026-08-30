@@ -1,85 +1,387 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flow OS</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flow OS — Coder & Crypter Workstation</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="desktop">
   <div id="iconField"></div>
 
+  <!-- Welcome / Quickstart Window -->
   <section class="window" id="win-welcome" data-title="Welcome">
     <header class="windowheader"><span class="wintitle">Welcome</span></header>
     <div class="winbody welcome-body">
       <div class="brandglyph"></div>
       <h1>Flow OS</h1>
-      <p class="tagline">Windows 10 discipline, hacker temperament.</p>
+      <p class="tagline">Workstation for cryptanalysis, encoding, and rapid code prototyping.</p>
       <hr>
-      <p class="bio">
-        I'm <mark class="placeholder">[your name]</mark> —
-        <mark class="placeholder">[one-line bio goes here]</mark>.
-        This desktop is where I keep the tools I actually use.
-      </p>
+      <div class="welcome-content">
+        <p class="bio">
+          Flow OS is a browser-native desktop tailored for developers, security researchers, and crypters. All cryptographic routines, base transforms, and hex analysis execute locally in zero-dependency client memory.
+        </p>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Cipher Lab</h3>
+            <p>Caesar with 26-shift brute forcer, Base58/85/64, XOR with frequency scoring, Vigen&egrave;re, MD5, SHA family, and JWT inspector.</p>
+          </div>
+          <div class="feature-card">
+            <h3>AES Vault</h3>
+            <p>Hardware-accelerated AES-256-GCM encryption with PBKDF2 key derivation and armored cipher packets.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Stego Lab</h3>
+            <p>Lossless LSB image steganography to embed/extract hidden payloads inside PNG pixels.</p>
+          </div>
+          <div class="feature-card">
+            <h3>RootShell &amp; Hex</h3>
+            <p>Interactive virtual shell, Shannon Entropy analysis, and JSON/Regex DevPad.</p>
+          </div>
+        </div>
+      </div>
       <p class="links">
-        <a class="placeholder" href="#">[github]</a>
-        <a class="placeholder" href="#">[twitter]</a>
-        <a class="placeholder" href="#">[site]</a>
+        <a class="placeholder" href="#" id="link-open-ciphers">Launch Cipher Lab</a>
+        <a class="placeholder" href="#" id="link-open-vault">Open AES Vault</a>
+        <a class="placeholder" href="#" id="link-open-stego">Stego Lab</a>
+        <a class="placeholder" href="#" id="link-open-term">Open RootShell</a>
       </p>
     </div>
   </section>
 
+  <!-- Cipher & Crypter Lab -->
   <section class="window" id="win-cipher" data-title="Cipher Lab">
     <header class="windowheader"><span class="wintitle">Cipher Lab</span></header>
     <div class="winbody cipher-layout">
       <nav id="cipherList" aria-label="Ciphers"></nav>
       <div class="cipher-pane">
-        <h2 id="cipherName"></h2>
-        <label for="cipherInput">input</label>
-        <textarea id="cipherInput" spellcheck="false" placeholder="type something"></textarea>
-        <div class="cipher-actions">
-          <button id="cipherEncode" class="ctabtn">Encode</button>
-          <button id="cipherDecode" class="ctabtn">Decode</button>
+        <div class="cipher-header-row">
+          <h2 id="cipherName">Caesar Shift</h2>
+          <div class="cipher-toolbar">
+            <button id="cipherSwap" class="toolbtn" title="Swap Input &amp; Output">&#x21C5; Swap</button>
+            <button id="cipherClear" class="toolbtn" title="Clear Buffers">Clear</button>
+            <label class="toggle-label">
+              <input type="checkbox" id="cipherLiveToggle" checked>
+              <span>Live Transform</span>
+            </label>
+          </div>
         </div>
-        <label for="cipherOutput">output</label>
-        <textarea id="cipherOutput" spellcheck="false" readonly placeholder="result"></textarea>
+
+        <!-- Dynamic Cipher Parameters (Shift slider, key input, hash options) -->
+        <div id="cipherParams" class="cipher-params-bar"></div>
+
+        <div class="cipher-io-grid">
+          <div class="io-col">
+            <div class="io-col-header">
+              <label for="cipherInput">Input Plaintext / Ciphertext</label>
+              <span id="inputStats" class="io-stats">0 chars</span>
+            </div>
+            <textarea id="cipherInput" spellcheck="false" placeholder="Enter text or paste raw payload..."></textarea>
+          </div>
+
+          <div class="cipher-actions">
+            <button id="cipherEncode" class="ctabtn">Encode</button>
+            <button id="cipherDecode" class="ctabtn">Decode</button>
+          </div>
+
+          <div class="io-col">
+            <div class="io-col-header">
+              <label for="cipherOutput">Transformed Output</label>
+              <div class="output-actions">
+                <span id="outputStats" class="io-stats">0 chars</span>
+                <button id="cipherCopy" class="toolbtn-small" title="Copy to clipboard">Copy</button>
+              </div>
+            </div>
+            <textarea id="cipherOutput" spellcheck="false" readonly placeholder="Output buffer will render here..."></textarea>
+          </div>
+        </div>
+
+        <!-- Extra analysis view (e.g. Caesar 26 shifts, JWT breakdown, XOR brute force) -->
+        <div id="cipherAuxView" class="cipher-aux-container" hidden></div>
       </div>
     </div>
   </section>
 
-  <section class="window" id="win-sysmon" data-title="System Monitor">
-    <header class="windowheader"><span class="wintitle">System Monitor</span></header>
-    <div class="winbody sysmon-body">
-      <div class="gauge">
-        <label>CPU <span id="cpuValue"></span></label>
-        <canvas id="cpuCanvas"></canvas>
+  <!-- AES-256-GCM Vault -->
+  <section class="window" id="win-vault" data-title="Secret Vault (AES-GCM)">
+    <header class="windowheader"><span class="wintitle">Secret Vault (AES-256-GCM)</span></header>
+    <div class="winbody vault-body">
+      <div class="vault-header-info">
+        <p>Authenticated AES-256-GCM encryption with PBKDF2 (100,000 rounds, SHA-256, random 128-bit salt and 96-bit IV).</p>
       </div>
-      <div class="gauge">
-        <label>NET <span id="netValue"></span></label>
-        <canvas id="netCanvas"></canvas>
+      <div class="vault-key-bar">
+        <label for="vaultPassphrase">Master Passphrase:</label>
+        <div class="vault-pass-wrapper">
+          <input type="password" id="vaultPassphrase" class="param-input" placeholder="Enter encryption passphrase..." autocomplete="off">
+          <button id="btnToggleVaultPass" class="toolbtn-small" type="button">Show</button>
+        </div>
       </div>
-      <p class="sysmon-note">every number here is simulated — this window is decoration.</p>
+      <div class="vault-split">
+        <div class="vault-col">
+          <label for="vaultPlaintext">Plaintext Message / Secret Notes</label>
+          <textarea id="vaultPlaintext" spellcheck="false" placeholder="Enter secret data to encrypt..."></textarea>
+          <button id="btnVaultEncrypt" class="ctabtn">&#x1F512; Encrypt to Armored Packet</button>
+        </div>
+        <div class="vault-col">
+          <label for="vaultCiphertext">Armored Cipher Packet (Base64)</label>
+          <textarea id="vaultCiphertext" spellcheck="false" placeholder="Paste armored ciphertext packet here..."></textarea>
+          <div class="vault-actions-row">
+            <button id="btnVaultDecrypt" class="toolbtn">&#x1F513; Decrypt with Passphrase</button>
+            <button id="btnVaultCopyCipher" class="toolbtn-small">Copy Packet</button>
+          </div>
+        </div>
+      </div>
+      <div id="vaultStatusMessage" class="vault-status-bar">Ready</div>
     </div>
   </section>
 
+  <!-- Steganography Lab & File Inspector -->
+  <section class="window" id="win-stego" data-title="Stego Lab (LSB Image Steganography)">
+    <header class="windowheader"><span class="wintitle">Stego Lab (LSB Image Steganography)</span></header>
+    <div class="winbody stego-body">
+      <div class="stego-tabs">
+        <button class="stego-tab-btn active" data-tab="encode">Embed Secret in Image</button>
+        <button class="stego-tab-btn" data-tab="decode">Extract Secret from Image</button>
+        <button class="stego-tab-btn" data-tab="fileinspect">File / Base64 Inspector</button>
+      </div>
+
+      <!-- Embed Tab -->
+      <div id="stego-tab-encode" class="stego-tab-pane active">
+        <div class="stego-grid">
+          <div class="stego-preview-col">
+            <div id="stegoDropZone" class="stego-drop-zone">
+              <canvas id="stegoCanvas" width="280" height="180"></canvas>
+              <div id="stegoDropPrompt" class="drop-prompt">
+                <span>&#x1F5BC; Drop image or click to select cover carrier</span>
+              </div>
+              <input type="file" id="stegoFileInput" accept="image/*" style="display: none;">
+            </div>
+            <div class="stego-image-meta">
+              <span id="stegoImageStats">Carrier: 280x180 (Capacity: ~18.9 KB)</span>
+              <button id="btnGenerateCarrier" class="toolbtn-small">Generate Procedural Noise Carrier</button>
+            </div>
+          </div>
+          <div class="stego-payload-col">
+            <label for="stegoPayloadInput">Secret Message to Conceal</label>
+            <textarea id="stegoPayloadInput" spellcheck="false" placeholder="Enter message to hide in pixel LSBs..."></textarea>
+            <div class="stego-btn-row">
+              <button id="btnStegoEncode" class="ctabtn">Conceal Payload in Image</button>
+              <a id="btnDownloadStego" class="toolbtn" style="display: none;" download="stego_carrier.png">Download Stego PNG</a>
+            </div>
+            <div id="stegoEncodeStatus" class="stego-status">Ready to embed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Extract Tab -->
+      <div id="stego-tab-decode" class="stego-tab-pane">
+        <div class="stego-grid">
+          <div class="stego-preview-col">
+            <div id="stegoDecodeDropZone" class="stego-drop-zone">
+              <canvas id="stegoDecodeCanvas" width="280" height="180"></canvas>
+              <div id="stegoDecodeDropPrompt" class="drop-prompt">
+                <span>&#x1F4E5; Drop Stego PNG to extract hidden payload</span>
+              </div>
+              <input type="file" id="stegoDecodeFileInput" accept="image/*" style="display: none;">
+            </div>
+          </div>
+          <div class="stego-payload-col">
+            <label for="stegoExtractedOutput">Extracted Secret Plaintext</label>
+            <textarea id="stegoExtractedOutput" readonly placeholder="Recovered payload will render here..."></textarea>
+            <button id="btnStegoDecode" class="ctabtn">Scan &amp; Extract LSB Data</button>
+            <div id="stegoDecodeStatus" class="stego-status">Awaiting image</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Inspector Tab -->
+      <div id="stego-tab-fileinspect" class="stego-tab-pane">
+        <div id="fileInspectDropZone" class="file-inspect-drop">
+          <p>&#x1F4C1; Drag and drop any file here to inspect bytes, MIME type, and generate Data URIs</p>
+          <input type="file" id="fileInspectInput" style="display: none;">
+        </div>
+        <div class="file-inspect-meta" id="fileInspectMeta">No file loaded.</div>
+        <textarea id="fileInspectOutput" readonly class="devpad-textarea" placeholder="Base64 Data URI will generate here..."></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Terminal (RootShell) -->
   <section class="window" id="win-terminal" data-title="rootshell">
     <header class="windowheader"><span class="wintitle">rootshell</span></header>
     <div class="winbody term-body">
-      <div id="termScreen"></div>
+      <div id="termScreen" class="term-screen"></div>
+      <div class="term-input-line">
+        <span class="term-prompt">crypter@flow-os:~$</span>
+        <input type="text" id="termInput" autocomplete="off" spellcheck="false" autofocus>
+      </div>
     </div>
   </section>
 
-  <div id="startMenu" hidden>
-    <div id="startApps"></div>
-    <button id="switchUser"></button>
+  <!-- HexDump & Entropy Inspector -->
+  <section class="window" id="win-hexdump" data-title="Hex &amp; Entropy Inspector">
+    <header class="windowheader"><span class="wintitle">Hex &amp; Entropy Inspector</span></header>
+    <div class="winbody hexdump-body">
+      <div class="hexdump-controls">
+        <div class="hex-stat-item">
+          <span class="stat-label">Buffer Size:</span>
+          <span id="hexByteCount" class="stat-val">0 B</span>
+        </div>
+        <div class="hex-stat-item">
+          <span class="stat-label">Shannon Entropy:</span>
+          <span id="hexEntropyScore" class="stat-val">0.000 / 8.000</span>
+        </div>
+        <div class="hex-stat-item entropy-bar-wrap">
+          <div id="entropyBarFill" class="entropy-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div class="hex-stat-item">
+          <span id="entropyClassification" class="entropy-tag">Plaintext</span>
+        </div>
+      </div>
+      <textarea id="hexSourceInput" class="hex-source-textarea" spellcheck="false" placeholder="Type or paste text to generate live hex dump &amp; entropy analysis..."></textarea>
+      <div class="hexdump-viewer-wrap">
+        <pre id="hexDumpOutput" class="hexdump-grid">00000000:  (empty buffer)</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- DevPad: JSON / Regex / Notes -->
+  <section class="window" id="win-devpad" data-title="DevPad Scratchpad">
+    <header class="windowheader"><span class="wintitle">DevPad Scratchpad</span></header>
+    <div class="winbody devpad-body">
+      <div class="devpad-tabs">
+        <button class="devpad-tab-btn active" data-tab="json">JSON Tool</button>
+        <button class="devpad-tab-btn" data-tab="regex">Regex Tester</button>
+        <button class="devpad-tab-btn" data-tab="notes">Quick Scratch</button>
+      </div>
+      
+      <!-- JSON Tab -->
+      <div id="devpad-tab-json" class="devpad-tab-pane active">
+        <div class="tab-toolbar">
+          <button id="btnJsonPrettify" class="toolbtn">Beautify (2 Spaces)</button>
+          <button id="btnJsonMinify" class="toolbtn">Minify</button>
+          <button id="btnJsonValidate" class="toolbtn">Validate</button>
+          <span id="jsonStatus" class="devpad-status"></span>
+        </div>
+        <textarea id="jsonInput" class="devpad-textarea" spellcheck="false" placeholder='Paste JSON here (e.g. {"flow": "os", "ciphers": 14})...'></textarea>
+      </div>
+
+      <!-- Regex Tab -->
+      <div id="devpad-tab-regex" class="devpad-tab-pane">
+        <div class="regex-inputs-bar">
+          <div class="regex-field-group">
+            <span class="regex-delimiter">/</span>
+            <input type="text" id="regexPattern" placeholder="Enter regular expression (e.g. [A-Fa-f0-9]{32})" spellcheck="false">
+            <span class="regex-delimiter">/</span>
+            <input type="text" id="regexFlags" value="gim" placeholder="flags" spellcheck="false">
+          </div>
+          <span id="regexMatchCount" class="devpad-status">0 matches</span>
+        </div>
+        <div class="regex-split">
+          <div class="regex-test-col">
+            <label for="regexTestText">Test String</label>
+            <textarea id="regexTestText" class="devpad-textarea" spellcheck="false" placeholder="Enter test payload here..."></textarea>
+          </div>
+          <div class="regex-res-col">
+            <label>Matches &amp; Groups</label>
+            <div id="regexMatchResults" class="regex-results-panel">No matches yet.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes Tab -->
+      <div id="devpad-tab-notes" class="devpad-tab-pane">
+        <div class="tab-toolbar">
+          <button id="btnSaveNotes" class="toolbtn">Save Local Buffer</button>
+          <span id="notesSavedIndicator" class="devpad-status">Saved</span>
+        </div>
+        <textarea id="notesContent" class="devpad-textarea" spellcheck="false" placeholder="Local scratchpad notes (persisted to localStorage)..."></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- System Monitor -->
+  <section class="window" id="win-sysmon" data-title="System Monitor">
+    <header class="windowheader"><span class="wintitle">System Monitor</span></header>
+    <div class="winbody sysmon-body">
+      <div class="sysmon-metrics-row">
+        <div class="gauge">
+          <div class="gauge-header">
+            <label>CPU Core Activity</label>
+            <span id="cpuValue" class="gauge-val">0%</span>
+          </div>
+          <canvas id="cpuCanvas"></canvas>
+        </div>
+        <div class="gauge">
+          <div class="gauge-header">
+            <label>Network Packet Stream</label>
+            <span id="netValue" class="gauge-val">0%</span>
+          </div>
+          <canvas id="netCanvas"></canvas>
+        </div>
+      </div>
+      <div class="sysmon-details">
+        <div class="detail-cell">
+          <span class="d-label">OS Architecture</span>
+          <span class="d-val">FlowOS Coder Edition x86_64</span>
+        </div>
+        <div class="detail-cell">
+          <span class="d-label">Active Entropy Pool</span>
+          <span id="sysmonEntropyVal" class="d-val">7.989 bits/byte</span>
+        </div>
+        <div class="detail-cell">
+          <span class="d-label">WebCrypto Status</span>
+          <span class="d-val">Hardware Acceleration (Active)</span>
+        </div>
+        <div class="detail-cell">
+          <span class="d-label">Keyboard Shortcut Engine</span>
+          <span class="d-val">Alt+Tab, Win, Ctrl+Alt+T</span>
+        </div>
+      </div>
+      <p class="sysmon-note">Hardware telemetry and network flow rates are simulated in client memory.</p>
+    </div>
+  </section>
+
+  <!-- Alt+Tab App Switcher Overlay -->
+  <div id="appSwitcher" class="app-switcher-overlay" hidden>
+    <div class="app-switcher-modal">
+      <div class="app-switcher-title">Switch Applications (Alt + Tab)</div>
+      <div id="appSwitcherList" class="app-switcher-list"></div>
+    </div>
   </div>
 
+  <!-- Start Menu -->
+  <div id="startMenu" class="start-menu" hidden>
+    <div class="start-menu-header">
+      <div class="start-user-info">
+        <span class="user-avatar">&#x25C6;</span>
+        <span class="user-handle">flow_user // root</span>
+      </div>
+    </div>
+    <div class="start-menu-section-title">Applications</div>
+    <div id="startApps" class="start-apps-list"></div>
+    <div class="start-menu-section-title">Workspace Theme</div>
+    <div class="start-theme-picker">
+      <button class="theme-btn" data-theme="obsidian" title="Obsidian Gold">Gold</button>
+      <button class="theme-btn" data-theme="hacker" title="Cyber Emerald">Emerald</button>
+      <button class="theme-btn" data-theme="amber" title="Amber CRT">Amber</button>
+      <button class="theme-btn" data-theme="cobalt" title="Cobalt Deep">Cobalt</button>
+    </div>
+    <div class="start-menu-footer">
+      <button id="switchUser" class="switch-user-btn">Toggle Hacker Persona</button>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
   <footer id="taskbar">
-    <button id="startButton" aria-label="Start"></button>
-    <div id="taskItems"></div>
-    <div id="tray"><span id="timeElement"></span></div>
+    <button id="startButton" class="start-btn" aria-label="Start"></button>
+    <div id="taskItems" class="task-items-container"></div>
+    <div id="tray">
+      <span id="themeIndicator" class="tray-pill">Obsidian</span>
+      <span id="timeElement" class="tray-clock">00:00</span>
+    </div>
   </footer>
 
   <canvas id="matrixCanvas"></canvas>
